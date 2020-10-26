@@ -114,6 +114,11 @@ void Sprite::SetColor(D3DCOLOR color_to_set)
 //----------------------------------------------------------------------------
 // スプライト派生クラス - SpriteNormal
 //----------------------------------------------------------------------------
+SpriteNormal::SpriteNormal()
+{
+	dx = dy = tcx = tcy = tcw = tch = 0;
+}
+
 void SpriteNormal::Draw(void)
 {
 	// デバイスにFVFの設定をする

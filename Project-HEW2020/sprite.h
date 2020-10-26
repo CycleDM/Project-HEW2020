@@ -45,7 +45,7 @@ protected:
 class SpriteNormal : public Sprite
 {
 public:
-	//SpriteNormal();
+	SpriteNormal();
 	//~SpriteNormal();
 
 	// スプライト描画の座標を指定
