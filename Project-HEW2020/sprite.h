@@ -25,11 +25,11 @@ public:
 	unsigned long GetTextureHeight(void);
 	LPDIRECT3DTEXTURE9 GetTexture(void);
 
-	// スプライトを描画に関連する関数（純粋仮想関数を利用すれば、必ずオーバライドしてください）
+	// スプライトを描画に関連する関数
+	// 純粋仮想関数は必ずオーバライドしてください
+	// 新しい機能を利用したい場合、派生クラスから新しい関数を作ってください
 	virtual void Draw(void) = 0;
-	virtual void SetDrawPos(float x, float y) = 0;
-	virtual void SetCutPos(float x, float y) = 0;
-	virtual void SetCutSize(float width, float height) = 0;
+	virtual void SetDrawPos(float, float) = 0;
 	virtual void SetColor(D3DCOLOR color_to_set);
 
 protected:
@@ -48,20 +48,23 @@ public:
 	//SpriteNormal();
 	//~SpriteNormal();
 
-	// スプライト描画の各種値を指定
-	//
+	// スプライト描画の座標を指定
 	// 引数:
-	//	dx		... 描画座標x（左上指定）
-	//	dy		... 描画座標y（左上指定）
-	//	tcx		... テクスチャの切り取り座標x
-	//	tcy		... テクスチャの切り取り座標y
-	//	tcw		... テクスチャの切り取り幅
-	//	tch		... テクスチャの切り取り高さ
+	//	x->dx	... 描画座標x（左上指定）
+	//	y->dy	... 描画座標y（左上指定）
 	void SetDrawPos(float x, float y);
+	// テクスチャの切り取り座標座標を指定
+	// 引数:
+	//	x->tcx	... テクスチャの切り取り座標x
+	//	y->tcy	... テクスチャの切り取り座標y
 	void SetCutPos(float x, float y);
+	// テクスチャの切り取り幅を指定
+	// 引数:
+	//	width->tcw	... テクスチャの切り取り長さ
+	//	height->tcy	... テクスチャの切り取り高さ
 	void SetCutSize(float width, float height);
+	// スプライト描画を実行
 	void Draw(void);
 private:
-	float dx, dy;
-	int tcx,tcy, tcw, tch;
+	float dx, dy, tcx, tcy, tcw, tch;
 };
