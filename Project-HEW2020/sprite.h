@@ -37,6 +37,7 @@ protected:
 	static LPDIRECT3DDEVICE9 pDevice;
 	static LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;
 	static LPDIRECT3DINDEXBUFFER9 pIndexBuffer;
+	static bool isDeviceInit;
 
 	LPDIRECT3DTEXTURE9 pTexture;
 	D3DCOLOR color;
@@ -48,6 +49,7 @@ class SpriteNormal : public Sprite
 {
 public:
 	SpriteNormal();
+	SpriteNormal(const char* pFileName);
 	//~SpriteNormal();
 
 	// スプライト描画の座標を指定
