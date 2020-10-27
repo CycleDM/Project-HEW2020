@@ -197,7 +197,7 @@ void SpriteNormal::SetCutPos(float x, float y)
 	tcy = y;
 }
 
-void SpriteNormal::SetCutSize(float width, float height)
+void SpriteNormal::SetSize(float width, float height)
 {
 	tcw = width;
 	tch = height;
