@@ -33,9 +33,11 @@ public:
 	virtual void SetColor(D3DCOLOR color_to_set);
 
 protected:
+	// îhê∂ÉNÉâÉXÇ∆ã§í ÇÃïœêîÇ»ÇÃÇ≈staticÇ…éwíË
 	static LPDIRECT3DDEVICE9 pDevice;
 	static LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;
 	static LPDIRECT3DINDEXBUFFER9 pIndexBuffer;
+
 	LPDIRECT3DTEXTURE9 pTexture;
 	D3DCOLOR color;
 	unsigned long txWidth, txHeight;
