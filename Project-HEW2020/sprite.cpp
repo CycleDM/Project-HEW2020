@@ -108,7 +108,9 @@ void Sprite::LoadTexture(const char* pFileName)
 	}
 	else
 	{
-		const char* msg = strcpy(filename, "\nテクスチャの読み込みに失敗しました");
+		char msg[128] = {};
+		strcat(msg, "テクスチャの読み込みに失敗しました\nファイル名：");
+		strcat(msg, filename);
 		MessageBox(NULL, msg, "エラー", MB_OK);
 	}
 }
