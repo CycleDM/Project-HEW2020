@@ -40,7 +40,7 @@ static int g_BaseFrame = 0;
 static double g_BaseTime = 0;
 static double g_FPS = 0.0;
 static double g_ReserveTime = 0.0f;
-SpriteNormal* g_pSprite;
+static SpriteNormal* g_pSprite;
 
 //-----------------------------------------------------------------------------
 // Window Process
