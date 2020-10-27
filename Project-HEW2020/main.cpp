@@ -173,8 +173,11 @@ bool Init(HWND hWnd)
 		// システムタイマーの初期化
 		SystemTimer_Init();
 
+		// （例）スプライトの設定
 		g_pSprite = new SpriteNormal;
 		g_pSprite->LoadTexture("assets/texture/bg.jpg");
+		// ↓このように書いても良い
+		//g_pSprite = new SpriteNormal("assets/texture/bg.jpg");
 		g_pSprite->SetDrawPos(0.0f, 0.0f);
 		g_pSprite->SetCutPos(0.0f, 0.0f);
 		g_pSprite->SetCutSize(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -226,6 +229,7 @@ void Draw(void)
 	// ここに各種の描画処理を入れる
 	do
 	{
+		// （例）スプライトの描画
 		g_pSprite->Draw();
 		// ...
 		// ...

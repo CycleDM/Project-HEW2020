@@ -11,6 +11,17 @@
 #include "sprite.h"
 #include "d3dutility.h"
 
+//----------------------------------------------------------------------------
+// グローバル変数宣言、初期化
+//----------------------------------------------------------------------------
+LPDIRECT3DDEVICE9 Sprite::pDevice = NULL;
+LPDIRECT3DVERTEXBUFFER9 Sprite::pVertexBuffer = NULL;
+LPDIRECT3DINDEXBUFFER9 Sprite::pIndexBuffer = NULL;
+bool Sprite::isDeviceInit = false;
+
+//----------------------------------------------------------------------------
+// 構造体宣言
+//----------------------------------------------------------------------------
 // 頂点構造体
 typedef struct Vertex2D_tag
 {
@@ -25,30 +36,41 @@ typedef struct Vertex2D_tag
 //----------------------------------------------------------------------------
 Sprite::Sprite()
 {
-	pDevice = D3DUtility_GetDevice();
-	pVertexBuffer = NULL;
-	pIndexBuffer = NULL;
-	if (!pDevice)
+	do
 	{
-		MessageBox(NULL, "Direct3Dデバイスの取得に失敗しました", "エラー", MB_OK);
-	}
-	pDevice->CreateVertexBuffer(
-		sizeof(Vertex2D) * 4,   // 頂点バッファの量（バイト）
-		D3DUSAGE_WRITEONLY,     // 使い方
-		FVF_VERTEX2D,           // FVF
-		D3DPOOL_DEFAULT,        // メモリの管理方法
-		&pVertexBuffer,			// 取得したインターフェースのアドレスを記録するためのポインタのアドレス
-		NULL
-	);
+		// デバイスとバッファの初期化は一回だけ行う
+		if (!isDeviceInit)
+		{
+			pDevice = D3DUtility_GetDevice();
+			if (!pDevice)
+			{
+				MessageBox(NULL, "Direct3Dデバイスの取得に失敗しました", "エラー", MB_OK);
+				// デバイスの初期化に失敗のため、進まない
+				break;
+			}
+			pDevice->CreateVertexBuffer(
+				sizeof(Vertex2D) * 4,   // 頂点バッファの量（バイト）
+				D3DUSAGE_WRITEONLY,     // 使い方
+				FVF_VERTEX2D,           // FVF
+				D3DPOOL_DEFAULT,        // メモリの管理方法
+				&pVertexBuffer,			// 取得したインターフェースのアドレスを記録するためのポインタのアドレス
+				NULL
+			);
 
-	pDevice->CreateIndexBuffer(
-		sizeof(WORD) * 6,
-		D3DUSAGE_WRITEONLY,
-		D3DFMT_INDEX16,
-		D3DPOOL_DEFAULT,
-		&pIndexBuffer,
-		NULL
-	);
+			pDevice->CreateIndexBuffer(
+				sizeof(WORD) * 6,
+				D3DUSAGE_WRITEONLY,
+				D3DFMT_INDEX16,
+				D3DPOOL_DEFAULT,
+				&pIndexBuffer,
+				NULL
+			);
+
+			// 初期化完成
+			isDeviceInit = true;
+		}
+	} while (0);
+	
 	color = 0xffffffff;
 	pTexture = NULL;
 	txWidth = 0;
@@ -117,6 +139,12 @@ void Sprite::SetColor(D3DCOLOR color_to_set)
 SpriteNormal::SpriteNormal()
 {
 	dx = dy = tcx = tcy = tcw = tch = 0;
+}
+
+SpriteNormal::SpriteNormal(const char* pFileName)
+{
+	dx = dy = tcx = tcy = tcw = tch = 0;
+	this->LoadTexture(pFileName);
 }
 
 void SpriteNormal::Draw(void)
