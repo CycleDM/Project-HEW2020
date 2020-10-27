@@ -66,7 +66,7 @@ public:
 	// 引数:
 	//	width->tcw	... テクスチャの切り取り長さ
 	//	height->tcy	... テクスチャの切り取り高さ
-	virtual void SetCutSize(float width, float height);
+	virtual void SetSize(float width, float height);
 	// スプライト描画を実行
 	virtual void Draw(void);
 protected:
