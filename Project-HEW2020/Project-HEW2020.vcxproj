@@ -24,7 +24,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="system_timer.cpp" />
-    <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
@@ -32,7 +31,6 @@
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="system_timer.h" />
-    <ClInclude Include="texture.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

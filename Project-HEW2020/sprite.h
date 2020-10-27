@@ -52,19 +52,19 @@ public:
 	// 引数:
 	//	x->dx	... 描画座標x（左上指定）
 	//	y->dy	... 描画座標y（左上指定）
-	void SetDrawPos(float x, float y);
+	virtual void SetDrawPos(float x, float y);
 	// テクスチャの切り取り座標座標を指定
 	// 引数:
 	//	x->tcx	... テクスチャの切り取り座標x
 	//	y->tcy	... テクスチャの切り取り座標y
-	void SetCutPos(float x, float y);
+	virtual void SetCutPos(float x, float y);
 	// テクスチャの切り取り幅を指定
 	// 引数:
 	//	width->tcw	... テクスチャの切り取り長さ
 	//	height->tcy	... テクスチャの切り取り高さ
-	void SetCutSize(float width, float height);
+	virtual void SetCutSize(float width, float height);
 	// スプライト描画を実行
-	void Draw(void);
-private:
+	virtual void Draw(void);
+protected:
 	float dx, dy, tcx, tcy, tcw, tch;
 };
