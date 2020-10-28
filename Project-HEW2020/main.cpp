@@ -18,6 +18,7 @@
 #include "keyboard.h"
 #include "d3dutility.h"
 #include "sprite.h"
+#include "game.h"
 
 #define CLASS_NAME "GameWindow"
 #define WINDOW_CAPTION "ゲームタイトル「未定」"
@@ -173,14 +174,17 @@ bool Init(HWND hWnd)
 		// システムタイマーの初期化
 		SystemTimer_Init();
 
+		Game_Init();
 		// （例）スプライトの設定
 		g_pSprite = new SpriteNormal;
-		g_pSprite->LoadTexture("assets/texture/bg.jpg");
+		g_pSprite->LoadTexture("assets/texture/sample.jpg");
 		// ↓このように書いても良い
-		//g_pSprite = new SpriteNormal("assets/texture/bg.jpg");
+		//g_pSprite = new SpriteNormal("assets/texture/sample.jpg");
 		g_pSprite->SetDrawPos(0.0f, 0.0f);
-		g_pSprite->SetCutPos(0.0f, 0.0f);
+		g_pSprite->SetCutPos(0, 0);
 		g_pSprite->SetSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+		//g_pSprite->SetHorizontalFlip(true);
+		//g_pSprite->SetVerticalFlip(true);
 		// ...
 		// ...
 		// ...
@@ -198,6 +202,7 @@ void Update(void)
 	// ここに各種の更新処理を入れる
 	do
 	{
+		Game_Update();
 		// ...
 		// ...
 		// ...
@@ -231,6 +236,8 @@ void Draw(void)
 	{
 		// （例）スプライトの描画
 		g_pSprite->Draw();
+
+		Game_Draw();
 		// ...
 		// ...
 		// ...
@@ -245,9 +252,10 @@ void Draw(void)
 // ゲームシステムの終了処理
 void Uninit(void)
 {
-	// Direct3Dの終了処理
-	D3DUtility_Uninit();
+	Game_Uninit();
 	// Spriteポインターの解放
 	delete g_pSprite;
 	g_pSprite = NULL;
+	// Direct3Dの終了処理
+	D3DUtility_Uninit();
 }

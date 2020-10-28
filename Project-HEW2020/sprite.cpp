@@ -45,7 +45,7 @@ Sprite::Sprite()
 			if (!pDevice)
 			{
 				MessageBox(NULL, "Direct3Dデバイスの取得に失敗しました", "エラー", MB_OK);
-				// デバイスの初期化に失敗のため、進まない
+				// デバイスの取得に失敗のため、進まない
 				break;
 			}
 			pDevice->CreateVertexBuffer(
@@ -115,16 +115,16 @@ void Sprite::LoadTexture(const char* pFileName)
 	}
 }
 
-unsigned long Sprite::GetTextureWidth()
+unsigned long Sprite::GetTextureWidth(void)
 {
 	return txWidth;
 }
-unsigned long Sprite::GetTextureHeight()
+unsigned long Sprite::GetTextureHeight(void)
 {
 	return txHeight;
 }
 
-LPDIRECT3DTEXTURE9 Sprite::GetTexture()
+LPDIRECT3DTEXTURE9 Sprite::GetTexture(void)
 {
 	return pTexture;
 }
@@ -140,12 +140,23 @@ void Sprite::SetColor(D3DCOLOR color_to_set)
 //----------------------------------------------------------------------------
 SpriteNormal::SpriteNormal()
 {
-	dx = dy = tcx = tcy = tcw = tch = 0;
+	// 初期値設定
+	dx = dy = 0.0f;
+	tcx = tcy = 0;
+	tcw = 0;
+	tch = 0;
+	bHorizontalFlip = bVerticalFlip = false;
 }
-
+// オーバロード
 SpriteNormal::SpriteNormal(const char* pFileName)
 {
-	dx = dy = tcx = tcy = tcw = tch = 0;
+	// 初期値設定
+	dx = dy = 0.0f;
+	tcx = tcy = 0;
+	tcw = 0;
+	tch = 0;
+	bHorizontalFlip = bVerticalFlip = false;
+	// テクスチャの読み込み
 	this->LoadTexture(pFileName);
 }
 
@@ -161,11 +172,30 @@ void SpriteNormal::Draw(void)
 	unsigned long w = GetTextureWidth();
 	unsigned long h = GetTextureHeight();
 
+	// 0 だったらテクスチャのデフォルトサイズに設定
+	if (!tcw || !tch)
+	{
+		tcw = GetTextureWidth();
+		tch = GetTextureHeight();
+	}
+
 	// テクスチャ切り取りUV座標
-	float u0 = (float)tcx / w;
-	float v0 = (float)tcy / h;
-	float u1 = (float)(tcx + tcw) / w;
-	float v1 = (float)(tcy + tch) / h;
+	float u0, u1, v0, v1;
+	u0 = (float)tcx / w;
+	u1 = (float)(tcx + tcw) / w;
+	v0 = (float)tcy / h;
+	v1 = (float)(tcy + tch) / h;
+	// UV反転処理
+	if (bHorizontalFlip)
+	{
+		u0 = (float)(tcx + tcw) / w;
+		u1 = (float)tcx / w;
+	}
+	if (bVerticalFlip)
+	{
+		v0 = (float)(tcy + tch) / h;
+		v1 = (float)tcy / h;
+	}
 
 	// 頂点データ
 	Vertex2D v[] = {
@@ -185,20 +215,26 @@ void SpriteNormal::Draw(void)
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
 
-void SpriteNormal::SetDrawPos(float x, float y)
+void SpriteNormal::SetDrawPos(float dx, float dy)
 {
-	dx = x;
-	dy = y;
+	this->dx = dx;
+	this->dy = dy;
 }
-
-void SpriteNormal::SetCutPos(float x, float y)
+void SpriteNormal::SetCutPos(int tcx, int tcy)
 {
-	tcx = x;
-	tcy = y;
+	this->tcx = tcx;
+	this->tcy = tcy;
 }
-
-void SpriteNormal::SetSize(float width, float height)
+void SpriteNormal::SetSize(int tcw, int tch)
 {
-	tcw = width;
-	tch = height;
+	this->tcw = tcw;
+	this->tch = tch;
+}
+void SpriteNormal::SetHorizontalFlip(bool boolean)
+{
+	this->bHorizontalFlip = boolean;
+}
+void SpriteNormal::SetVerticalFlip(bool boolean)
+{
+	this->bVerticalFlip = boolean;
 }
