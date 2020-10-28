@@ -1,18 +1,18 @@
 //----------------------------------------------------------------------------
 // 
 // Project-HEW2020 [sprite.h]
-// ƒeƒNƒXƒ`ƒƒ[AƒXƒvƒ‰ƒCƒg§Œä
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ¼ã€ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆåˆ¶å¾¡
 // 
 // Date:   2020/10/25
-// Author: AT12D187_17_üi
+// Author: AT12D187_17_å‘¨é€²
 // 
 //----------------------------------------------------------------------------
 #pragma once
 
 #include <d3dx9.h>
 
-#define TEXTURE_FILENAME_MAX (64)	// ƒeƒNƒXƒ`ƒƒƒtƒ@ƒCƒ‹–¼Å‘å•¶š”
-#define TEXTURE_MAX (1024)			// ƒeƒNƒXƒ`ƒƒŠÇ—Å‘å”
+#define TEXTURE_FILENAME_MAX (64)	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ•ã‚¡ã‚¤ãƒ«åæœ€å¤§æ–‡å­—æ•°
+#define TEXTURE_MAX (1024)			// ãƒ†ã‚¯ã‚¹ãƒãƒ£ç®¡ç†æœ€å¤§æ•°
 
 class Sprite
 {
@@ -25,15 +25,15 @@ public:
 	unsigned long GetTextureHeight(void);
 	LPDIRECT3DTEXTURE9 GetTexture(void);
 
-	// ƒXƒvƒ‰ƒCƒg‚ğ•`‰æ‚ÉŠÖ˜A‚·‚éŠÖ”
-	// ƒˆ‰¼‘zŠÖ”‚Í•K‚¸ƒI[ƒoƒ‰ƒCƒh‚µ‚Ä‚­‚¾‚³‚¢
-	// V‚µ‚¢‹@”\‚ğ—˜—p‚µ‚½‚¢ê‡A”h¶ƒNƒ‰ƒX‚©‚çV‚µ‚¢ŠÖ”‚ğì‚Á‚Ä‚­‚¾‚³‚¢
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’æç”»ã«é–¢é€£ã™ã‚‹é–¢æ•°
+	// ç´”ç²‹ä»®æƒ³é–¢æ•°ã¯å¿…ãšã‚ªãƒ¼ãƒãƒ©ã‚¤ãƒ‰ã—ã¦ãã ã•ã„
+	// æ–°ã—ã„æ©Ÿèƒ½ã‚’åˆ©ç”¨ã—ãŸã„å ´åˆã€æ´¾ç”Ÿã‚¯ãƒ©ã‚¹ã‹ã‚‰æ–°ã—ã„é–¢æ•°ã‚’ä½œã£ã¦ãã ã•ã„
 	virtual void Draw(void) = 0;
 	virtual void SetDrawPos(float, float) = 0;
 	virtual void SetColor(D3DCOLOR color_to_set);
 
 protected:
-	// ”h¶ƒNƒ‰ƒX‚Æ‹¤’Ê‚Ì•Ï”‚È‚Ì‚Åstatic‚Éw’è
+	// æ´¾ç”Ÿã‚¯ãƒ©ã‚¹ã¨å…±é€šã®å¤‰æ•°ãªã®ã§staticã«æŒ‡å®š
 	static LPDIRECT3DDEVICE9 pDevice;
 	static LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;
 	static LPDIRECT3DINDEXBUFFER9 pIndexBuffer;
@@ -52,22 +52,22 @@ public:
 	SpriteNormal(const char* pFileName);
 	//~SpriteNormal();
 
-	// ƒXƒvƒ‰ƒCƒg•`‰æ‚ÌÀ•W‚ğw’è
-	// ˆø”:
-	//	x->dx	... •`‰æÀ•Wxi¶ãw’èj
-	//	y->dy	... •`‰æÀ•Wyi¶ãw’èj
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆæç”»ã®åº§æ¨™ã‚’æŒ‡å®š
+	// å¼•æ•°:
+	//	x->dx	... æç”»åº§æ¨™xï¼ˆå·¦ä¸ŠæŒ‡å®šï¼‰
+	//	y->dy	... æç”»åº§æ¨™yï¼ˆå·¦ä¸ŠæŒ‡å®šï¼‰
 	virtual void SetDrawPos(float x, float y);
-	// ƒeƒNƒXƒ`ƒƒ‚ÌØ‚èæ‚èÀ•WÀ•W‚ğw’è
-	// ˆø”:
-	//	x->tcx	... ƒeƒNƒXƒ`ƒƒ‚ÌØ‚èæ‚èÀ•Wx
-	//	y->tcy	... ƒeƒNƒXƒ`ƒƒ‚ÌØ‚èæ‚èÀ•Wy
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ‡ã‚Šå–ã‚Šåº§æ¨™åº§æ¨™ã‚’æŒ‡å®š
+	// å¼•æ•°:
+	//	x->tcx	... ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ‡ã‚Šå–ã‚Šåº§æ¨™x
+	//	y->tcy	... ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ‡ã‚Šå–ã‚Šåº§æ¨™y
 	virtual void SetCutPos(float x, float y);
-	// ƒeƒNƒXƒ`ƒƒ‚ÌØ‚èæ‚è•‚ğw’è
-	// ˆø”:
-	//	width->tcw	... ƒeƒNƒXƒ`ƒƒ‚ÌØ‚èæ‚è’·‚³
-	//	height->tcy	... ƒeƒNƒXƒ`ƒƒ‚ÌØ‚èæ‚è‚‚³
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ‡ã‚Šå–ã‚Šå¹…ã‚’æŒ‡å®š
+	// å¼•æ•°:
+	//	width->tcw	... ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ‡ã‚Šå–ã‚Šé•·ã•
+	//	height->tch	... ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ‡ã‚Šå–ã‚Šé«˜ã•
 	virtual void SetSize(float width, float height);
-	// ƒXƒvƒ‰ƒCƒg•`‰æ‚ğÀs
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆæç”»ã‚’å®Ÿè¡Œ
 	virtual void Draw(void);
 protected:
 	float dx, dy, tcx, tcy, tcw, tch;
