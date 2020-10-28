@@ -140,12 +140,17 @@ void Sprite::SetColor(D3DCOLOR color_to_set)
 //----------------------------------------------------------------------------
 SpriteNormal::SpriteNormal()
 {
+	// 初期値設定
 	dx = dy = tcx = tcy = tcw = tch = 0;
+	bHorizontalFlip = bVerticalFlip = false;
 }
 
 SpriteNormal::SpriteNormal(const char* pFileName)
 {
+	// 初期値設定
 	dx = dy = tcx = tcy = tcw = tch = 0;
+	bHorizontalFlip = bVerticalFlip = false;
+	// テクスチャの読み込み
 	this->LoadTexture(pFileName);
 }
 
@@ -162,10 +167,21 @@ void SpriteNormal::Draw(void)
 	unsigned long h = GetTextureHeight();
 
 	// テクスチャ切り取りUV座標
-	float u0 = (float)tcx / w;
-	float v0 = (float)tcy / h;
-	float u1 = (float)(tcx + tcw) / w;
-	float v1 = (float)(tcy + tch) / h;
+	float u0, u1, v0, v1;
+	u0 = (float)tcx / w;
+	u1 = (float)(tcx + tcw) / w;
+	v0 = (float)tcy / h;
+	v1 = (float)(tcy + tch) / h;
+	if (bHorizontalFlip)
+	{
+		u0 = (float)(tcx + tcw) / w;
+		u1 = (float)tcx / w;
+	}
+	if (bVerticalFlip)
+	{
+		v0 = (float)(tcy + tch) / h;
+		v1 = (float)tcy / h;
+	}
 
 	// 頂点データ
 	Vertex2D v[] = {
@@ -201,4 +217,14 @@ void SpriteNormal::SetSize(float width, float height)
 {
 	tcw = width;
 	tch = height;
+}
+
+void SpriteNormal::SetHorizontalFlip(bool boolean)
+{
+	bHorizontalFlip = boolean;
+}
+
+void SpriteNormal::SetVerticalFlip(bool boolean)
+{
+	bVerticalFlip = boolean;
 }

@@ -29,7 +29,12 @@ public:
 	// 純粋仮想関数は必ずオーバライドしてください
 	// 新しい機能を利用したい場合、派生クラスから新しい関数を作ってください
 	virtual void Draw(void) = 0;
+	// スプライト描画の座標を指定
 	virtual void SetDrawPos(float, float) = 0;
+	// テクスチャの反転処理（左右）
+	virtual void SetHorizontalFlip(bool) = 0;
+	// テクスチャの反転処理（上下）
+	virtual void SetVerticalFlip(bool) = 0;
 	virtual void SetColor(D3DCOLOR color_to_set);
 
 protected:
@@ -45,6 +50,9 @@ protected:
 	char filename[TEXTURE_FILENAME_MAX];
 };
 
+//----------------------------------------------------------------------------
+// スプライト派生クラス - SpriteNormal - これを基本クラスとして派生してもOK
+//----------------------------------------------------------------------------
 class SpriteNormal : public Sprite
 {
 public:
@@ -67,8 +75,21 @@ public:
 	//	width->tcw	... テクスチャの切り取り長さ
 	//	height->tch	... テクスチャの切り取り高さ
 	virtual void SetSize(float width, float height);
+	// テクスチャ反転の設定（左右）
+	// 引数:
+	//	true	... 反転する
+	//	false	... 反転しない
+	//	デフォルトは反転しない状態
+	virtual void SetHorizontalFlip(bool boolean);
+	// テクスチャ反転の設定（上下）
+	// 引数:
+	//	true	... 反転する
+	//	false	... 反転しない
+	//	デフォルトは反転しない状態
+	virtual void SetVerticalFlip(bool boolean);
 	// スプライト描画を実行
 	virtual void Draw(void);
 protected:
 	float dx, dy, tcx, tcy, tcw, tch;
+	bool bHorizontalFlip, bVerticalFlip;
 };

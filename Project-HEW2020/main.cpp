@@ -175,12 +175,14 @@ bool Init(HWND hWnd)
 
 		// （例）スプライトの設定
 		g_pSprite = new SpriteNormal;
-		g_pSprite->LoadTexture("assets/texture/bg.jpg");
+		g_pSprite->LoadTexture("assets/texture/sample.jpg");
 		// ↓このように書いても良い
-		//g_pSprite = new SpriteNormal("assets/texture/bg.jpg");
+		//g_pSprite = new SpriteNormal("assets/texture/sample.jpg");
 		g_pSprite->SetDrawPos(0.0f, 0.0f);
 		g_pSprite->SetCutPos(0.0f, 0.0f);
 		g_pSprite->SetSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+		//g_pSprite->SetHorizontalFlip(true);
+		//g_pSprite->SetVerticalFlip(true);
 		// ...
 		// ...
 		// ...
