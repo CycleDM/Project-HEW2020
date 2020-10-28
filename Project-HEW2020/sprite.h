@@ -14,6 +14,9 @@
 #define TEXTURE_FILENAME_MAX (64)	// テクスチャファイル名最大文字数
 #define TEXTURE_MAX (1024)			// テクスチャ管理最大数
 
+//----------------------------------------------------------------------------
+// スプライト基本クラス（抽象クラス）
+//----------------------------------------------------------------------------
 class Sprite
 {
 public:
@@ -32,9 +35,10 @@ public:
 	// スプライト描画の座標を指定
 	virtual void SetDrawPos(float, float) = 0;
 	// テクスチャの反転処理（左右）
-	virtual void SetHorizontalFlip(bool) = 0;
+	void SetHorizontalFlip(bool);
 	// テクスチャの反転処理（上下）
-	virtual void SetVerticalFlip(bool) = 0;
+	void SetVerticalFlip(bool);
+	// 色設定
 	virtual void SetColor(D3DCOLOR color_to_set);
 
 protected:
@@ -62,19 +66,19 @@ public:
 
 	// スプライト描画の座標を指定
 	// 引数:
-	//	x->dx	... 描画座標x（左上指定）
-	//	y->dy	... 描画座標y（左上指定）
-	virtual void SetDrawPos(float x, float y);
+	//	dx	... 描画座標x（左上指定）
+	//	dy	... 描画座標y（左上指定）
+	virtual void SetDrawPos(float dx, float dy);
 	// テクスチャの切り取り座標座標を指定
 	// 引数:
-	//	x->tcx	... テクスチャの切り取り座標x
-	//	y->tcy	... テクスチャの切り取り座標y
-	virtual void SetCutPos(float x, float y);
+	//	tcx	... テクスチャの切り取り座標x
+	//	tcy	... テクスチャの切り取り座標y
+	virtual void SetCutPos(int tcx, int tcy);
 	// テクスチャの切り取り幅を指定
 	// 引数:
-	//	width->tcw	... テクスチャの切り取り長さ
-	//	height->tch	... テクスチャの切り取り高さ
-	virtual void SetSize(float width, float height);
+	//	tcw	... テクスチャの切り取り長さ
+	//	tch	... テクスチャの切り取り高さ
+	virtual void SetSize(int tcw, int tch);
 	// テクスチャ反転の設定（左右）
 	// 引数:
 	//	true	... 反転する
@@ -89,7 +93,9 @@ public:
 	virtual void SetVerticalFlip(bool boolean);
 	// スプライト描画を実行
 	virtual void Draw(void);
+
 protected:
-	float dx, dy, tcx, tcy, tcw, tch;
+	float dx, dy;
+	int tcx, tcy, tcw, tch;
 	bool bHorizontalFlip, bVerticalFlip;
 };
