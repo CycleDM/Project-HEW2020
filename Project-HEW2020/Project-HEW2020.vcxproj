@@ -22,6 +22,7 @@
     <ClCompile Include="background.cpp" />
     <ClCompile Include="d3dutility.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="controller.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
@@ -33,6 +34,7 @@
     <ClInclude Include="config.h" />
     <ClInclude Include="d3dutility.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="controller.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="sprite.h" />
