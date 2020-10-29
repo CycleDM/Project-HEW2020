@@ -23,23 +23,38 @@ public:
 	Sprite();
 	virtual ~Sprite();
 
-	void LoadTexture(const char* pFileName);
+	void LoadTexture(const char*);
 	unsigned long GetTextureWidth(void);
 	unsigned long GetTextureHeight(void);
 	LPDIRECT3DTEXTURE9 GetTexture(void);
 
+	//----------------------------------------------------------
 	// スプライトを描画に関連する関数
 	// 純粋仮想関数は必ずオーバライドしてください
 	// 新しい機能を利用したい場合、派生クラスから新しい関数を作ってください
+	//----------------------------------------------------------
+	// 色設定
+	virtual void SetColor(D3DCOLOR);
+	// スプライト描画を実行
 	virtual void Draw(void) = 0;
 	// スプライト描画の座標を指定
 	virtual void SetDrawPos(float, float) = 0;
+	// テクスチャの切り取り座標座標を指定
+	virtual void SetCutPos(int, int) = 0;
+	// テクスチャの切り取り幅を指定
+	virtual void SetCutRange(int, int) = 0;
+	// ポリゴンサイズを指定
+	virtual void SetPolygonSize(float, float) = 0;
+	// ポリゴンサイズを取得
+	virtual D3DXVECTOR2 GetPolygonSize(void) = 0;
+	// テクスチャの回転角度を指定
+	virtual void SetRotation(float, float, float) = 0;
 	// テクスチャの反転処理（左右）
-	void SetHorizontalFlip(bool);
+	virtual void SetHorizontalFlip(bool) = 0;
 	// テクスチャの反転処理（上下）
-	void SetVerticalFlip(bool);
-	// 色設定
-	virtual void SetColor(D3DCOLOR color_to_set);
+	virtual void SetVerticalFlip(bool) = 0;
+	// メンバー変数の初期化処理
+	virtual void Init(void) = 0;
 
 protected:
 	// 派生クラスと共通の変数なのでstaticに指定
@@ -50,8 +65,8 @@ protected:
 
 	LPDIRECT3DTEXTURE9 pTexture;
 	D3DCOLOR color;
-	unsigned long txWidth, txHeight;
 	char filename[TEXTURE_FILENAME_MAX];
+	unsigned long txWidth, txHeight;
 };
 
 //----------------------------------------------------------------------------
@@ -78,7 +93,21 @@ public:
 	// 引数:
 	//	tcw	... テクスチャの切り取り長さ
 	//	tch	... テクスチャの切り取り高さ
-	virtual void SetSize(int tcw, int tch);
+	virtual void SetCutRange(int tcw, int tch);
+	// ポリゴンサイズを指定
+	// 引数:
+	//	dw	... ポリゴンサイズ長さ
+	//	dh	... ポリゴンサイズ高さ
+	virtual void SetPolygonSize(float dw, float dh);
+	// ポリゴンサイズを取得
+	virtual D3DXVECTOR2 GetPolygonSize(void);
+	// テクスチャの回転角度を指定
+	// 引数:
+	//	cx	... 回転の中心座標x
+	//	cy	... 回転の中心座標y
+	//	angle	... テクスチャの回転角度
+	//	デフォルトはすべて 0.0f -> ポリゴンの左上
+	virtual void SetRotation(float cx, float cy, float angle);
 	// テクスチャ反転の設定（左右）
 	// 引数:
 	//	true	... 反転する
@@ -93,9 +122,11 @@ public:
 	virtual void SetVerticalFlip(bool boolean);
 	// スプライト描画を実行
 	virtual void Draw(void);
+	// メンバー変数の初期化処理
+	virtual void Init(void);
 
 protected:
-	float dx, dy;
+	float dx, dy, dw, dh, cx, cy, angle;
 	int tcx, tcy, tcw, tch;
 	bool bHorizontalFlip, bVerticalFlip;
 };

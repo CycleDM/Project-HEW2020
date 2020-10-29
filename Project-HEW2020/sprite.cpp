@@ -140,24 +140,24 @@ void Sprite::SetColor(D3DCOLOR color_to_set)
 //----------------------------------------------------------------------------
 SpriteNormal::SpriteNormal()
 {
-	// 初期値設定
-	dx = dy = 0.0f;
-	tcx = tcy = 0;
-	tcw = 0;
-	tch = 0;
-	bHorizontalFlip = bVerticalFlip = false;
+	// 初期化処理
+	this->Init();
 }
 // オーバロード
 SpriteNormal::SpriteNormal(const char* pFileName)
 {
-	// 初期値設定
-	dx = dy = 0.0f;
-	tcx = tcy = 0;
-	tcw = 0;
-	tch = 0;
-	bHorizontalFlip = bVerticalFlip = false;
+	// 初期化処理
+	this->Init();
 	// テクスチャの読み込み
 	this->LoadTexture(pFileName);
+}
+void SpriteNormal::Init(void)
+{
+	dx = dy = dw = dh = 0.0f;
+	cx = cy = angle = 0.0f;
+	tcx = tcy = 0;
+	tcw = tch = 0;
+	bHorizontalFlip = bVerticalFlip = false;
 }
 
 void SpriteNormal::Draw(void)
@@ -172,11 +172,17 @@ void SpriteNormal::Draw(void)
 	unsigned long w = GetTextureWidth();
 	unsigned long h = GetTextureHeight();
 
-	// 0 だったらテクスチャのデフォルトサイズに設定
+	// 切り取り座標は0だったらテクスチャのデフォルトサイズに設定
 	if (!tcw || !tch)
 	{
 		tcw = GetTextureWidth();
 		tch = GetTextureHeight();
+	}
+	// ポリゴンサイズは0だったらテクスチャのデフォルトサイズに設定
+	if (!dw || !dh)
+	{
+		dw = GetTextureWidth();
+		dh = GetTextureHeight();
 	}
 
 	// テクスチャ切り取りUV座標
@@ -199,20 +205,44 @@ void SpriteNormal::Draw(void)
 
 	// 頂点データ
 	Vertex2D v[] = {
-		{D3DXVECTOR4(dx - 0.5f, dy - 0.5f, 1.0f, 1.0f), color, D3DXVECTOR2(u0, v0)},
-		{D3DXVECTOR4(dx + tcw - 0.5f, dy - 0.5f, 1.0f, 1.0f), color, D3DXVECTOR2(u1, v0)},
-		{D3DXVECTOR4(dx - 0.5f, dy + tch - 0.5f, 1.0f, 1.0f), color, D3DXVECTOR2(u0, v1)},
-		{D3DXVECTOR4(dx + tcw - 0.5f, dy + tch - 0.5f, 1.0f, 1.0f), color, D3DXVECTOR2(u1, v1)} };
+		{D3DXVECTOR4(-0.5f, -0.5f, 1.0f, 1.0f), D3DCOLOR_RGBA(255, 255, 255, 255), D3DXVECTOR2(u0, v0)},
+		{D3DXVECTOR4(dw - 0.5f, -0.5f, 1.0f, 1.0f), D3DCOLOR_RGBA(255, 255, 255, 255), D3DXVECTOR2(u1, v0)},
+		{D3DXVECTOR4(-0.5f, dh - 0.5f, 1.0f, 1.0f), D3DCOLOR_RGBA(255, 255, 255, 255), D3DXVECTOR2(u0, v1)},
+		{D3DXVECTOR4(dw - 0.5f, dh - 0.5f, 1.0f, 1.0f), D3DCOLOR_RGBA(255, 255, 255, 255), D3DXVECTOR2(u1, v1)} };
 
-	Vertex2D* pV;
-	pVertexBuffer->Lock(0, 0, (void**)&pV, 0);
-	memcpy(pV, v, sizeof(v));
-	pVertexBuffer->Unlock();
+	// 平行移動行列
+	D3DXMATRIX mtxTranslationC;
+	D3DXMatrixTranslation(&mtxTranslationC, -cx, -cy, 0.0f);
 
-	// デバイスに利用する頂点バッファを指定する
-	pDevice->SetStreamSource(0, pVertexBuffer, 0, sizeof(Vertex2D));
+	D3DXMATRIX mtxTranslationI;
+	D3DXMatrixTranslation(&mtxTranslationI, cx + dx, cy + dy, 0.0f);
 
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+	// 回転行列
+	D3DXMATRIX mtxRotation;
+	D3DXMatrixRotationZ(&mtxRotation, angle);
+
+	D3DXMATRIX mtxScale;
+	D3DXMatrixScaling(&mtxScale, 1.0f, 1.0f, 1.0f);
+
+	// 行列の合成
+	D3DXMATRIX mtxWorld;
+	mtxWorld = mtxTranslationC * mtxScale * mtxRotation * mtxTranslationI;
+
+	// 座標変換
+	for (int i = 0; i < 4; i++)
+	{
+		D3DXVec4Transform(&v[i].Position, &v[i].Position, &mtxWorld);
+	}
+
+	//Vertex2D* pV;
+	//pVertexBuffer->Lock(0, 0, (void**)&pV, 0);
+	//memcpy(pV, v, sizeof(v));
+	//pVertexBuffer->Unlock();
+	//
+	//// デバイスに利用する頂点バッファを指定する
+	//pDevice->SetStreamSource(0, pVertexBuffer, 0, sizeof(Vertex2D));
+
+	pDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(Vertex2D));
 }
 
 void SpriteNormal::SetDrawPos(float dx, float dy)
@@ -225,10 +255,25 @@ void SpriteNormal::SetCutPos(int tcx, int tcy)
 	this->tcx = tcx;
 	this->tcy = tcy;
 }
-void SpriteNormal::SetSize(int tcw, int tch)
+void SpriteNormal::SetCutRange(int tcw, int tch)
 {
 	this->tcw = tcw;
 	this->tch = tch;
+}
+void SpriteNormal::SetPolygonSize(float dw, float dh)
+{
+	this->dw = dw;
+	this->dh = dh;
+}
+D3DXVECTOR2 SpriteNormal::GetPolygonSize(void)
+{
+	return D3DXVECTOR2(dw, dh);
+}
+void SpriteNormal::SetRotation(float cx, float cy, float angle)
+{
+	this->cx = cx;
+	this->cy = cy;
+	this->angle = angle;
 }
 void SpriteNormal::SetHorizontalFlip(bool boolean)
 {
