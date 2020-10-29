@@ -11,9 +11,14 @@
 
 #include "sprite.h"
 
-class SpriteBg : public SpriteNormal
+class GameBackground
 {
 public:
-	SpriteBg();
-	~SpriteBg();
+	GameBackground();
+	~GameBackground();
+
+	void Init(void);
+	void Update(void);
+	void Draw(void);
+	void Uninit(void);
 };
