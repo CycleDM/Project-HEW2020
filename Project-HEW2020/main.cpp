@@ -19,6 +19,7 @@
 #include "d3dutility.h"
 #include "sprite.h"
 #include "game.h"
+#include "controller.h"
 
 #define CLASS_NAME "GameWindow"
 #define WINDOW_CAPTION "ゲームタイトル「未定」"
@@ -41,7 +42,6 @@ static int g_BaseFrame = 0;
 static double g_BaseTime = 0;
 static double g_FPS = 0.0;
 static double g_ReserveTime = 0.0f;
-static SpriteNormal* g_pSprite;
 
 //-----------------------------------------------------------------------------
 // Window Process
@@ -175,16 +175,6 @@ bool Init(HWND hWnd)
 		SystemTimer_Init();
 
 		Game_Init();
-		// （例）スプライトの設定
-		g_pSprite = new SpriteNormal;
-		g_pSprite->LoadTexture("assets/texture/sample.jpg");
-		// ↓このように書いても良い
-		//g_pSprite = new SpriteNormal("assets/texture/sample.jpg");
-		g_pSprite->SetDrawPos(0.0f, 0.0f);
-		g_pSprite->SetCutPos(0, 0);
-		g_pSprite->SetSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-		//g_pSprite->SetHorizontalFlip(true);
-		//g_pSprite->SetVerticalFlip(true);
 		// ...
 		// ...
 		// ...
@@ -234,9 +224,6 @@ void Draw(void)
 	// ここに各種の描画処理を入れる
 	do
 	{
-		// （例）スプライトの描画
-		g_pSprite->Draw();
-
 		Game_Draw();
 		// ...
 		// ...
@@ -253,9 +240,6 @@ void Draw(void)
 void Uninit(void)
 {
 	Game_Uninit();
-	// Spriteポインターの解放
-	delete g_pSprite;
-	g_pSprite = NULL;
 	// Direct3Dの終了処理
 	D3DUtility_Uninit();
 }
