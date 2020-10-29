@@ -12,5 +12,6 @@
 #define SCREEN_WIDTH (1280)
 #define SCREEN_HEIGHT (720)
 
+// テクスチャーのファイル名
 #define TEXTURE_BG		"assets/texture/sample.jpg"
 #define TEXTURE_PLAYER	"assets/texture/player.png"
