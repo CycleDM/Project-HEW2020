@@ -205,10 +205,10 @@ void SpriteNormal::Draw(void)
 
 	// 頂点データ
 	Vertex2D v[] = {
-		{D3DXVECTOR4(-0.5f, -0.5f, 1.0f, 1.0f), D3DCOLOR_RGBA(255, 255, 255, 255), D3DXVECTOR2(u0, v0)},
-		{D3DXVECTOR4(dw - 0.5f, -0.5f, 1.0f, 1.0f), D3DCOLOR_RGBA(255, 255, 255, 255), D3DXVECTOR2(u1, v0)},
-		{D3DXVECTOR4(-0.5f, dh - 0.5f, 1.0f, 1.0f), D3DCOLOR_RGBA(255, 255, 255, 255), D3DXVECTOR2(u0, v1)},
-		{D3DXVECTOR4(dw - 0.5f, dh - 0.5f, 1.0f, 1.0f), D3DCOLOR_RGBA(255, 255, 255, 255), D3DXVECTOR2(u1, v1)} };
+		{D3DXVECTOR4(-0.5f, -0.5f, 1.0f, 1.0f), color, D3DXVECTOR2(u0, v0)},
+		{D3DXVECTOR4(dw - 0.5f, -0.5f, 1.0f, 1.0f), color, D3DXVECTOR2(u1, v0)},
+		{D3DXVECTOR4(-0.5f, dh - 0.5f, 1.0f, 1.0f), color, D3DXVECTOR2(u0, v1)},
+		{D3DXVECTOR4(dw - 0.5f, dh - 0.5f, 1.0f, 1.0f), color, D3DXVECTOR2(u1, v1)} };
 
 	// 平行移動行列
 	D3DXMATRIX mtxTranslationC;

@@ -38,7 +38,7 @@ void GamePlayer::Init(void)
 	pos = D3DXVECTOR2(64.0f, (float)SCREEN_HEIGHT - 256.0f);
 	dirc = D3DXVECTOR2(0.0f, 9.8f);
 	speed = 4.0f;
-	velocity = 10.0f;
+	velocity = 8.0f;
 	hp = 3;
 	score = 0;
 	bJumping = false;
@@ -49,6 +49,7 @@ void GamePlayer::Init(void)
 	g_pSpritePlayer->LoadTexture(TEXTURE_PLAYER);
 	g_pSpritePlayer->SetDrawPos(pos.x, pos.y);
 	g_pSpritePlayer->SetCutPos(0, 0);
+	//g_pSpritePlayer->SetColor(D3DCOLOR_RGBA(255, 255, 255, 255));
 	//g_pSpritePlayer->SetPolygonSize(PLAYER_WIDTH, PLAYER_HEIGHT);
 }
 
@@ -66,7 +67,7 @@ void GamePlayer::Update(void)
 	//D3DXVec2Normalize(&dirc, &dirc);
 	// プレイヤー座標の更新（移動方向ｘ速度）
 	pos.x += dirc.x * speed;
-	speed *= 0.85f;
+	speed *= 0.9f;
 	if (dirc.y < 9.8f) dirc.y += 0.98f;
 	if (dirc.y > 9.8f) dirc.y = 9.8f;
 	pos.y += dirc.y;
