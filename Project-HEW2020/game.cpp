@@ -40,10 +40,10 @@ void Game_Update(void)
 	{
 		g_pPlayer->MoveRight();
 	}
-	if (g_pController->GetKeyPress(Controller::JUMP))
-	{
-		g_pPlayer->SetJump();
-	}
+	//if (g_pController->GetKeyPress(Controller::JUMP))
+	//{
+	//	g_pPlayer->SetJump();
+	//}
 
 	g_pController->Update();
 	g_pBackground->Update();

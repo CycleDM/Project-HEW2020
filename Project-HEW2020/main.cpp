@@ -20,6 +20,7 @@
 #include "sprite.h"
 #include "game.h"
 #include "controller.h"
+#include "debug_font.h"
 
 #define CLASS_NAME "GameWindow"
 #define WINDOW_CAPTION "ゲームタイトル「未定」"
@@ -174,6 +175,7 @@ bool Init(HWND hWnd)
 		// システムタイマーの初期化
 		SystemTimer_Init();
 
+		DebugFont_Init();
 		Game_Init();
 		// ...
 		// ...
@@ -228,6 +230,10 @@ void Draw(void)
 		// ...
 		// ...
 		// ...
+		// FPS表示
+		char buf[64];
+		sprintf(buf, "FPS=%.2f", g_FPS);
+		DebugFont_Draw(0.0f, 0.0f, buf);
 	} while (0);
 
 	// 描画バッチ命令の終了
@@ -240,6 +246,7 @@ void Draw(void)
 void Uninit(void)
 {
 	Game_Uninit();
+	DebugFont_Uninit();
 	// Direct3Dの終了処理
 	D3DUtility_Uninit();
 }
