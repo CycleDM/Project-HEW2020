@@ -30,6 +30,9 @@ public:
 	// プレイヤーのスコアを取得
 	int GetScore(void);
 
+	float GetSpeed(void);
+	D3DXVECTOR2 GetDirection(void);
+
 	void MoveLeft(void);
 	void MoveRight(void);
 	void SetJump(void);

@@ -14,14 +14,15 @@
 //-----------------------------------------------------------------------------
 // 定数
 //-----------------------------------------------------------------------------
-#define PLAYER_WIDTH	(256.0f)
-#define PLAYER_HEIGHT	(256.0f)
+#define PLAYER_WIDTH	(64.0f * 3.3f)
+#define PLAYER_HEIGHT	(64.0f * 3.3f)
 
 //-----------------------------------------------------------------------------
 // グローバル変数宣言
 //-----------------------------------------------------------------------------
 static Sprite* g_pSpritePlayer = NULL;
-static float g_fRotation = 0.0f;
+static int g_nMoveFrame = 0;
+static int g_nMoveAnimeCnt = 0;
 
 GamePlayer::GamePlayer()
 {
@@ -35,22 +36,24 @@ GamePlayer::~GamePlayer()
 
 void GamePlayer::Init(void)
 {
-	pos = D3DXVECTOR2(64.0f, (float)SCREEN_HEIGHT - 256.0f);
+	pos = D3DXVECTOR2(64.0f, (float)SCREEN_HEIGHT / 2);
 	dirc = D3DXVECTOR2(0.0f, 9.8f);
-	speed = 4.0f;
-	velocity = 8.0f;
+	speed = 0.0f;
+	velocity = 5.0f;
 	hp = 3;
 	score = 0;
 	bJumping = false;
 
-	g_fRotation = 0.0f;
+	g_nMoveFrame = 0;
+	g_nMoveAnimeCnt = 0;
 
 	g_pSpritePlayer = new SpriteNormal;
 	g_pSpritePlayer->LoadTexture(TEXTURE_PLAYER);
-	g_pSpritePlayer->SetDrawPos(pos.x, pos.y);
+	g_pSpritePlayer->SetDrawPos(pos.x - PLAYER_WIDTH / 2, pos.y - PLAYER_HEIGHT / 2);
 	g_pSpritePlayer->SetCutPos(0, 0);
-	//g_pSpritePlayer->SetColor(D3DCOLOR_RGBA(255, 255, 255, 255));
-	//g_pSpritePlayer->SetPolygonSize(PLAYER_WIDTH, PLAYER_HEIGHT);
+	g_pSpritePlayer->SetCutRange(64, 64);
+	g_pSpritePlayer->SetPolygonSize(PLAYER_WIDTH, PLAYER_HEIGHT);
+	//g_pSpritePlayer->SetColor(D3DCOLOR_RGBA(255, 255, 255, 100));
 }
 
 void GamePlayer::Uninit(void)
@@ -62,34 +65,56 @@ void GamePlayer::Uninit(void)
 void GamePlayer::Update(void)
 {
 	// テクスチャの座標をプレイヤーの座標に更新
-	g_pSpritePlayer->SetDrawPos(pos.x, pos.y);
+	g_pSpritePlayer->SetDrawPos(pos.x - PLAYER_WIDTH / 2, pos.y - PLAYER_HEIGHT / 2);
 	// 進行方向を長さ１にする
 	//D3DXVec2Normalize(&dirc, &dirc);
 	// プレイヤー座標の更新（移動方向ｘ速度）
 	pos.x += dirc.x * speed;
-	speed *= 0.9f;
+	speed *= 0.8f;
+	if (speed < 0.3f) speed = 0.0f;
 	if (dirc.y < 9.8f) dirc.y += 0.98f;
 	if (dirc.y > 9.8f) dirc.y = 9.8f;
 	pos.y += dirc.y;
 	// プレイヤー座標の修正
-	if (pos.x <= 0.0f)
+	if (pos.x <= 0.0f + PLAYER_WIDTH / 2)
 	{
-		this->SetPosition(0.0f, pos.y);
+		this->SetPosition(0.0f + PLAYER_WIDTH / 2, pos.y);
 	}
-	if (SCREEN_WIDTH <= pos.x + g_pSpritePlayer->GetPolygonSize().x)
+	if ((float)SCREEN_WIDTH <= pos.x + PLAYER_WIDTH / 2)
 	{
-		this->SetPosition(SCREEN_WIDTH - g_pSpritePlayer->GetPolygonSize().x, pos.y);
+		this->SetPosition(SCREEN_WIDTH - PLAYER_WIDTH / 2, pos.y);
 	}
-	if (pos.y <= 0.0f)
+	if (pos.y <= 0.0f + PLAYER_HEIGHT / 2)
 	{
-		this->SetPosition(pos.x, 0.0f);
+		this->SetPosition(pos.x, 0.0f + PLAYER_HEIGHT / 2);
 	}
-	if (SCREEN_HEIGHT <= pos.y + g_pSpritePlayer->GetPolygonSize().y)
+	if ((float)SCREEN_HEIGHT - 64.0f <= pos.y + PLAYER_HEIGHT / 2)
 	{
-		this->SetPosition(pos.x, SCREEN_HEIGHT - g_pSpritePlayer->GetPolygonSize().y);
+		this->SetPosition(pos.x, (float)SCREEN_HEIGHT - 64.0f - PLAYER_HEIGHT / 2);
 		// 地面に戻ったらジャンプ中の状態から回復
-		bJumping = false;
+		this->bJumping = false;
 	}
+
+	// Animation
+	if (speed > 0.0f)
+	{
+		g_nMoveFrame++;
+		if (g_nMoveFrame >= 8)
+		{
+			g_nMoveAnimeCnt++;
+			g_nMoveFrame = 0;
+		}
+		if (g_nMoveAnimeCnt > 7)
+		{
+			g_nMoveAnimeCnt = 0;
+		}
+	}
+	else 
+	{
+		g_nMoveFrame = 0;
+		g_nMoveAnimeCnt = 0;
+	}
+	g_pSpritePlayer->SetCutPos(64 * (g_nMoveAnimeCnt % 4), 64 * (g_nMoveAnimeCnt / 2));
 }
 
 void GamePlayer::Draw(void)
@@ -118,16 +143,28 @@ int GamePlayer::GetScore(void)
 	return this->score;
 }
 
+float GamePlayer::GetSpeed(void)
+{
+	return this->speed;
+}
+
+D3DXVECTOR2 GamePlayer::GetDirection(void)
+{
+	return this->dirc;
+}
+
 void GamePlayer::MoveLeft(void)
 {
 	dirc.x = -1.0f;
 	speed = velocity;
+	g_pSpritePlayer->SetHorizontalFlip(true);
 }
 
 void GamePlayer::MoveRight(void)
 {
 	dirc.x = 1.0f;
 	speed = velocity;
+	g_pSpritePlayer->SetHorizontalFlip(false);
 }
 
 void GamePlayer::SetJump(void)

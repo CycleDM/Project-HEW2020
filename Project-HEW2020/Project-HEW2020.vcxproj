@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="background.cpp" />
     <ClCompile Include="d3dutility.cpp" />
+    <ClCompile Include="debug_font.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="keyboard.cpp" />
@@ -33,6 +34,7 @@
     <ClInclude Include="background.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="d3dutility.h" />
+    <ClInclude Include="debug_font.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="keyboard.h" />
