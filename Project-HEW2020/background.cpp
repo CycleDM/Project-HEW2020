@@ -38,13 +38,13 @@ void GameBackground::Init(void)
 	g_pSpriteBg[0]->SetCutRange(384, 216);
 	g_pSpriteBg[0]->SetPolygonSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
 
-	//g_pSpriteBg[1] = new SpriteNormal(TEXTURE_2FGROUND);
-	//g_pSpriteBg[2] = new SpriteNormal(TEXTURE_LADDER);
-	//
-	//g_pSpriteBg[1]->SetDrawPos(450.0f, 200.0f);
-	//g_pSpriteBg[1]->SetPolygonSize(g_pSpriteBg[1]->GetTextureWidth() * 3.5f, g_pSpriteBg[1]->GetTextureHeight() * 3.5f);
-	//g_pSpriteBg[2]->SetDrawPos(550.0f, 260.0f);
-	//g_pSpriteBg[2]->SetPolygonSize(g_pSpriteBg[2]->GetTextureWidth() * 3.5f, g_pSpriteBg[2]->GetTextureHeight() * 3.5f);
+	g_pSpriteBg[1] = new SpriteNormal(TEXTURE_2FGROUND);
+	g_pSpriteBg[2] = new SpriteNormal(TEXTURE_LADDER);
+	g_pSpriteBg[3] = new SpriteNormal(TEXTURE_LADDER);
+	
+	g_pSpriteBg[1]->SetPolygonSize(g_pSpriteBg[1]->GetTextureWidth() * 3.2f, g_pSpriteBg[1]->GetTextureHeight() * 3.2f);
+	g_pSpriteBg[2]->SetPolygonSize(g_pSpriteBg[2]->GetTextureWidth() * 3.2f, g_pSpriteBg[2]->GetTextureHeight() * 3.2f);
+	g_pSpriteBg[3]->SetPolygonSize(g_pSpriteBg[3]->GetTextureWidth() * 3.2f, g_pSpriteBg[3]->GetTextureHeight() * 3.2f);
 }
 
 void GameBackground::Update(void)
@@ -67,6 +67,9 @@ void GameBackground::Update(void)
 		}
 	}
 	g_pSpriteBg[0]->SetCutPos((int)g_fBgScroll, 0);
+	g_pSpriteBg[1]->SetDrawPos(350.0f - g_fBgScroll / 0.3f, 250.0f);
+	g_pSpriteBg[2]->SetDrawPos(430.0f - g_fBgScroll / 0.3f, 330.0f);
+	g_pSpriteBg[3]->SetDrawPos(1220.0f - g_fBgScroll / 0.3f, 330.0f);
 }
 
 void GameBackground::Draw(void)
