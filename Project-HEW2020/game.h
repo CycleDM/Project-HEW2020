@@ -10,6 +10,7 @@
 #pragma once
 
 #include "player.h"
+#include "test_scene.h"
 
 //----------------------------------------------------------------------------
 // Game-基本クラス
@@ -23,5 +24,4 @@ void Game_Update(void);
 void Game_Draw(void);
 // ゲームの終了処理
 void Game_Uninit(void);
-// プレイヤーのインスタンスを取得
-GamePlayer* Game_GetPlayer(void);
+TestScene* Game_GetScene(void);

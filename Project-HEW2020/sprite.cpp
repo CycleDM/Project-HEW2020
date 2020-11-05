@@ -233,14 +233,6 @@ void SpriteNormal::Draw(void)
 		D3DXVec4Transform(&v[i].Position, &v[i].Position, &mtxWorld);
 	}
 
-	//Vertex2D* pV;
-	//pVertexBuffer->Lock(0, 0, (void**)&pV, 0);
-	//memcpy(pV, v, sizeof(v));
-	//pVertexBuffer->Unlock();
-	//
-	//// デバイスに利用する頂点バッファを指定する
-	//pDevice->SetStreamSource(0, pVertexBuffer, 0, sizeof(Vertex2D));
-
 	pDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(Vertex2D));
 }
 
@@ -249,12 +241,12 @@ void SpriteNormal::SetDrawPos(float dx, float dy)
 	this->dx = dx;
 	this->dy = dy;
 }
-void SpriteNormal::SetCutPos(int tcx, int tcy)
+void SpriteNormal::SetCutPos(float tcx, float tcy)
 {
 	this->tcx = tcx;
 	this->tcy = tcy;
 }
-void SpriteNormal::SetCutRange(int tcw, int tch)
+void SpriteNormal::SetCutRange(float tcw, float tch)
 {
 	this->tcw = tcw;
 	this->tch = tch;
@@ -264,10 +256,15 @@ void SpriteNormal::SetPolygonSize(float dw, float dh)
 	this->dw = dw;
 	this->dh = dh;
 }
-D3DXVECTOR2 SpriteNormal::GetPolygonSize(void)
+float SpriteNormal::GetPolygonWidth(void)
 {
-	return D3DXVECTOR2(dw, dh);
+	return this->dw;
 }
+float SpriteNormal::GetPolygonHeight(void)
+{
+	return this->dh;
+}
+
 void SpriteNormal::SetRotation(float cx, float cy, float angle)
 {
 	this->cx = cx;

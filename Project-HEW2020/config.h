@@ -19,3 +19,4 @@
 #define TEXTURE_ROBOT		"assets/texture/wurenji01.png"
 #define TEXTURE_2FGROUND	"assets/texture/2floor.png"
 #define TEXTURE_LADDER		"assets/texture/ladder.png"
+#define TEXTURE_BED			"assets/texture/start_bed.png"

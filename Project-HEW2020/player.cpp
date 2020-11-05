@@ -7,9 +7,13 @@
 // Author: AT12D187_17_周進
 // 
 //----------------------------------------------------------------------------
+#include <cmath>
 #include "config.h"
 #include "player.h"
 #include "sprite.h"
+#include "object.h"
+#include "test_scene.h"
+#include "game.h"
 
 //-----------------------------------------------------------------------------
 // 定数
@@ -24,25 +28,16 @@ static Sprite* g_pSpritePlayer = NULL;
 static int g_nMoveFrame = 0;
 static int g_nMoveAnimeCnt = 0;
 
-GamePlayer::GamePlayer()
-{
-	this->Init();
-}
-
-GamePlayer::~GamePlayer()
-{
-	this->Uninit();
-}
-
 void GamePlayer::Init(void)
 {
-	pos = D3DXVECTOR2(64.0f, (float)SCREEN_HEIGHT / 2);
+	pos = D3DXVECTOR2(64.0f, (float)SCREEN_HEIGHT);
 	dirc = D3DXVECTOR2(0.0f, 9.8f);
 	speed = 0.0f;
 	velocity = 5.0f;
 	hp = 3;
 	score = 0;
-	bJumping = false;
+	isJumping = false;
+	isClimbingUp = false;
 
 	g_nMoveFrame = 0;
 	g_nMoveAnimeCnt = 0;
@@ -72,7 +67,7 @@ void GamePlayer::Update(void)
 	pos.x += dirc.x * speed;
 	speed *= 0.8f;
 	if (speed < 0.3f) speed = 0.0f;
-	if (dirc.y < 9.8f) dirc.y += 0.98f;
+	if (dirc.y < 9.8f && !isClimbingUp) dirc.y += 0.98f;
 	if (dirc.y > 9.8f) dirc.y = 9.8f;
 	pos.y += dirc.y;
 	// プレイヤー座標の修正
@@ -92,7 +87,44 @@ void GamePlayer::Update(void)
 	{
 		this->SetPosition(pos.x, (float)SCREEN_HEIGHT - 64.0f - PLAYER_HEIGHT / 2);
 		// 地面に戻ったらジャンプ中の状態から回復
-		this->bJumping = false;
+		this->isJumping = false;
+		this->isClimbingUp = false;
+	}
+	if (pos.y < (float)SCREEN_HEIGHT - 64.0f)
+	{
+		TestScene* scene = Game_GetScene();
+		GameObject* floor = scene->GetNearestFloor();
+		do
+		{
+			if (NULL == floor) break;
+
+			// Climb to floor
+			if (this->isClimbingUp && this->pos.y < floor->GetPosition().y)
+			{
+				this->pos.y = floor->GetPosition().y - 200.0f;
+			}
+			// Climb down
+			if (this->isClimbingDown)
+			{
+				break;
+			}
+			// Stand on floor
+			if (!this->isClimbingDown && floor->GetPosition().y - floor->GetPolygonHeight() <= pos.y + g_pSpritePlayer->GetPolygonHeight())
+			{
+				this->SetPosition(pos.x, 200.0f);
+			}
+			// Edge
+			if (this->pos.x < floor->GetPosition().x - 600.0f)
+			{
+				this->SetPosition(floor->GetPosition().x - 600.0f, pos.y);
+			}
+			if (this->pos.x > floor->GetPosition().x + 500.0f)
+			{
+				this->SetPosition(floor->GetPosition().x + 500.0f, pos.y);
+			}
+
+		} while (0);
+		
 	}
 
 	// Animation
@@ -133,6 +165,16 @@ D3DXVECTOR2 GamePlayer::GetPosition(void)
 	return this->pos;
 }
 
+float GamePlayer::GetPolygonWidth(void)
+{
+	return g_pSpritePlayer->GetPolygonWidth();
+}
+
+float GamePlayer::GetPolygonHeight(void)
+{
+	return g_pSpritePlayer->GetPolygonHeight();
+}
+
 int GamePlayer::GetHealth(void)
 {
 	return this->hp;
@@ -167,13 +209,33 @@ void GamePlayer::MoveRight(void)
 	g_pSpritePlayer->SetHorizontalFlip(false);
 }
 
-void GamePlayer::SetJump(void)
+void GamePlayer::ClimbUp(void)
 {
-	if (!bJumping)
+	dirc.y = -5.0f;
+}
+
+void GamePlayer::ClimbDown(void)
+{
+	dirc.y = 5.0f;
+}
+
+void GamePlayer::SetClimbUpStatus(bool isClimbing)
+{
+	this->isClimbingUp = isClimbing;
+}
+
+void GamePlayer::SetClimbDownStatus(bool isClimbing)
+{
+	this->isClimbingDown = isClimbing;
+}
+
+void GamePlayer::Jump(void)
+{
+	if (!isJumping)
 	{
 		// 上方向の速度をあげる
 		dirc.y = -15.0f;
 		// ジャンプ中の状態に設定（多重ジャンプ防止）
-		bJumping = true;
+		isJumping = true;
 	}
 }

@@ -14,8 +14,14 @@
 class GamePlayer
 {
 public:
-	GamePlayer();
-	~GamePlayer();
+	GamePlayer()
+	{
+		this->Init();
+	}
+	~GamePlayer()
+	{
+		this->Uninit();
+	}
 
 	void Init(void);
 	void Update(void);
@@ -25,6 +31,8 @@ public:
 	void SetPosition(float x, float y);
 	// プレイヤーの座標を取得
 	D3DXVECTOR2 GetPosition(void);
+	float GetPolygonWidth(void);
+	float GetPolygonHeight(void);
 	// プレイヤーの体力を取得
 	int GetHealth(void);
 	// プレイヤーのスコアを取得
@@ -35,7 +43,11 @@ public:
 
 	void MoveLeft(void);
 	void MoveRight(void);
-	void SetJump(void);
+	void ClimbUp(void);
+	void ClimbDown(void);
+	void SetClimbUpStatus(bool);
+	void SetClimbDownStatus(bool);
+	void Jump(void);
 
 private:
 	D3DXVECTOR2 pos;	// 座標
@@ -44,5 +56,7 @@ private:
 	float velocity;		// 加速度
 	int hp;				// 体力
 	int score;			// スコア
-	bool bJumping;		// ジャンプ中の判定
+	bool isJumping;		// ジャンプ中の判定
+	bool isClimbingUp;
+	bool isClimbingDown;
 };

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------
 // 
-// Project-HEW2020 [background.h]
-// 背景制御モジュール
+// Project-HEW2020 [test_scene.h]
+// シーン0
 // 
 // Date:   2020/10/28
 // Author: AT12D187_17_周進
@@ -10,15 +10,26 @@
 #pragma once
 
 #include "sprite.h"
+#include "object.h"
+#include "player.h"
 
-class GameBackground
+class TestScene
 {
 public:
-	GameBackground();
-	~GameBackground();
+	TestScene()
+	{
+		this->Init();
+	}
+	~TestScene()
+	{
+		this->Uninit();
+	}
 
 	void Init(void);
 	void Update(void);
 	void Draw(void);
 	void Uninit(void);
+	GameObject* GetNearestLadder(void);
+	GameObject* GetNearestFloor(void);
+	GamePlayer* GetPlayer(void);
 };

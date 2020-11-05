@@ -40,13 +40,14 @@ public:
 	// スプライト描画の座標を指定
 	virtual void SetDrawPos(float, float) = 0;
 	// テクスチャの切り取り座標座標を指定
-	virtual void SetCutPos(int, int) = 0;
+	virtual void SetCutPos(float, float) = 0;
 	// テクスチャの切り取り幅を指定
-	virtual void SetCutRange(int, int) = 0;
+	virtual void SetCutRange(float, float) = 0;
 	// ポリゴンサイズを指定
 	virtual void SetPolygonSize(float, float) = 0;
 	// ポリゴンサイズを取得
-	virtual D3DXVECTOR2 GetPolygonSize(void) = 0;
+	virtual float GetPolygonWidth(void) = 0;
+	virtual float GetPolygonHeight(void) = 0;
 	// テクスチャの回転角度を指定
 	virtual void SetRotation(float, float, float) = 0;
 	// テクスチャの反転処理（左右）
@@ -88,19 +89,20 @@ public:
 	// 引数:
 	//	tcx	... テクスチャの切り取り座標x
 	//	tcy	... テクスチャの切り取り座標y
-	virtual void SetCutPos(int tcx, int tcy);
+	virtual void SetCutPos(float tcx, float tcy);
 	// テクスチャの切り取り幅を指定
 	// 引数:
 	//	tcw	... テクスチャの切り取り長さ
 	//	tch	... テクスチャの切り取り高さ
-	virtual void SetCutRange(int tcw, int tch);
+	virtual void SetCutRange(float tcw, float tch);
 	// ポリゴンサイズを指定
 	// 引数:
 	//	dw	... ポリゴンサイズ長さ
 	//	dh	... ポリゴンサイズ高さ
 	virtual void SetPolygonSize(float dw, float dh);
 	// ポリゴンサイズを取得
-	virtual D3DXVECTOR2 GetPolygonSize(void);
+	virtual float GetPolygonWidth(void);
+	virtual float GetPolygonHeight(void);
 	// テクスチャの回転角度を指定
 	// 引数:
 	//	cx	... 回転の中心座標x
@@ -127,6 +129,6 @@ public:
 
 protected:
 	float dx, dy, dw, dh, cx, cy, angle;
-	int tcx, tcy, tcw, tch;
+	float tcx, tcy, tcw, tch;
 	bool bHorizontalFlip, bVerticalFlip;
 };

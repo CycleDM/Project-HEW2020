@@ -231,9 +231,9 @@ void Draw(void)
 		// ...
 		// ...
 		// FPS表示
-		char buf[64];
-		sprintf(buf, "FPS=%.2f", g_FPS);
-		DebugFont_Draw(0.0f, 0.0f, buf);
+		//char buf[64];
+		//sprintf(buf, "FPS=%.2f", g_FPS);
+		//DebugFont_Draw(0.0f, 0.0f, buf);
 	} while (0);
 
 	// 描画バッチ命令の終了
