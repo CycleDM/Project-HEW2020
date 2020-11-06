@@ -67,7 +67,7 @@ void GamePlayer::Update(void)
 	pos.x += dirc.x * speed;
 	speed *= 0.8f;
 	if (speed < 0.3f) speed = 0.0f;
-	if (dirc.y < 9.8f && !isClimbingUp) dirc.y += 0.98f;
+	//if (dirc.y < 9.8f && !isClimbingUp) dirc.y += 0.98f;
 	if (dirc.y > 9.8f) dirc.y = 9.8f;
 	pos.y += dirc.y;
 	// プレイヤー座標の修正
@@ -101,7 +101,7 @@ void GamePlayer::Update(void)
 			// Climb to floor
 			if (this->isClimbingUp && this->pos.y < floor->GetPosition().y)
 			{
-				this->pos.y = floor->GetPosition().y - 200.0f;
+				this->pos.y = floor->GetPosition().y - 100.0f;
 			}
 			// Climb down
 			if (this->isClimbingDown)
