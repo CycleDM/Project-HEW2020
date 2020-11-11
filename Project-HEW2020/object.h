@@ -3,57 +3,62 @@
 // Project-HEW2020 [object.h]
 // ゲームオブジェクト制御
 // 
-// Date:   2020/11/05
+// Date:   2020/11/06
 // Author: AT12D187_17_周進
 // 
 //----------------------------------------------------------------------------
 #pragma once
 
-#include <d3dx9.h>
 #include "sprite.h"
 
-class GameObject
+//----------------------------------------------------------------------------
+// 基本クラス
+//----------------------------------------------------------------------------
+class Object
 {
 public:
-	enum OType
+	Object();
+	~Object();
+
+	void Init(void);
+	void Uninit(void);
+	void Draw(void);
+
+	// オブジェクトのサイズを指定
+	void SetSize(float, float);
+	// オブジェクトの中心座標を指定
+	void SetPosition(float, float);
+
+	float GetWidth(void);
+	float GetHeight(void);
+
+	Sprite* GetSprite(void);
+
+protected:
+	Sprite* pSprite;
+	D3DXVECTOR2 pos;
+	float width, height;
+};
+
+//----------------------------------------------------------------------------
+// 派生クラス - GameObject
+//----------------------------------------------------------------------------
+class GameObject : public Object
+{
+public:
+	enum ObjectType
 	{
-		NONE,
+		NONE = -1,
+		BED,
 		FLOOR,
 		LADDER,
-		KEY,
 		DOOR,
-		BED,
+		KEY,
 		MAX
 	};
+	GameObject();
+	GameObject(ObjectType type);
+	~GameObject();
 
-	GameObject()
-	{
-		this->Init(NONE);
-	}
-	GameObject(OType type)
-	{
-		this->Init(type);
-	}
-	~GameObject()
-	{
-		this->Uninit();
-	}
-
-	virtual void Init(OType type);
-	virtual void Uninit(void);
-	virtual void Update(void);
-	virtual void Draw(void);
-
-	void SetPosition(float, float);
-	D3DXVECTOR2 GetPosition(void);
-	float GetPolygonWidth(void);
-	float GetPolygonHeight(void);
-	void SetType(OType);
-	GameObject::OType GetType(void);
-
-private:
-	OType type;
-	D3DXVECTOR2 pos;	// 座標
-	Sprite* pSprite;
-	float dw, dh;
+	void Register(ObjectType type);
 };

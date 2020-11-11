@@ -3,101 +3,121 @@
 // Project-HEW2020 [object.cpp]
 // ゲームオブジェクト制御
 // 
-// Date:   2020/11/05
+// Date:   2020/11/06
 // Author: AT12D187_17_周進
 // 
 //----------------------------------------------------------------------------
 #include "object.h"
 #include "config.h"
-#include "game.h"
 
-//-----------------------------------------------------------------------------
-// グローバル変数宣言
-//-----------------------------------------------------------------------------
-static GamePlayer* g_pPlayer = NULL;
-
-void GameObject::Init(OType type)
+//----------------------------------------------------------------------------
+// 基本クラス
+//----------------------------------------------------------------------------
+Object::Object()
 {
-	this->type = type;
-	pSprite = NULL;
-	if (type == GameObject::NONE || type == GameObject::MAX) return;
-	if(NULL == g_pPlayer) g_pPlayer = Game_GetScene()->GetPlayer();
-
-	switch (type)
-	{
-	case GameObject::FLOOR:
-		pSprite = new SpriteNormal(TEXTURE_2FGROUND);
-		break;
-	case GameObject::LADDER:
-		pSprite = new SpriteNormal(TEXTURE_LADDER);
-		break;
-	case GameObject::KEY:
-		pSprite = new SpriteNormal();
-		break;
-	case GameObject::DOOR:
-		pSprite = new SpriteNormal();
-		break;
-	case GameObject::BED:
-		pSprite = new SpriteNormal(TEXTURE_BED);
-		break;
-	default:
-		break;
-	}
-
-	pos = D3DXVECTOR2(0.0f, 0.0f);
-	dw = pSprite->GetPolygonWidth();
-	dh = pSprite->GetPolygonHeight();
-
-	pSprite->SetDrawPos(0.0f, 0.0f);
-	pSprite->SetCutPos(0, 0);
-	pSprite->SetPolygonSize(pSprite->GetTextureWidth() * 3.2f, pSprite->GetTextureHeight() * 3.2f);
+	this->Init();
 }
 
-void GameObject::Uninit(void)
+Object::~Object()
+{
+	this->Uninit();
+}
+
+void Object::Init(void)
+{
+	pSprite = NULL;
+	width = 0;
+	height = 0;
+	pos = D3DXVECTOR2(0.0f, 0.0f);
+}
+
+void Object::Uninit(void)
 {
 	delete pSprite;
 	pSprite = NULL;
 }
 
-void GameObject::Update(void)
+void Object::Draw(void)
 {
+	// オブジェクトの座標はポリゴンの中心のため、左上に修正します
 	pSprite->SetDrawPos(pos.x - pSprite->GetPolygonWidth() / 2, pos.y - pSprite->GetPolygonHeight() / 2);
-}
-
-void GameObject::Draw(void)
-{
 	pSprite->Draw();
 }
 
-void GameObject::SetPosition(float x, float y)
+void Object::SetSize(float width, float height)
 {
-	pos.x = x;
-	pos.y = y;
+	this->width = width;
+	this->height = height;
+	pSprite->SetPolygonSize(width, height);
 }
 
-D3DXVECTOR2 GameObject::GetPosition(void)
+float Object::GetWidth(void)
 {
-	return this->pos;
+	return width;
 }
 
-float GameObject::GetPolygonWidth(void)
+float Object::GetHeight(void)
 {
-	return this->dw;
+	return height;
 }
 
-float GameObject::GetPolygonHeight(void)
+void Object::SetPosition(float x, float y)
 {
-	return this->dh;
+	pos = D3DXVECTOR2(x, y);
 }
 
-void GameObject::SetType(OType type)
+Sprite* Object::GetSprite(void)
+{
+	return pSprite;
+}
+
+//----------------------------------------------------------------------------
+// 派生クラス - GameObject
+//----------------------------------------------------------------------------
+GameObject::GameObject()
+{
+	this->Init();
+}
+
+GameObject::GameObject(ObjectType type)
+{
+	this->Register(type);
+}
+
+GameObject::~GameObject()
 {
 	this->Uninit();
-	this->type = type;
-	this->Init(type);
 }
 
-GameObject::OType GameObject::GetType(void)
+void GameObject::Register(ObjectType type)
 {
-	return this->type;
+	pSprite = new SpriteNormal;
+	switch (type)
+	{
+	case GameObject::BED:
+		pSprite->LoadTexture(TEXTURE_OBJECT_BED);
+		break;
+	case GameObject::FLOOR:
+		pSprite->LoadTexture(TEXTURE_OBJECT_FLOOR);
+		break;
+	case GameObject::LADDER:
+		pSprite->LoadTexture(TEXTURE_OBJECT_LADDER);
+		break;
+	case GameObject::DOOR:
+
+		break;
+	case GameObject::KEY:
+
+		break;
+	case GameObject::NONE:
+	case GameObject::MAX:
+		break;
+	}
+
+	// テクスチャの初期化
+	//do
+	//{
+	//	pSprite->SetCutPos(0.0f, 0.0f);
+	//	pSprite->SetCutRange(pSprite->GetTextureWidth(), pSprite->GetTextureHeight());
+	//} while (0);	
 }
