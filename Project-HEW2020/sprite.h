@@ -40,9 +40,9 @@ public:
 	// スプライト描画の座標を指定
 	virtual void SetDrawPos(float, float) = 0;
 	// テクスチャの切り取り座標座標を指定
-	virtual void SetCutPos(float, float) = 0;
+	virtual void SetCutPos(int, int) = 0;
 	// テクスチャの切り取り幅を指定
-	virtual void SetCutRange(float, float) = 0;
+	virtual void SetCutRange(int, int) = 0;
 	// ポリゴンサイズを指定
 	virtual void SetPolygonSize(float, float) = 0;
 	// ポリゴンサイズを取得
@@ -89,12 +89,12 @@ public:
 	// 引数:
 	//	tcx	... テクスチャの切り取り座標x
 	//	tcy	... テクスチャの切り取り座標y
-	virtual void SetCutPos(float tcx, float tcy);
+	virtual void SetCutPos(int tcx, int tcy);
 	// テクスチャの切り取り幅を指定
 	// 引数:
 	//	tcw	... テクスチャの切り取り長さ
 	//	tch	... テクスチャの切り取り高さ
-	virtual void SetCutRange(float tcw, float tch);
+	virtual void SetCutRange(int tcw, int tch);
 	// ポリゴンサイズを指定
 	// 引数:
 	//	dw	... ポリゴンサイズ長さ
@@ -129,6 +129,6 @@ public:
 
 protected:
 	float dx, dy, dw, dh, cx, cy, angle;
-	float tcx, tcy, tcw, tch;
+	int tcx, tcy, tcw, tch;
 	bool bHorizontalFlip, bVerticalFlip;
 };
