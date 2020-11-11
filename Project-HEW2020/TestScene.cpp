@@ -33,6 +33,12 @@ void TestScene::Init(void)
 	pOverlays[0]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
 	pOverlays[0]->GetSprite()->SetCutPos(0, 0);
 	pOverlays[0]->GetSprite()->SetCutRange(384, 216);
+	// ”wŒiOverlay
+	pOverlays[1] = new GameOverlay(TEXTURE_BG_OVERLAY);
+	pOverlays[1]->SetPosition((float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2);
+	pOverlays[1]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
+	pOverlays[1]->GetSprite()->SetCutPos(0, 0);
+	pOverlays[1]->GetSprite()->SetCutRange(384, 216);
 }
 
 void TestScene::Uninit(void)
@@ -78,6 +84,7 @@ void TestScene::Update(void)
 	} while (0);
 
 	pOverlays[0]->GetSprite()->SetCutPos((int)fBgScroll, 0);
+	pOverlays[1]->GetSprite()->SetCutPos((int)fBgScroll, 0);
 }
 
 void TestScene::Draw(void)
@@ -91,4 +98,6 @@ void TestScene::Draw(void)
 	}
 
 	pPlayer->Draw();
+
+	pOverlays[1]->Draw();
 }
