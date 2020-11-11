@@ -85,6 +85,11 @@ Sprite::~Sprite()
 		pVertexBuffer->Release();
 		pVertexBuffer = NULL;
 	}
+	if (pIndexBuffer)
+	{
+		pIndexBuffer->Release();
+		pIndexBuffer = NULL;
+	}
 	pTexture->Release();
 	pTexture = NULL;
 	filename[0] = 0;
@@ -129,9 +134,9 @@ LPDIRECT3DTEXTURE9 Sprite::GetTexture(void)
 	return pTexture;
 }
 
-void Sprite::SetColor(D3DCOLOR color_to_set)
+void Sprite::SetColor(D3DCOLOR color)
 {
-	color = color_to_set;
+	this->color = color;
 }
 
 //----------------------------------------------------------------------------
@@ -165,7 +170,7 @@ void SpriteNormal::Draw(void)
 	pDevice->SetFVF(FVF_VERTEX2D);
 
 	// デバイスにテクスチャの設定をする
-	pDevice->SetTexture(0, GetTexture());
+	pDevice->SetTexture(0, pTexture);
 
 	// ポリゴンのサイズはテクスチャサイズ
 	unsigned long w = GetTextureWidth();
@@ -180,8 +185,8 @@ void SpriteNormal::Draw(void)
 	// ポリゴンサイズは0だったらテクスチャのデフォルトサイズに設定
 	if (!dw || !dh)
 	{
-		dw = GetTextureWidth();
-		dh = GetTextureHeight();
+		dw = (float)GetTextureWidth();
+		dh = (float)GetTextureHeight();
 	}
 
 	// テクスチャ切り取りUV座標
@@ -241,12 +246,12 @@ void SpriteNormal::SetDrawPos(float dx, float dy)
 	this->dx = dx;
 	this->dy = dy;
 }
-void SpriteNormal::SetCutPos(float tcx, float tcy)
+void SpriteNormal::SetCutPos(int tcx, int tcy)
 {
 	this->tcx = tcx;
 	this->tcy = tcy;
 }
-void SpriteNormal::SetCutRange(float tcw, float tch)
+void SpriteNormal::SetCutRange(int tcw, int tch)
 {
 	this->tcw = tcw;
 	this->tch = tch;
@@ -258,11 +263,11 @@ void SpriteNormal::SetPolygonSize(float dw, float dh)
 }
 float SpriteNormal::GetPolygonWidth(void)
 {
-	return this->dw;
+	return dw;
 }
 float SpriteNormal::GetPolygonHeight(void)
 {
-	return this->dh;
+	return dh;
 }
 
 void SpriteNormal::SetRotation(float cx, float cy, float angle)
@@ -271,11 +276,11 @@ void SpriteNormal::SetRotation(float cx, float cy, float angle)
 	this->cy = cy;
 	this->angle = angle;
 }
-void SpriteNormal::SetHorizontalFlip(bool boolean)
+void SpriteNormal::SetHorizontalFlip(bool flip)
 {
-	this->bHorizontalFlip = boolean;
+	this->bHorizontalFlip = flip;
 }
-void SpriteNormal::SetVerticalFlip(bool boolean)
+void SpriteNormal::SetVerticalFlip(bool flip)
 {
-	this->bVerticalFlip = boolean;
+	this->bVerticalFlip = flip;
 }
