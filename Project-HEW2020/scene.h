@@ -17,15 +17,8 @@
 class GameScene
 {
 public:
-	GameScene()
-	{
-		pPlayer = NULL;
-		memset(pObjects, NULL, sizeof(pObjects));
-		memset(pOverlays, NULL, sizeof(pOverlays));
-	}
-	virtual ~GameScene()
-	{
-	}
+	GameScene();
+	virtual ~GameScene();
 
 	virtual void Init(void) = 0;
 	virtual void Uninit(void) = 0;
@@ -37,13 +30,16 @@ public:
 	virtual void UpdateObject(void) = 0;
 	virtual void UpdateOverlay(void) = 0;
 
-	GamePlayer* GetPlayer(void)
-	{
-		return pPlayer;
-	}
+	GamePlayer* GetPlayer(void);
+	// プレイヤーに一番近く、特定のオブジェクトを取得
+	GameObject* GetNearestObject(GameObject::ObjectType);
+
+	static void SetGlobalScaling(float scaling);
+	static float GetGlobalScaling(void);
 
 protected:
 	GamePlayer* pPlayer;
 	GameObject* pObjects[SINGLE_SCENE_OBJECT_MAX];
 	GameOverlay* pOverlays[SINGLE_SCENE_OVERLAY_MAX];
+	static float fGlobalScaling;
 };
