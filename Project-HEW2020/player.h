@@ -22,9 +22,11 @@ public:
 	void Draw(void);
 	void Uninit(void);
 	// プレイヤーの座標を設定
-	void SetPosition(float x, float y);
+	void SetScreenPos(float x, float y);
+	void SetGlobalPos(float x, float y);
 	// プレイヤーの座標を取得
-	D3DXVECTOR2 GetPosition(void);
+	D3DXVECTOR2 GetScreenPos(void);
+	D3DXVECTOR2 GetGlobalPos(void);
 	float GetPolygonWidth(void);
 	float GetPolygonHeight(void);
 
@@ -37,10 +39,11 @@ public:
 	void Jump(void);
 
 private:
-	D3DXVECTOR2 pos;	// 座標
-	D3DXVECTOR2 dirc;	// 方向
-	float speed;		// 速度
-	float velocity;		// 加速度
+	D3DXVECTOR2 screenPos;	// スクリーン座標
+	D3DXVECTOR2 globalPos;	// ワールド座標
+	D3DXVECTOR2 dirc;		// 方向
+	float speed;			// 速度
+	float velocity;			// 加速度
 
 	bool isMoving;			// 移動中の判定
 	bool isJumping;			// ジャンプ中の判定

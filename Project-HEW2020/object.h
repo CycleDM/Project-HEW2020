@@ -29,6 +29,7 @@ public:
 	// オブジェクトの中心座標を指定
 	void SetPosition(float, float);
 
+	D3DXVECTOR2 GetPosition(void);
 	float GetWidth(void);
 	float GetHeight(void);
 
@@ -36,7 +37,7 @@ public:
 
 protected:
 	Sprite* pSprite;
-	D3DXVECTOR2 pos;
+	D3DXVECTOR2 globalPos;
 	float width, height;
 };
 

@@ -31,6 +31,11 @@ public:
 	virtual void Uninit(void) = 0;
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;
+	virtual void Debug(void) = 0;
+
+	virtual void UpdatePlayer(void) = 0;
+	virtual void UpdateObject(void) = 0;
+	virtual void UpdateOverlay(void) = 0;
 
 	GamePlayer* GetPlayer(void)
 	{

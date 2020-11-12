@@ -24,6 +24,7 @@
 #define TEXTURE_PLAYER				"assets/texture/player.png"
 #define TEXTURE_ROBOT				"assets/texture/wurenji01.png"
 
-#define TEXTURE_OBJECT_BED			"assets/texture/start_bed.png"
-#define TEXTURE_OBJECT_FLOOR		"assets/texture/2floor.png"
+#define TEXTURE_OBJ_BED				"assets/texture/start_bed.png"
+#define TEXTURE_OBJ_FLOOR			"assets/texture/2f_ground.png"
+#define TEXTURE_OBJ_FLOOR_OVERLAY	"assets/texture/2f_handrail.png"
 #define TEXTURE_OBJECT_LADDER		"assets/texture/ladder.png"

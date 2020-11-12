@@ -28,7 +28,7 @@ void Object::Init(void)
 	pSprite = NULL;
 	width = 0;
 	height = 0;
-	pos = D3DXVECTOR2(0.0f, 0.0f);
+	globalPos = D3DXVECTOR2(0.0f, 0.0f);
 }
 
 void Object::Uninit(void)
@@ -40,7 +40,7 @@ void Object::Uninit(void)
 void Object::Draw(void)
 {
 	// オブジェクトの座標はポリゴンの中心のため、左上に修正します
-	pSprite->SetDrawPos(pos.x - pSprite->GetPolygonWidth() / 2, pos.y - pSprite->GetPolygonHeight() / 2);
+	pSprite->SetDrawPos(globalPos.x - pSprite->GetPolygonWidth() / 2, globalPos.y - pSprite->GetPolygonHeight() / 2);
 	pSprite->Draw();
 }
 
@@ -61,9 +61,14 @@ float Object::GetHeight(void)
 	return height;
 }
 
+D3DXVECTOR2 Object::GetPosition(void)
+{
+	return globalPos;
+}
+
 void Object::SetPosition(float x, float y)
 {
-	pos = D3DXVECTOR2(x, y);
+	globalPos = D3DXVECTOR2(x, y);
 }
 
 Sprite* Object::GetSprite(void)
@@ -95,10 +100,10 @@ void GameObject::Register(ObjectType type)
 	switch (type)
 	{
 	case GameObject::BED:
-		pSprite->LoadTexture(TEXTURE_OBJECT_BED);
+		pSprite->LoadTexture(TEXTURE_OBJ_BED);
 		break;
 	case GameObject::FLOOR:
-		pSprite->LoadTexture(TEXTURE_OBJECT_FLOOR);
+		pSprite->LoadTexture(TEXTURE_OBJ_FLOOR);
 		break;
 	case GameObject::LADDER:
 		pSprite->LoadTexture(TEXTURE_OBJECT_LADDER);
@@ -114,10 +119,6 @@ void GameObject::Register(ObjectType type)
 		break;
 	}
 
-	// テクスチャの初期化
-	//do
-	//{
-	//	pSprite->SetCutPos(0.0f, 0.0f);
-	//	pSprite->SetCutRange(pSprite->GetTextureWidth(), pSprite->GetTextureHeight());
-	//} while (0);	
+	width = pSprite->GetTextureWidth();
+	height = pSprite->GetTextureHeight();
 }

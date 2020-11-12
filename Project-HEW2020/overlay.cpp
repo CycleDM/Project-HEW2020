@@ -28,4 +28,7 @@ void GameOverlay::LoadTexture(const char* pFileName)
 {
 	pSprite = new SpriteNormal;
 	pSprite->LoadTexture(pFileName);
+
+	width = pSprite->GetTextureWidth();
+	height = pSprite->GetTextureHeight();
 }

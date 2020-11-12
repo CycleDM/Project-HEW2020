@@ -9,6 +9,7 @@
 //----------------------------------------------------------------------------
 #pragma once
 
+#include <d3dx9.h>
 #include "scene.h"
 
 class TestScene : public GameScene
@@ -21,8 +22,12 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	void Debug(void);
+
+	void UpdatePlayer(void);
+	void UpdateObject(void);
+	void UpdateOverlay(void);
 
 private:
-	float fBgScroll;
-
+	D3DXVECTOR2 fBgScroll;
 };

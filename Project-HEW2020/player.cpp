@@ -37,7 +37,8 @@ GamePlayer::~GamePlayer()
 
 void GamePlayer::Init(void)
 {
-	pos = D3DXVECTOR2(64.0f, (float)SCREEN_HEIGHT);
+	screenPos = D3DXVECTOR2(64.0f, (float)SCREEN_HEIGHT);
+	globalPos = D3DXVECTOR2(64.0f, (float)SCREEN_HEIGHT);
 	dirc = D3DXVECTOR2(0.0f, 9.8f);
 	speed = 0.0f;
 	velocity = 5.0f;
@@ -50,7 +51,7 @@ void GamePlayer::Init(void)
 
 	g_pSpritePlayer = new SpriteNormal;
 	g_pSpritePlayer->LoadTexture(TEXTURE_PLAYER);
-	g_pSpritePlayer->SetDrawPos(pos.x - PLAYER_WIDTH / 2, pos.y - PLAYER_HEIGHT / 2);
+	g_pSpritePlayer->SetDrawPos(screenPos.x - PLAYER_WIDTH / 2, screenPos.y - PLAYER_HEIGHT / 2);
 	g_pSpritePlayer->SetCutPos(0, 0);
 	g_pSpritePlayer->SetCutRange(64, 64);
 	g_pSpritePlayer->SetPolygonSize(PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -68,7 +69,7 @@ void GamePlayer::Update(void)
 	// 進行方向を長さ１にする
 	//D3DXVec2Normalize(&dirc, &dirc);
 	// プレイヤー座標の更新（移動方向ｘ速度）
-	pos.x += dirc.x * speed;
+	globalPos.x += dirc.x * speed;
 	speed *= 0.8f;
 	if (speed < 0.3f)
 	{
@@ -77,30 +78,10 @@ void GamePlayer::Update(void)
 	}
 	if (dirc.y < 9.8f && !isClimbingUp) dirc.y += 0.98f;
 	if (dirc.y > 9.8f) dirc.y = 9.8f;
-	pos.y += dirc.y;
-	// プレイヤー座標の修正
-	if (pos.x <= 0.0f + PLAYER_WIDTH / 2)
-	{
-		this->SetPosition(0.0f + PLAYER_WIDTH / 2, pos.y);
-	}
-	if ((float)SCREEN_WIDTH <= pos.x + PLAYER_WIDTH / 2)
-	{
-		this->SetPosition(SCREEN_WIDTH - PLAYER_WIDTH / 2, pos.y);
-	}
-	if (pos.y <= 0.0f + PLAYER_HEIGHT / 2)
-	{
-		this->SetPosition(pos.x, 0.0f + PLAYER_HEIGHT / 2);
-	}
-	if ((float)SCREEN_HEIGHT - 64.0f <= pos.y + PLAYER_HEIGHT / 2)
-	{
-		this->SetPosition(pos.x, (float)SCREEN_HEIGHT - 64.0f - PLAYER_HEIGHT / 2);
-		// 地面に戻ったらジャンプ中の状態から回復
-		this->isJumping = false;
-		this->isClimbingUp = false;
-	}
+	globalPos.y += dirc.y;
 
 	// Animation
-	if (speed > 0.0f)
+	if (isMoving)
 	{
 		g_nMoveFrame++;
 		if (g_nMoveFrame >= 8)
@@ -123,20 +104,31 @@ void GamePlayer::Update(void)
 
 void GamePlayer::Draw(void)
 {
-	// テクスチャの座標をプレイヤーの座標に更新
-	g_pSpritePlayer->SetDrawPos(pos.x - PLAYER_WIDTH / 2, pos.y - PLAYER_HEIGHT / 2);
+	// テクスチャの座標をプレイヤーのスクリーン座標に更新
+	g_pSpritePlayer->SetDrawPos(screenPos.x - PLAYER_WIDTH / 2, screenPos.y - PLAYER_HEIGHT / 2);
 	g_pSpritePlayer->Draw();
 }
 
-void GamePlayer::SetPosition(float x, float y)
+void GamePlayer::SetScreenPos(float x, float y)
 {
-	this->pos.x = x;
-	this->pos.y = y;
+	this->screenPos.x = x;
+	this->screenPos.y = y;
 }
 
-D3DXVECTOR2 GamePlayer::GetPosition(void)
+void GamePlayer::SetGlobalPos(float x, float y)
 {
-	return this->pos;
+	this->globalPos.x = x;
+	this->globalPos.y = y;
+}
+
+D3DXVECTOR2 GamePlayer::GetScreenPos(void)
+{
+	return this->screenPos;
+}
+
+D3DXVECTOR2 GamePlayer::GetGlobalPos(void)
+{
+	return this->globalPos;
 }
 
 float GamePlayer::GetPolygonWidth(void)
