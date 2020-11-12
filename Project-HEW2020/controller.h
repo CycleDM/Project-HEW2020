@@ -20,6 +20,7 @@ public:
 		LEFT,
 		RIGHT,
 		JUMP,
+		DEBUG,
 		MAX
 	};
 
