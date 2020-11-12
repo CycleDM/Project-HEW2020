@@ -10,6 +10,7 @@
 #pragma once
 
 #include <d3dx9.h>
+#include "collision.h"
 
 class GamePlayer
 {
@@ -30,23 +31,26 @@ public:
 	float GetPolygonWidth(void);
 	float GetPolygonHeight(void);
 
-	float GetSpeed(void);
 	D3DXVECTOR2 GetDirection(void);
+	float GetSpeed(void);
 	bool GetMovingStatus(void);
+	Collision* GetCollision(void);
 
 	void MoveLeft(void);
 	void MoveRight(void);
 	void Jump(void);
 
 private:
-	D3DXVECTOR2 screenPos;	// スクリーン座標
-	D3DXVECTOR2 globalPos;	// ワールド座標
-	D3DXVECTOR2 dirc;		// 方向
-	float speed;			// 速度
-	float velocity;			// 加速度
+	D3DXVECTOR2 screenPos;			// スクリーン座標
+	D3DXVECTOR2 globalPos;			// ワールド座標
+	D3DXVECTOR2 dirc;				// 方向
+	float speed;					// 速度
+	float velocity;					// 加速度
 
-	bool isMoving;			// 移動中の判定
-	bool isJumping;			// ジャンプ中の判定
+	bool isMoving;					// 移動中の判定
+	bool isJumping;					// ジャンプ中の判定
 	bool isClimbingUp;
 	bool isClimbingDown;
+
+	Collision* collision;			// プレイヤーのコリジョン
 };

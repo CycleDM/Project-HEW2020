@@ -12,12 +12,20 @@
 #include "player.h"
 #include "sprite.h"
 #include "game.h"
+#include "scene.h"
 
 //-----------------------------------------------------------------------------
 // 定数
 //-----------------------------------------------------------------------------
-#define PLAYER_WIDTH	(64.0f * 3.3f)
-#define PLAYER_HEIGHT	(64.0f * 3.3f)
+// プレイヤーのテクスチャのサイズ（フレーム一個分）
+#define PLAYER_TEXTURE_WIDTH	(64)
+#define PLAYER_TEXTURE_HEIGHT	(64)
+// 描画サイズ
+#define PLAYER_DRAW_WIDTH	((float)PLAYER_TEXTURE_WIDTH * GameScene::GetGlobalScaling())
+#define PLAYER_DRAW_HEIGHT	((float)PLAYER_TEXTURE_HEIGHT * GameScene::GetGlobalScaling())
+// 実際のサイズ・コリジョンのサイズ
+#define PLAYER_WIDTH		(PLAYER_DRAW_WIDTH - 96.0f)
+#define PLAYER_HEIGHT		(PLAYER_DRAW_HEIGHT)
 
 //-----------------------------------------------------------------------------
 // グローバル変数宣言
@@ -37,6 +45,9 @@ GamePlayer::~GamePlayer()
 
 void GamePlayer::Init(void)
 {
+	g_nMoveFrame = 0;
+	g_nMoveAnimeCnt = 0;
+
 	screenPos = D3DXVECTOR2(64.0f, (float)SCREEN_HEIGHT);
 	globalPos = D3DXVECTOR2(64.0f, (float)SCREEN_HEIGHT);
 	dirc = D3DXVECTOR2(0.0f, 9.8f);
@@ -46,16 +57,17 @@ void GamePlayer::Init(void)
 	isJumping = false;
 	isClimbingUp = false;
 
-	g_nMoveFrame = 0;
-	g_nMoveAnimeCnt = 0;
-
 	g_pSpritePlayer = new SpriteNormal;
 	g_pSpritePlayer->LoadTexture(TEXTURE_PLAYER);
-	g_pSpritePlayer->SetDrawPos(screenPos.x - PLAYER_WIDTH / 2, screenPos.y - PLAYER_HEIGHT / 2);
+	g_pSpritePlayer->SetDrawPos(screenPos.x - PLAYER_DRAW_WIDTH / 2, screenPos.y - PLAYER_DRAW_HEIGHT / 2);
 	g_pSpritePlayer->SetCutPos(0, 0);
 	g_pSpritePlayer->SetCutRange(64, 64);
-	g_pSpritePlayer->SetPolygonSize(PLAYER_WIDTH, PLAYER_HEIGHT);
-	//g_pSpritePlayer->SetColor(D3DCOLOR_RGBA(255, 255, 255, 100));
+	g_pSpritePlayer->SetPolygonSize(PLAYER_DRAW_WIDTH, PLAYER_DRAW_HEIGHT);
+
+	// コリジョンを作成
+	collision = new Collision;
+	collision->SetSize(PLAYER_WIDTH, PLAYER_HEIGHT);
+	collision->SetPosition(globalPos.x, globalPos.y);
 }
 
 void GamePlayer::Uninit(void)
@@ -79,6 +91,9 @@ void GamePlayer::Update(void)
 	if (dirc.y < 9.8f && !isClimbingUp) dirc.y += 0.98f;
 	if (dirc.y > 9.8f) dirc.y = 9.8f;
 	globalPos.y += dirc.y;
+
+	// コリジョンの座標をプレイヤーの座標に更新
+	collision->SetPosition(globalPos.x, globalPos.y);
 
 	// Animation
 	if (isMoving)
@@ -105,7 +120,7 @@ void GamePlayer::Update(void)
 void GamePlayer::Draw(void)
 {
 	// テクスチャの座標をプレイヤーのスクリーン座標に更新
-	g_pSpritePlayer->SetDrawPos(screenPos.x - PLAYER_WIDTH / 2, screenPos.y - PLAYER_HEIGHT / 2);
+	g_pSpritePlayer->SetDrawPos(screenPos.x - PLAYER_DRAW_WIDTH / 2, screenPos.y - PLAYER_DRAW_HEIGHT / 2);
 	g_pSpritePlayer->Draw();
 }
 
@@ -154,6 +169,11 @@ D3DXVECTOR2 GamePlayer::GetDirection(void)
 bool GamePlayer::GetMovingStatus(void)
 {
 	return this->isMoving;
+}
+
+Collision* GamePlayer::GetCollision(void)
+{
+	return this->collision;
 }
 
 void GamePlayer::MoveLeft(void)
