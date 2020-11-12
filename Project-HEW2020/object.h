@@ -10,6 +10,7 @@
 #pragma once
 
 #include "sprite.h"
+#include "collision.h"
 
 //----------------------------------------------------------------------------
 // 基本クラス
@@ -20,16 +21,20 @@ public:
 	Object();
 	~Object();
 
-	void Init(void);
-	void Uninit(void);
-	void Draw(void);
+	virtual void Init(void);
+	virtual void Uninit(void);
+	virtual void Update(void);
+	virtual void Draw(void);
 
 	// オブジェクトのサイズを指定
 	void SetSize(float, float);
 	// オブジェクトの中心座標を指定
-	void SetPosition(float, float);
+	void SetScreenPos(float, float);
+	void SetGlobalPos(float, float);
 
-	D3DXVECTOR2 GetPosition(void);
+	D3DXVECTOR2 GetScreenPos(void);
+	D3DXVECTOR2 GetGlobalPos(void);
+
 	float GetWidth(void);
 	float GetHeight(void);
 
@@ -37,7 +42,7 @@ public:
 
 protected:
 	Sprite* pSprite;
-	D3DXVECTOR2 globalPos;
+	D3DXVECTOR2 screenPos, globalPos;
 	float width, height;
 };
 
@@ -49,17 +54,25 @@ class GameObject : public Object
 public:
 	enum ObjectType
 	{
-		NONE = -1,
-		BED,
-		FLOOR,
-		LADDER,
-		DOOR,
-		KEY,
-		MAX
+		OBJ_NONE = -1,
+		OBJ_BED,
+		OBJ_FLOOR,
+		OBJ_LADDER,
+		OBJ_DOOR,
+		OBJ_KEY,
+		OBJ_MAX
 	};
-	GameObject();
+
 	GameObject(ObjectType type);
 	~GameObject();
 
+	void Update(void);
+	
 	void Register(ObjectType type);
+	Collision* GetCollision(void);
+	ObjectType GetType(void);
+
+private:
+	ObjectType type;
+	Collision* collision;
 };
