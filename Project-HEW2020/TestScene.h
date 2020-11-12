@@ -18,16 +18,17 @@ public:
 	TestScene();
 	~TestScene();
 
-	void Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void Debug(void);
+	virtual void Init(void);
+	virtual void Uninit(void);
+	virtual void Update(void);
+	virtual void Draw(void);
+	virtual void Debug(void);
 
-	void UpdatePlayer(void);
-	void UpdateObject(void);
-	void UpdateOverlay(void);
+	virtual void UpdatePlayer(void);
+	virtual void UpdateObject(void);
+	virtual void UpdateOverlay(void);
 
 private:
 	D3DXVECTOR2 fBgScroll;
+	float fGroundHeight;
 };
