@@ -17,3 +17,5 @@ void Game_Update(void);
 void Game_Draw(void);
 // ゲームの終了処理
 void Game_Uninit(void);
+// デバッグの状態を取得
+bool Game_IsDebugMode(void);

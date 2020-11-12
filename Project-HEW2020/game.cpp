@@ -20,6 +20,7 @@
 //-----------------------------------------------------------------------------
 static Controller* g_pController = NULL;
 static GameScene* g_pScene = NULL;
+static bool g_bDebugMode = false;
 
 // ゲームの初期化
 void Game_Init(void)
@@ -44,6 +45,8 @@ void Game_Update(void)
 	// Climb up
 	if (g_pController->GetKeyPress(Controller::UP))
 	{
+		GameObject* obj = g_pScene->GetNearestObject(GameObject::OBJ_LADDER);
+		player->SetGlobalPos(obj->GetGlobalPos().x, obj->GetGlobalPos().y);
 	}
 	if (g_pController->GetKeyRelease(Controller::UP))
 	{
@@ -55,9 +58,14 @@ void Game_Update(void)
 	if (g_pController->GetKeyRelease(Controller::DOWN))
 	{
 	}
+	// Switch Debug Mode
+	if (g_pController->GetKeyTrigger(Controller::DEBUG))
+	{
+		g_bDebugMode = g_bDebugMode ? false : true;
+	}
 	//if (g_pController->GetKeyPress(Controller::JUMP))
 	//{
-	//	g_pPlayer->Jump();
+	//	player->Jump();
 	//}
 
 	g_pController->Update();
@@ -73,8 +81,15 @@ void Game_Draw(void)
 // ゲームの終了処理
 void Game_Uninit(void)
 {
-	g_pScene->Uninit();
+	delete g_pScene;
+	g_pScene = NULL;
 
 	delete g_pController;
 	g_pController = NULL;
+}
+
+// デバッグの状態を取得
+bool Game_IsDebugMode(void)
+{
+	return g_bDebugMode;
 }
