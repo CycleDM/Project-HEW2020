@@ -30,12 +30,13 @@ void DebugFont_Init(void)
     g_pSpriteDebug = new SpriteNormal(TEXTURE_DEBUG);
     g_pSpriteDebug->SetCutRange((float)DEBUG_FONT_WIDTH, (float)DEBUG_FONT_HEIGHT);
     g_pSpriteDebug->SetPolygonSize(DEBUG_FONT_DRAW_WIDTH, DEBUG_FONT_DRAW_HEIGHT);
-    g_pSpriteDebug->SetColor(D3DCOLOR_RGBA(200, 50, 255, 255));
+    g_pSpriteDebug->SetColor(D3DCOLOR_RGBA(255, 200, 150, 255));
 }
 
 // デバッグフォントモジュールの終了処理
 void DebugFont_Uninit(void)
 {
+    // メモリ解放
     delete g_pSpriteDebug;
     g_pSpriteDebug = NULL;
 }
