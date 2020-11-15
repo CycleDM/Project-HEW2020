@@ -19,28 +19,38 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="background.cpp" />
+    <ClCompile Include="animator.cpp" />
+    <ClCompile Include="collision.cpp" />
     <ClCompile Include="d3dutility.cpp" />
     <ClCompile Include="debug_font.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="object.cpp" />
+    <ClCompile Include="overlay.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="scene.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="system_timer.cpp" />
+    <ClCompile Include="TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="background.h" />
+    <ClInclude Include="animator.h" />
+    <ClInclude Include="collision.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="d3dutility.h" />
     <ClInclude Include="debug_font.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="keyboard.h" />
+    <ClInclude Include="object.h" />
+    <ClInclude Include="overlay.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="scene.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="system_timer.h" />
+    <ClInclude Include="TestScene.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -20,11 +20,18 @@ public:
 		LEFT,
 		RIGHT,
 		JUMP,
+		DEBUG,
 		MAX
 	};
 
-	Controller();
-	~Controller();
+	Controller()
+	{
+		this->Init();
+	}
+	~Controller()
+	{
+		this->Uninit();
+	}
 
 	void Init(void);
 	void Uninit(void);

@@ -25,18 +25,9 @@ static const Keyboard_Keys g_KKs[Controller::MAX] = {
     KK_S,
     KK_A,
     KK_D,
-    KK_SPACE
+    KK_SPACE,
+    KK_F3,
 };
-
-Controller::Controller()
-{
-    this->Init();
-}
-
-Controller::~Controller()
-{
-    this->Uninit();
-}
 
 void Controller::Init(void)
 {

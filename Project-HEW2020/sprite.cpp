@@ -76,6 +76,12 @@ Sprite::Sprite()
 	txWidth = 0;
 	txHeight = 0;
 	filename[0] = 0;
+
+	dx = dy = dw = dh = 0.0f;
+	cx = cy = angle = 0.0f;
+	tcx = tcy = 0;
+	tcw = tch = 0;
+	bHorizontalFlip = bVerticalFlip = false;
 }
 
 Sprite::~Sprite()
@@ -85,8 +91,16 @@ Sprite::~Sprite()
 		pVertexBuffer->Release();
 		pVertexBuffer = NULL;
 	}
-	pTexture->Release();
-	pTexture = NULL;
+	if (pIndexBuffer)
+	{
+		pIndexBuffer->Release();
+		pIndexBuffer = NULL;
+	}
+	if (pTexture)
+	{
+		pTexture->Release();
+		pTexture = NULL;
+	}
 	filename[0] = 0;
 	txWidth = 0;
 	txHeight = 0;
@@ -129,9 +143,9 @@ LPDIRECT3DTEXTURE9 Sprite::GetTexture(void)
 	return pTexture;
 }
 
-void Sprite::SetColor(D3DCOLOR color_to_set)
+void Sprite::SetColor(D3DCOLOR color)
 {
-	color = color_to_set;
+	this->color = color;
 }
 
 //----------------------------------------------------------------------------
@@ -140,16 +154,22 @@ void Sprite::SetColor(D3DCOLOR color_to_set)
 SpriteNormal::SpriteNormal()
 {
 	// 初期化処理
-	this->Init();
+	Init();
 }
 // オーバロード
 SpriteNormal::SpriteNormal(const char* pFileName)
 {
 	// 初期化処理
-	this->Init();
+	Init();
 	// テクスチャの読み込み
-	this->LoadTexture(pFileName);
+	LoadTexture(pFileName);
 }
+
+SpriteNormal::~SpriteNormal()
+{
+
+}
+
 void SpriteNormal::Init(void)
 {
 	dx = dy = dw = dh = 0.0f;
@@ -165,7 +185,7 @@ void SpriteNormal::Draw(void)
 	pDevice->SetFVF(FVF_VERTEX2D);
 
 	// デバイスにテクスチャの設定をする
-	pDevice->SetTexture(0, GetTexture());
+	pDevice->SetTexture(0, pTexture);
 
 	// ポリゴンのサイズはテクスチャサイズ
 	unsigned long w = GetTextureWidth();
@@ -180,8 +200,8 @@ void SpriteNormal::Draw(void)
 	// ポリゴンサイズは0だったらテクスチャのデフォルトサイズに設定
 	if (!dw || !dh)
 	{
-		dw = GetTextureWidth();
-		dh = GetTextureHeight();
+		dw = (float)GetTextureWidth();
+		dh = (float)GetTextureHeight();
 	}
 
 	// テクスチャ切り取りUV座標
@@ -233,14 +253,6 @@ void SpriteNormal::Draw(void)
 		D3DXVec4Transform(&v[i].Position, &v[i].Position, &mtxWorld);
 	}
 
-	//Vertex2D* pV;
-	//pVertexBuffer->Lock(0, 0, (void**)&pV, 0);
-	//memcpy(pV, v, sizeof(v));
-	//pVertexBuffer->Unlock();
-	//
-	//// デバイスに利用する頂点バッファを指定する
-	//pDevice->SetStreamSource(0, pVertexBuffer, 0, sizeof(Vertex2D));
-
 	pDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(Vertex2D));
 }
 
@@ -259,26 +271,35 @@ void SpriteNormal::SetCutRange(int tcw, int tch)
 	this->tcw = tcw;
 	this->tch = tch;
 }
+D3DXVECTOR2 SpriteNormal::GetCutRange(void)
+{
+	return D3DXVECTOR2(tcw, tch);
+}
 void SpriteNormal::SetPolygonSize(float dw, float dh)
 {
 	this->dw = dw;
 	this->dh = dh;
 }
-D3DXVECTOR2 SpriteNormal::GetPolygonSize(void)
+float SpriteNormal::GetPolygonWidth(void)
 {
-	return D3DXVECTOR2(dw, dh);
+	return dw;
 }
+float SpriteNormal::GetPolygonHeight(void)
+{
+	return dh;
+}
+
 void SpriteNormal::SetRotation(float cx, float cy, float angle)
 {
 	this->cx = cx;
 	this->cy = cy;
 	this->angle = angle;
 }
-void SpriteNormal::SetHorizontalFlip(bool boolean)
+void SpriteNormal::SetHorizontalFlip(bool bFlip)
 {
-	this->bHorizontalFlip = boolean;
+	this->bHorizontalFlip = bFlip;
 }
-void SpriteNormal::SetVerticalFlip(bool boolean)
+void SpriteNormal::SetVerticalFlip(bool bFlip)
 {
-	this->bVerticalFlip = boolean;
+	this->bVerticalFlip = bFlip;
 }

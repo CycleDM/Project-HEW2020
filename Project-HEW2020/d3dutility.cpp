@@ -37,8 +37,8 @@ bool D3DUtility_Init(HWND hWnd)
     d3dpp.EnableAutoDepthStencil = TRUE;                        // 深度バッファ・ステンシルバッファの使用
     d3dpp.AutoDepthStencilFormat = D3DFMT_D16;                  // 深度バッファ・ステンシルバッファのフォーマット
     d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT; // フルスクリーン時のリフレッシュレートの指定
-    d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;   // リフレッシュレートとPresent処理の関係
-    //d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE; // リフレッシュレートとPresent処理の関係
+    //d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;   // リフレッシュレートとPresent処理の関係
+    d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE; // リフレッシュレートとPresent処理の関係
 
     // Direct3Dデバイスの取得
     HRESULT hr;
