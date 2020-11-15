@@ -19,6 +19,10 @@ GameScene::GameScene()
 	pPlayer = NULL;
 	memset(pObjects, NULL, sizeof(pObjects));
 	memset(pOverlays, NULL, sizeof(pOverlays));
+
+	fBgScroll = D3DXVECTOR2(0.0f, 0.0f);
+	fBgScrollMax = D3DXVECTOR2(0.0f, 0.0f);
+	fGroundHeight = 0.0f;
 }
 
 GameScene::~GameScene()
@@ -26,29 +30,32 @@ GameScene::~GameScene()
 
 }
 
+// プレイヤーのインスタンスを取得（ポインター）
 GamePlayer* GameScene::GetPlayer(void)
 {
 	return pPlayer;
 }
 
+// 拡大・縮小参照データを設定
 void GameScene::SetGlobalScaling(float scaling)
 {
 	fGlobalScaling = scaling;
 }
 
+// 拡大・縮小参照データを取得
 float GameScene::GetGlobalScaling(void)
 {
 	return fGlobalScaling;
 }
 
-GameObject* GameScene::GetNearestObject(GameObject::ObjectType type)
+// プレイヤーに一番近く、特定のオブジェクトを取得
+GameObject* GameScene::GetNearestObject(D3DXVECTOR2 position, GameObject::ObjectType objectType)
 {
 	GameObject* target = NULL;
 	for (GameObject* obj : pObjects)
 	{
-		if (NULL == pPlayer) break;
 		if (NULL == obj) continue;
-		if (type != obj->GetType()) continue;
+		if (objectType != obj->GetType()) continue;
 		if (NULL != obj && NULL == target)
 		{
 			target = obj;
@@ -59,8 +66,8 @@ GameObject* GameScene::GetNearestObject(GameObject::ObjectType type)
 		pos1 = obj->GetGlobalPos();
 		pos2 = target->GetGlobalPos();
 		
-		length1 = pos1 - pPlayer->GetGlobalPos();
-		length2 = pos2 - pPlayer->GetGlobalPos();
+		length1 = pos1 - position;
+		length2 = pos2 - position;
 		if (D3DXVec2LengthSq(&length1) < D3DXVec2LengthSq(&length2))
 		{
 			target = obj;

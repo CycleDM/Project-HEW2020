@@ -34,29 +34,63 @@ void Game_Update(void)
 {
 	// プレイヤー操作
 	GamePlayer* player = g_pScene->GetPlayer();
-	if (g_pController->GetKeyPress(Controller::LEFT))
+	if (!player->isClimbing() && g_pController->GetKeyPress(Controller::LEFT))
 	{
 		player->MoveLeft();
 	}
-	if (g_pController->GetKeyPress(Controller::RIGHT))
+	if (!player->isClimbing() && g_pController->GetKeyPress(Controller::RIGHT))
 	{
 		player->MoveRight();
 	}
 	// Climb up
 	if (g_pController->GetKeyPress(Controller::UP))
 	{
-		GameObject* obj = g_pScene->GetNearestObject(GameObject::OBJ_LADDER);
-		player->SetGlobalPos(obj->GetGlobalPos().x, obj->GetGlobalPos().y);
-	}
-	if (g_pController->GetKeyRelease(Controller::UP))
-	{
+		// 一番近い梯子を取得
+		GameObject* ladder = g_pScene->GetNearestObject(player->GetGlobalPos(), GameObject::OBJ_LADDER);
+		do
+		{
+			// 梯子にのぼる
+			if (abs(ladder->GetGlobalPos().x - player->GetGlobalPos().x) < 32.0f)
+			{
+				player->isOnFloor(false);
+				player->ClimbUp();
+				player->isMoving(false);
+				player->SetGlobalPos(ladder->GetGlobalPos().x, player->GetGlobalPos().y);
+				if (player->GetGlobalPos().y <= ladder->GetGlobalPos().y - 290.0f)
+				{
+					player->isClimbing(false);
+					player->isOnFloor(true);
+					break;
+				}
+			}
+		} while (0);
 	}
 	// Climb down
 	if (g_pController->GetKeyPress(Controller::DOWN))
 	{
+		// 一番近い梯子を取得
+		GameObject* ladder = g_pScene->GetNearestObject(player->GetGlobalPos(), GameObject::OBJ_LADDER);
+		do
+		{
+			if (abs(ladder->GetGlobalPos().x - player->GetGlobalPos().x) < 32.0f)
+			{
+				player->isOnFloor(false);
+				player->ClimbDown();
+				player->isMoving(false);
+				player->SetGlobalPos(ladder->GetGlobalPos().x, player->GetGlobalPos().y);
+				if (player->GetGlobalPos().y + player->GetCollision()->GetHalfHeight() >= ladder->GetGlobalPos().y + ladder->GetCollision()->GetHalfHeight())
+				{
+					player->isClimbing(false);
+					player->isOnFloor(false);
+					break;
+				}
+			}
+		} while (0);
 	}
-	if (g_pController->GetKeyRelease(Controller::DOWN))
+	// Cancle Climbing
+	if (g_pController->GetKeyRelease(Controller::UP) || g_pController->GetKeyRelease(Controller::DOWN))
 	{
+		player->isClimbing(false);
 	}
 	// Switch Debug Mode
 	if (g_pController->GetKeyTrigger(Controller::DEBUG))
@@ -81,6 +115,7 @@ void Game_Draw(void)
 // ゲームの終了処理
 void Game_Uninit(void)
 {
+	// メモリ解放
 	delete g_pScene;
 	g_pScene = NULL;
 

@@ -14,6 +14,9 @@
 #include "object.h"
 #include "overlay.h"
 
+//-----------------------------------------------------------------------------
+// ゲームシーン・基本クラス - 必ず派生を作ってください
+//-----------------------------------------------------------------------------
 class GameScene
 {
 public:
@@ -26,20 +29,32 @@ public:
 	virtual void Draw(void) = 0;
 	virtual void Debug(void) = 0;
 
+	// プレイヤーの更新処理
 	virtual void UpdatePlayer(void) = 0;
+	// オブジェクトの更新処理
 	virtual void UpdateObject(void) = 0;
+	// オーバーレイの更新処理
 	virtual void UpdateOverlay(void) = 0;
 
+	// プレイヤーのインスタンスを取得（ポインター）
 	GamePlayer* GetPlayer(void);
-	// プレイヤーに一番近く、特定のオブジェクトを取得
-	GameObject* GetNearestObject(GameObject::ObjectType);
+	// 指定の座標に一番近く、特定のオブジェクトを取得
+	// 引数:
+	//	position	... 指定する座標
+	//	objectType	... 特定のオブジェクトタイプ
+	GameObject* GetNearestObject(D3DXVECTOR2 position, GameObject::ObjectType objectType);
 
+	// 拡大・縮小参照データを設定
 	static void SetGlobalScaling(float scaling);
+	// 拡大・縮小参照データを取得
 	static float GetGlobalScaling(void);
 
 protected:
-	GamePlayer* pPlayer;
-	GameObject* pObjects[SINGLE_SCENE_OBJECT_MAX];
-	GameOverlay* pOverlays[SINGLE_SCENE_OVERLAY_MAX];
-	static float fGlobalScaling;
+	static float fGlobalScaling;						// すべてのテクスチャの拡大・縮小参照データ
+	GamePlayer* pPlayer;								// プレイヤーのインスタンス
+	GameObject* pObjects[SINGLE_SCENE_OBJECT_MAX];		// ゲームオブジェクトのインスタンス
+	GameOverlay* pOverlays[SINGLE_SCENE_OVERLAY_MAX];	// ゲームオーバーレイのインスタンス
+	D3DXVECTOR2 fBgScroll;								// シーン・背景の多重スクロールの参照データ
+	D3DXVECTOR2 fBgScrollMax;							// シーン・背景の多重スクロールの参照データ（最大値）
+	float fGroundHeight;								// 地面の高さ
 };
