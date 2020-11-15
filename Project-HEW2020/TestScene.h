@@ -27,8 +27,4 @@ public:
 	virtual void UpdatePlayer(void);
 	virtual void UpdateObject(void);
 	virtual void UpdateOverlay(void);
-
-private:
-	D3DXVECTOR2 fBgScroll;
-	float fGroundHeight;
 };

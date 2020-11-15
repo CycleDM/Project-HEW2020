@@ -36,6 +36,7 @@ void Object::Init(void)
 
 void Object::Uninit(void)
 {
+	// ƒƒ‚ƒŠ‰ð•ú
 	delete pSprite;
 	pSprite = NULL;
 }
@@ -57,7 +58,8 @@ void Object::SetSize(float width, float height)
 {
 	this->width = width;
 	this->height = height;
-	pSprite->SetPolygonSize(width, height);
+	if (pSprite)
+		pSprite->SetPolygonSize(width, height);
 }
 
 float Object::GetWidth(void)
@@ -98,21 +100,30 @@ Sprite* Object::GetSprite(void)
 //----------------------------------------------------------------------------
 // ”h¶ƒNƒ‰ƒX - GameObject
 //----------------------------------------------------------------------------
+GameObject::GameObject()
+{
+	type = OBJ_NONE;
+	pCollision = NULL;
+	Register(type);
+}
+
 GameObject::GameObject(ObjectType type)
 {
-	this->type = GameObject::OBJ_NONE;
-	collision = NULL;
-	this->Register(type);
+	this->type = type;
+	pCollision = NULL;
+	Register(type);
 }
 
 GameObject::~GameObject()
 {
-	delete collision;
-	collision = NULL;
+	delete pCollision;
+	pCollision = NULL;
 }
 
 void GameObject::Register(ObjectType type)
 {
+	if (type == GameObject::OBJ_NONE) return;
+
 	this->type = type;
 	pSprite = new SpriteNormal;
 	switch (type)
@@ -122,11 +133,11 @@ void GameObject::Register(ObjectType type)
 		break;
 	case GameObject::OBJ_FLOOR:
 		pSprite->LoadTexture(TEXTURE_OBJ_FLOOR);
-		collision = new Collision;
+		pCollision = new Collision;
 		break;
 	case GameObject::OBJ_LADDER:
 		pSprite->LoadTexture(TEXTURE_OBJECT_LADDER);
-		collision = new Collision;
+		pCollision = new Collision;
 		break;
 	case GameObject::OBJ_DOOR:
 		break;
@@ -136,17 +147,21 @@ void GameObject::Register(ObjectType type)
 		break;
 	}
 
-	width = (float)pSprite->GetTextureWidth();
-	height = (float)pSprite->GetTextureHeight();
-	if (NULL != collision)
+	if (NULL != pSprite)
 	{
-		collision->SetSize(width, height);
+		width = (float)pSprite->GetTextureWidth();
+		height = (float)pSprite->GetTextureHeight();
+	}
+
+	if (NULL != pCollision)
+	{
+		pCollision->SetSize(width, height);
 	}
 }
 
 Collision* GameObject::GetCollision(void)
 {
-	return collision;
+	return pCollision;
 }
 
 GameObject::ObjectType GameObject::GetType(void)
@@ -156,8 +171,18 @@ GameObject::ObjectType GameObject::GetType(void)
 
 void GameObject::Update(void)
 {
-	if (NULL != collision)
+	if (NULL != pCollision)
 	{
-		collision->SetPosition(screenPos.x, screenPos.y);
+		pCollision->SetPosition(screenPos.x, screenPos.y);
+	}
+}
+
+void GameObject::SetSize(float width, float height)
+{
+	Object::SetSize(width, height);
+
+	if (NULL != pCollision)
+	{
+		pCollision->SetSize(width, height);
 	}
 }

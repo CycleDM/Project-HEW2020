@@ -27,17 +27,18 @@ public:
 	virtual void Draw(void);
 
 	// オブジェクトのサイズを指定
-	void SetSize(float, float);
+	virtual void SetSize(float, float);
 	// オブジェクトの中心座標を指定
 	void SetScreenPos(float, float);
 	void SetGlobalPos(float, float);
-
+	// オブジェクトの中心座標を取得
 	D3DXVECTOR2 GetScreenPos(void);
 	D3DXVECTOR2 GetGlobalPos(void);
 
 	float GetWidth(void);
 	float GetHeight(void);
 
+	// オブジェクトのテクスチャポインターを取得
 	Sprite* GetSprite(void);
 
 protected:
@@ -63,16 +64,19 @@ public:
 		OBJ_MAX
 	};
 
+	GameObject();
 	GameObject(ObjectType type);
 	~GameObject();
 
-	void Update(void);
-	
 	void Register(ObjectType type);
+	void Update(void);
+	// オブジェクトのサイズを指定
+	void SetSize(float, float);
+
 	Collision* GetCollision(void);
 	ObjectType GetType(void);
 
 private:
-	ObjectType type;
-	Collision* collision;
+	ObjectType type;			// 自分のタイプを保存する所
+	Collision* pCollision;		// ***未完成***
 };

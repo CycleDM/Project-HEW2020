@@ -76,6 +76,12 @@ Sprite::Sprite()
 	txWidth = 0;
 	txHeight = 0;
 	filename[0] = 0;
+
+	dx = dy = dw = dh = 0.0f;
+	cx = cy = angle = 0.0f;
+	tcx = tcy = 0;
+	tcw = tch = 0;
+	bHorizontalFlip = bVerticalFlip = false;
 }
 
 Sprite::~Sprite()
@@ -90,8 +96,11 @@ Sprite::~Sprite()
 		pIndexBuffer->Release();
 		pIndexBuffer = NULL;
 	}
-	pTexture->Release();
-	pTexture = NULL;
+	if (pTexture)
+	{
+		pTexture->Release();
+		pTexture = NULL;
+	}
 	filename[0] = 0;
 	txWidth = 0;
 	txHeight = 0;
@@ -145,16 +154,22 @@ void Sprite::SetColor(D3DCOLOR color)
 SpriteNormal::SpriteNormal()
 {
 	// 初期化処理
-	this->Init();
+	Init();
 }
 // オーバロード
 SpriteNormal::SpriteNormal(const char* pFileName)
 {
 	// 初期化処理
-	this->Init();
+	Init();
 	// テクスチャの読み込み
-	this->LoadTexture(pFileName);
+	LoadTexture(pFileName);
 }
+
+SpriteNormal::~SpriteNormal()
+{
+
+}
+
 void SpriteNormal::Init(void)
 {
 	dx = dy = dw = dh = 0.0f;
@@ -256,6 +271,10 @@ void SpriteNormal::SetCutRange(int tcw, int tch)
 	this->tcw = tcw;
 	this->tch = tch;
 }
+D3DXVECTOR2 SpriteNormal::GetCutRange(void)
+{
+	return D3DXVECTOR2(tcw, tch);
+}
 void SpriteNormal::SetPolygonSize(float dw, float dh)
 {
 	this->dw = dw;
@@ -276,11 +295,11 @@ void SpriteNormal::SetRotation(float cx, float cy, float angle)
 	this->cy = cy;
 	this->angle = angle;
 }
-void SpriteNormal::SetHorizontalFlip(bool flip)
+void SpriteNormal::SetHorizontalFlip(bool bFlip)
 {
-	this->bHorizontalFlip = flip;
+	this->bHorizontalFlip = bFlip;
 }
-void SpriteNormal::SetVerticalFlip(bool flip)
+void SpriteNormal::SetVerticalFlip(bool bFlip)
 {
-	this->bVerticalFlip = flip;
+	this->bVerticalFlip = bFlip;
 }
