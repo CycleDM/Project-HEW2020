@@ -50,7 +50,7 @@ void Game_Update(void)
 		do
 		{
 			// ’òŽq‚É‚Ì‚Ú‚é
-			if (abs(ladder->GetGlobalPos().x - player->GetGlobalPos().x) < 32.0f)
+			if (abs(ladder->GetGlobalPos().x - player->GetGlobalPos().x) < 64.0f)
 			{
 				player->isOnFloor(false);
 				player->ClimbUp();

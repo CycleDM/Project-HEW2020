@@ -48,7 +48,7 @@ float GameScene::GetGlobalScaling(void)
 	return fGlobalScaling;
 }
 
-// プレイヤーに一番近く、特定のオブジェクトを取得
+// 指定の座標に一番近く、特定のオブジェクトを取得
 GameObject* GameScene::GetNearestObject(D3DXVECTOR2 position, GameObject::ObjectType objectType)
 {
 	GameObject* target = NULL;

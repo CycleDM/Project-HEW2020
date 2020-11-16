@@ -45,7 +45,7 @@ void GamePlayer::Init(void)
 	screenPos = globalPos = D3DXVECTOR2(64.0f, (float)SCREEN_HEIGHT);
 	dirc = D3DXVECTOR2(0.0f, GAME_GRAVITY);
 	speed = 0.0f;
-	velocity = 5.0f;
+	velocity = 6.0f;
 
 	bMoving = false;
 	bJumping = false;
@@ -257,7 +257,7 @@ void GamePlayer::MoveRight(void)
 void GamePlayer::ClimbUp(void)
 {
 	bClimbingUp = true;
-	dirc.y = -4.0f;
+	dirc.y = -2.0f;
 }
 
 void GamePlayer::ClimbDown(void)
