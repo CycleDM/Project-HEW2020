@@ -70,7 +70,7 @@ Sprite::Sprite()
 			isDeviceInit = true;
 		}
 	} while (0);
-	
+
 	color = 0xffffffff;
 	pTexture = NULL;
 	txWidth = 0;
@@ -271,10 +271,17 @@ void SpriteNormal::SetCutRange(int tcw, int tch)
 	this->tcw = tcw;
 	this->tch = tch;
 }
-D3DXVECTOR2 SpriteNormal::GetCutRange(void)
+
+int SpriteNormal::GetCutWidth(void)
 {
-	return D3DXVECTOR2(tcw, tch);
+	return tcw;
 }
+
+int SpriteNormal::GetCutHeight(void)
+{
+	return tch;
+}
+
 void SpriteNormal::SetPolygonSize(float dw, float dh)
 {
 	this->dw = dw;
