@@ -35,7 +35,7 @@ void Animator::Play()
 	{
 		nAnimationCnt = 0;
 	}
-	pSprite->SetCutPos(pSprite->GetCutRange().x * (nAnimationCnt % nMaxCntX), pSprite->GetCutRange().y * (nAnimationCnt / nMaxCntY));
+	pSprite->SetCutPos(pSprite->GetCutWidth() * (nAnimationCnt % nMaxCntX), pSprite->GetCutHeight() * (nAnimationCnt / nMaxCntY));
 }
 
 void Animator::Init(Sprite* pSprite)
