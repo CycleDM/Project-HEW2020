@@ -24,6 +24,7 @@
 #define TEXTURE_DEBUG				"assets/texture/debug_font_32x64.png"
 #define TEXTURE_BG					"assets/texture/background_only.png"
 #define TEXTURE_BG_OVERLAY			"assets/texture/background_overlay.png"
+#define TEXTURE_OVERLAY_RANGE		"assets/texture/overlay_range.png"
 
 #define TEXTURE_PLAYER				"assets/texture/player.png"
 #define TEXTURE_PLAYER_CLIMBING		"assets/texture/player_climbing.png"
