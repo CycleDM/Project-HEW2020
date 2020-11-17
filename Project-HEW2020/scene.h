@@ -49,6 +49,9 @@ public:
 	// 拡大・縮小参照データを取得
 	static float GetGlobalScaling(void);
 
+	static bool isDarkness(void);
+	static void SetDarkness(bool bDarkness = true);
+
 protected:
 	static float fGlobalScaling;						// すべてのテクスチャの拡大・縮小参照データ
 	GamePlayer* pPlayer;								// プレイヤーのインスタンス
@@ -57,4 +60,6 @@ protected:
 	D3DXVECTOR2 fBgScroll;								// シーン・背景の多重スクロールの参照データ
 	D3DXVECTOR2 fBgScrollMax;							// シーン・背景の多重スクロールの参照データ（最大値）
 	float fGroundHeight;								// 地面の高さ
+
+	static bool bDarkness;
 };

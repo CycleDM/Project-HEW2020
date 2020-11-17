@@ -13,6 +13,7 @@
 // グローバル変数
 //----------------------------------------------------------------------------
 float GameScene::fGlobalScaling = 1.0f;	// すべてのテクスチャの拡大・縮小参照データ
+bool GameScene::bDarkness = false;
 
 GameScene::GameScene()
 {
@@ -46,6 +47,16 @@ void GameScene::SetGlobalScaling(float scaling)
 float GameScene::GetGlobalScaling(void)
 {
 	return fGlobalScaling;
+}
+
+bool GameScene::isDarkness(void)
+{
+	return bDarkness;
+}
+
+void GameScene::SetDarkness(bool bDarkness)
+{
+	GameScene::bDarkness = bDarkness;
 }
 
 // 指定の座標に一番近く、特定のオブジェクトを取得

@@ -24,7 +24,10 @@ TestScene::~TestScene()
 
 void TestScene::Init(void)
 {
-	GameScene::SetGlobalScaling(3.3333333333f);
+	SetGlobalScaling(3.3333333333f);
+	SetDarkness(false);
+	//SetDarkness(true);
+
 	fBgScroll = D3DXVECTOR2(0.0f, 0.0f);
 	fBgScrollMax = D3DXVECTOR2(264.0f, 0.0f);
 	fGroundHeight = 64.0f;
@@ -72,6 +75,14 @@ void TestScene::Init(void)
 	// FLOOR Overlay
 	pOverlays[2] = new GameOverlay(TEXTURE_OBJ_FLOOR_OVERLAY);
 	pOverlays[2]->SetSize(pOverlays[2]->GetWidth() * fGlobalScaling, pOverlays[2]->GetHeight() * fGlobalScaling);
+
+	// 見える範囲 Overlay
+	pOverlays[3] = new GameOverlay(TEXTURE_OVERLAY_RANGE);
+	pOverlays[3]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y + pPlayer->GetCollision()->GetHalfHeight());
+	pOverlays[3]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
+	pOverlays[3]->GetSprite()->SetCutPos(640, 360);
+	pOverlays[3]->GetSprite()->SetCutRange(SCREEN_WIDTH, SCREEN_HEIGHT);
+	pOverlays[3]->SetSize(pOverlays[3]->GetWidth() * fGlobalScaling * 4.0f, pOverlays[3]->GetHeight() * fGlobalScaling * 4.0f);
 
 	/*----------実験コード-------------------------------------------------------------------------*/
 	GameObject* test = NULL;
@@ -142,6 +153,8 @@ void TestScene::Draw(void)
 	pPlayer->Draw();
 	pOverlays[1]->Draw();
 	pOverlays[2]->Draw();
+	if (isDarkness())
+		pOverlays[3]->Draw();
 
 	// デバッグ文字の表示
 	if (Game_IsDebugMode()) this->Debug();
@@ -227,6 +240,7 @@ void TestScene::UpdateOverlay(void)
 
 	float fGlobalPosOffset = fBgScroll.x * fGlobalScaling;
 	pOverlays[2]->SetScreenPos(pObjects[1]->GetScreenPos().x + 120.0f, pObjects[1]->GetScreenPos().y - 24.0f);
+	pOverlays[3]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y + pPlayer->GetCollision()->GetHalfHeight() + 32.0f);
 
 
 	// ここからはUIの更新処理
