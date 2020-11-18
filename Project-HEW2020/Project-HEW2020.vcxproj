@@ -39,7 +39,6 @@
     <ClInclude Include="animator.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="config.h" />
-    <ClInclude Include="cycledm.h" />
     <ClInclude Include="d3dutility.h" />
     <ClInclude Include="debug_font.h" />
     <ClInclude Include="game.h" />
