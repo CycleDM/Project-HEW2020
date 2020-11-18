@@ -3,7 +3,6 @@
 // Project-HEW2020 [game.cpp]
 // ゲーム制御モジュール
 // 
-//
 // Date:   2020/10/28
 // Author: AT12D187_17_周進
 // 
