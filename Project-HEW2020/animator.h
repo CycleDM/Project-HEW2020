@@ -15,19 +15,21 @@ class Animator
 {
 public:
 	Animator();
-	~Animator();
+	virtual ~Animator();
 
 	// アニメーションを再生する
-	void Play();
+	virtual void Play(void);
+	// アニメーションを一時的に中止する
+	virtual void Pause(void);
 	// 初期化
-	void Init(Sprite* pSprite = NULL);
+	virtual void Init(Sprite* pSprite = NULL);
 	// 初期化・指定した値を代入する
 	// 引数:
 	//	pSprite		... 操作されるスプライト
-	//	nMaxCntX	... テクスチャの切り取りXの最大値
-	//	nMaxCntY	... テクスチャの切り取りYの最大値
+	//	nMaxCntX	... テクスチャの切り取りXの最大数
+	//	nMaxCntY	... テクスチャの切り取りYの最大数
 	//	nInterval	... テクスチャ切り替えの間隔（フレーム）
-	void Init(Sprite* pSprite, int nMaxCntX, int nMaxCntY, int nInterval);
+	virtual void Init(Sprite* pSprite, int nMaxCntX, int nMaxCntY, int nInterval);
 
 private:
 	Sprite* pSprite;	// アニメーションとして使われるスプライト
