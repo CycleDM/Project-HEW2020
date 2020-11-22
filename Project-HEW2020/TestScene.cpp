@@ -96,7 +96,6 @@ void TestScene::Init(void)
 
 	delete[] test;
 	test = NULL;
-
 	/*----------実験コード-------------------------------------------------------------------------*/
 }
 
@@ -181,17 +180,28 @@ void TestScene::UpdatePlayer(void)
 	float maximumX = (float)SCREEN_WIDTH - collision->GetHalfWidth() + offsetX;
 	float minimumY = 0.0f + collision->GetHalfHeight();
 	float maximumY = (float)SCREEN_HEIGHT - fGroundHeight - collision->GetHalfHeight();
-	// 2F以上の場合
-	if (pPlayer->isOnFloor())
+
+	//
+	do
 	{
+		// 一番近いFLOORを取得
 		GameObject* floor = GetNearestObject(collision->GetPosition(), GameObject::OBJ_FLOOR);
-		if (NULL != floor)
-		{
-			maximumY = floor->GetGlobalPos().y - floor->GetCollision()->GetHalfHeight() - pPlayer->GetCollision()->GetHalfHeight();
-			minimumX = floor->GetGlobalPos().x - floor->GetCollision()->GetHalfWidth() + pPlayer->GetCollision()->GetHalfWidth();
-			maximumX = floor->GetGlobalPos().x + floor->GetCollision()->GetHalfWidth() - pPlayer->GetCollision()->GetHalfWidth();
-		}
-	}
+		// 取得出来なかった場合、break;
+		if (NULL == floor) break;
+		
+		// プレイヤーが下に移動する場合、break;
+		if (pPlayer->isClimbing() && pPlayer->GetDirection().y > 0.0f) break;
+
+		// floorの上境界(Collision)
+		float fTop = floor->GetCollision()->GetPosition().y - floor->GetCollision()->GetHalfHeight();
+		// プレイヤーの中心座標y > floorの中心座標y ... break
+		if (pPlayer->GetGlobalPos().y > floor->GetCollision()->GetPosition().y) break;
+
+		maximumY = fTop - pPlayer->GetCollision()->GetHalfHeight();
+		minimumX = floor->GetGlobalPos().x - floor->GetCollision()->GetHalfWidth() + pPlayer->GetCollision()->GetHalfWidth();
+		maximumX = floor->GetGlobalPos().x + floor->GetCollision()->GetHalfWidth() - pPlayer->GetCollision()->GetHalfWidth();
+	} while (0);
+	
 	// 左壁
 	if (collision->GetPosition().x < minimumX)
 		pPlayer->SetGlobalPos(minimumX, pPlayer->GetGlobalPos().y);
@@ -267,12 +277,6 @@ void TestScene::Debug(void)
 	DebugFont_Draw(0.0f, y, buf);
 	y += 32.0f;
 	sprintf_s(buf, ">MoveSpeed = %.2f", pPlayer->GetSpeed());
-	DebugFont_Draw(0.0f, y, buf);
-	y += 32.0f;
-	if (pPlayer->GetDirection().x < 0.0f) sprintf_s(buf, ">Facing:LEFT");
-	if (pPlayer->GetDirection().x > 0.0f) sprintf_s(buf, ">Facing:RIGHT");
-	DebugFont_Draw(0.0f, y, buf);
-	
 	y += 32.0f;
 	sprintf_s(buf, ">ScreenPos(%.2f, %.2f)", pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y);
 	DebugFont_Draw(0.0f, y, buf);
@@ -285,15 +289,27 @@ void TestScene::Debug(void)
 	y += 32.0f;
 	sprintf_s(buf, ">CollisionSize(%.2f, %.2f)", pPlayer->GetCollision()->GetWidth(), pPlayer->GetCollision()->GetHeight());
 	DebugFont_Draw(0.0f, y, buf);
+	y += 32.0f;
+	sprintf_s(buf, ">isOnLadder = %d", pPlayer->isOnLadder());
+	DebugFont_Draw(0.0f, y, buf);
+	y += 32.0f;
+	sprintf_s(buf, ">isClimbing = %d", pPlayer->isClimbing());
+	DebugFont_Draw(0.0f, y, buf);
 
 	y += 64.0f;
 	sprintf_s(buf, "[ObjectInfo]");
 	DebugFont_Draw(0.0f, y, buf);
 	y += 32.0f;
-	sprintf_s(buf, ">LADDER1 S(%.2f, %.2f) G(%.2f, %.2f) CollisionSize(%.2f, %.2f)",
+	sprintf_s(buf, ">FLOOR S(%.2f, %.2f) G(%.2f, %.2f) CollisionSize(%.2f, %.2f)",
+		pObjects[1]->GetScreenPos().x, pObjects[1]->GetScreenPos().y,
+		pObjects[1]->GetGlobalPos().x, pObjects[1]->GetGlobalPos().y,
+		pObjects[1]->GetCollision()->GetWidth(), pObjects[1]->GetCollision()->GetHeight());
+	DebugFont_Draw(0.0f, y, buf);
+	y += 32.0f;
+	sprintf_s(buf, ">LADDER1 S(%.2f, %.2f) G(%.2f, %.2f) CollisionPos(%.2f, %.2f)",
 		pObjects[2]->GetScreenPos().x, pObjects[2]->GetScreenPos().y, 
 		pObjects[2]->GetGlobalPos().x, pObjects[2]->GetGlobalPos().y,
-		pObjects[2]->GetCollision()->GetWidth(), pObjects[2]->GetCollision()->GetHeight());
+		pObjects[2]->GetCollision()->GetPosition().x, pObjects[2]->GetCollision()->GetPosition().y);
 	DebugFont_Draw(0.0f, y, buf);
 	y += 32.0f;
 	sprintf_s(buf, ">LADDER2 S(%.2f, %.2f) G(%.2f, %.2f) CollisionSize(%.2f, %.2f)",

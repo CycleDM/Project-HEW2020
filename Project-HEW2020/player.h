@@ -30,6 +30,7 @@ public:
 	// プレイヤーの座標を取得
 	D3DXVECTOR2 GetScreenPos(void);
 	D3DXVECTOR2 GetGlobalPos(void);
+	// プレイヤーのテクスチャの幅を取得（コリジョンは別）
 	float GetPolygonWidth(void);
 	float GetPolygonHeight(void);
 
@@ -37,17 +38,17 @@ public:
 	D3DXVECTOR2 GetDirection(void);
 	float GetSpeed(void);
 
-	bool isMoving(void);
-	void isMoving(bool bState);
+	bool isWalking(void);
+	void isWalking(bool bState);
 	bool isClimbing(void);
 	void isClimbing(bool bState);
-	bool isOnFloor(void);
-	void isOnFloor(bool bState);
+	bool isOnLadder(void);
+	void isOnLadder(bool bState);
 
 	void MoveLeft(void);
 	void MoveRight(void);
-	void ClimbUp(void);
-	void ClimbDown(void);
+	void MoveUp(void);
+	void MoveDown(void);
 	void Jump(void);
 
 private:
@@ -57,12 +58,13 @@ private:
 	D3DXVECTOR2 dirc;				// 方向
 	float speed;					// 速度
 	float velocity;					// 加速度
+	int currentFloor;				// プレイヤーが何階目にいる
 
-	bool bMoving;					// 移動中の判定
+	bool bWalking;					// 移動中の判定
 	bool bJumping;					// ジャンプ中の判定
 	bool bClimbingUp;
 	bool bClimbingDown;
-	bool bOnFloor;
+	bool bOnLadder;
 
 	Collision* pCollision;			// プレイヤーのコリジョン
 	Animator* pAnimator;			// アニメーション制御

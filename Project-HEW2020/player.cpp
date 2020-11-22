@@ -46,26 +46,26 @@ void GamePlayer::Init(void)
 	dirc = D3DXVECTOR2(0.0f, GAME_GRAVITY);
 	speed = 0.0f;
 	velocity = 6.0f;
+	currentFloor = 1;
 
-	bMoving = false;
+	bWalking = false;
 	bJumping = false;
 	bClimbingUp = false;
-	bOnFloor = false;
+	bOnLadder = false;
 
 	// プレイヤーのテクスチャ(Sprite)を作成
-	pSprite = new SpriteNormal[2];
-
-	pSprite->LoadTexture(TEXTURE_PLAYER);
-	pSprite->SetDrawPos(screenPos.x - PLAYER_DRAW_WIDTH / 2, screenPos.y - PLAYER_DRAW_HEIGHT / 2);
-	pSprite->SetCutPos(0, 0);
-	pSprite->SetCutRange(PLAYER_TEXTURE_CUT_WIDTH, PLAYER_TEXTURE_CUT_HEIGHT);
-	pSprite->SetPolygonSize(PLAYER_DRAW_WIDTH, PLAYER_DRAW_HEIGHT);
-
+	int n = 3;
+	pSprite = new SpriteNormal[n];
+	(pSprite + 0)->LoadTexture(TEXTURE_PLAYER);
 	(pSprite + 1)->LoadTexture(TEXTURE_PLAYER_CLIMBING);
-	(pSprite + 1)->SetDrawPos(screenPos.x - PLAYER_DRAW_WIDTH / 2, screenPos.y - PLAYER_DRAW_HEIGHT / 2);
-	(pSprite + 1)->SetCutPos(0, 0);
-	(pSprite + 1)->SetCutRange(PLAYER_TEXTURE_CUT_WIDTH, PLAYER_TEXTURE_CUT_HEIGHT);
-	(pSprite + 1)->SetPolygonSize(PLAYER_DRAW_WIDTH, PLAYER_DRAW_HEIGHT);
+	(pSprite + 2)->LoadTexture(TEXTURE_PLAYER_CLIMBING_PAUSED);
+	for (int i = 0; i < n; i++)
+	{
+		(pSprite + i)->SetDrawPos(screenPos.x - PLAYER_DRAW_WIDTH / 2, screenPos.y - PLAYER_DRAW_HEIGHT / 2);
+		(pSprite + i)->SetCutPos(0, 0);
+		(pSprite + i)->SetCutRange(PLAYER_TEXTURE_CUT_WIDTH, PLAYER_TEXTURE_CUT_HEIGHT);
+		(pSprite + i)->SetPolygonSize(PLAYER_DRAW_WIDTH, PLAYER_DRAW_HEIGHT);
+	}
 
 	pActiveSprite = pSprite;
 
@@ -113,38 +113,59 @@ void GamePlayer::Uninit(void)
 
 void GamePlayer::Update(void)
 {
-	// アニメーション
-	if (isMoving())
+	/*----------アニメーション-------------------------------------------------------------------------*/
+	if (isWalking())
 	{
 		pActiveSprite = pSprite;
 		pAnimator->Init(pSprite, 4, 2, 8);
 		pAnimator->Play();
 	}
-	else if (isClimbing())
+	else if (bClimbingUp)
 	{
 		pActiveSprite = pSprite + 1;
 		pAnimator->Init(pActiveSprite, 5, 5, 5);
 		pAnimator->Play();
+	}
+	else if (bClimbingDown)
+	{
+		pActiveSprite = pSprite + 2;
+		pAnimator->Init(pActiveSprite, 1, 1, 0);
+		pAnimator->Play();
+	}
+	else if (!isClimbing() && isOnLadder())
+	{
+		pAnimator->Pause();
 	}
 	else
 	{
 		pActiveSprite = pSprite;
 		pAnimator->Init(pSprite);
 	}
+	/*----------アニメーション-------------------------------------------------------------------------*/
 
-	// プレイヤー座標の更新（移動方向ｘ速度）
+	// x座標の更新（移動方向ｘ速度）
 	globalPos.x += dirc.x * speed;
 	// 速度の減衰
 	speed *= 0.8f;
 	if (speed < 0.3f)
 	{
 		speed = 0.0f;
-		bMoving = false;
+		bWalking = false;
 	}
 
 	// 単純な重力システム
-	if (dirc.y < GAME_GRAVITY && !isClimbing()) dirc.y += GAME_GRAVITY;
-	if (dirc.y > GAME_GRAVITY) dirc.y = GAME_GRAVITY;
+	if (dirc.y < GAME_GRAVITY && !isClimbing())
+		dirc.y += GAME_GRAVITY;
+
+	if (dirc.y > GAME_GRAVITY)
+		dirc.y = GAME_GRAVITY;
+
+	// 特殊：プレイヤーがはしごに残る（移動しない）
+	if (!isClimbing() && isOnLadder())
+	{
+		dirc.y = 0.0f;
+	}
+	// y座標の更新
 	globalPos.y += dirc.y;
 
 	// コリジョンの座標とプレイヤー座標の同期
@@ -159,6 +180,9 @@ void GamePlayer::Draw(void)
 	pActiveSprite->Draw();
 }
 
+//-----------------------------------------------------------------------------
+// 数値の設定および取得
+//-----------------------------------------------------------------------------
 void GamePlayer::SetScreenPos(float x, float y)
 {
 	this->screenPos.x = x;
@@ -206,14 +230,17 @@ D3DXVECTOR2 GamePlayer::GetDirection(void)
 	return this->dirc;
 }
 
-bool GamePlayer::isMoving(void)
+//-----------------------------------------------------------------------------
+// Boolean
+//-----------------------------------------------------------------------------
+bool GamePlayer::isWalking(void)
 {
-	return this->bMoving;
+	return this->bWalking;
 }
 
-void GamePlayer::isMoving(bool bState) 
+void GamePlayer::isWalking(bool bState) 
 {
-	bMoving = bState;
+	bWalking = bState;
 }
 
 bool GamePlayer::isClimbing(void)
@@ -228,19 +255,22 @@ void GamePlayer::isClimbing(bool bState)
 	bClimbingUp = bClimbingDown = bState;
 }
 
-bool GamePlayer::isOnFloor(void)
+bool GamePlayer::isOnLadder(void)
 {
-	return bOnFloor;
+	return bOnLadder;
 }
 
-void GamePlayer::isOnFloor(bool bState)
+void GamePlayer::isOnLadder(bool bState)
 {
-	bOnFloor = bState;
+	bOnLadder = bState;
 }
 
+//-----------------------------------------------------------------------------
+// プレイヤーの動き処理
+//-----------------------------------------------------------------------------
 void GamePlayer::MoveLeft(void)
 {
-	bMoving = true;
+	bWalking = true;
 	dirc.x = -1.0f;
 	speed = velocity;
 	pSprite->SetHorizontalFlip(true);
@@ -248,20 +278,22 @@ void GamePlayer::MoveLeft(void)
 
 void GamePlayer::MoveRight(void)
 {
-	bMoving = true;
+	bWalking = true;
 	dirc.x = 1.0f;
 	speed = velocity;
 	pSprite->SetHorizontalFlip(false);
 }
 
-void GamePlayer::ClimbUp(void)
+void GamePlayer::MoveUp(void)
 {
+	bWalking = false;
 	bClimbingUp = true;
 	dirc.y = -2.0f;
 }
 
-void GamePlayer::ClimbDown(void)
+void GamePlayer::MoveDown(void)
 {
+	bWalking = false;
 	bClimbingDown = true;
 	dirc.y = 4.0f;
 }

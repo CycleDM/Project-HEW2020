@@ -21,23 +21,6 @@ Animator::~Animator()
 	pSprite = NULL;
 }
 
-void Animator::Play()
-{
-	if (NULL == pSprite) return;
-
-	nFrame++;
-	if (nFrame >= nInterval)
-	{
-		nAnimationCnt++;
-		nFrame = 0;
-	}
-	if (nAnimationCnt > nMaxCntX + nMaxCntY + 1)
-	{
-		nAnimationCnt = 0;
-	}
-	pSprite->SetCutPos(pSprite->GetCutWidth() * (nAnimationCnt % nMaxCntX), pSprite->GetCutHeight() * (nAnimationCnt / nMaxCntY));
-}
-
 void Animator::Init(Sprite* pSprite)
 {
 	nFrame = 0;
@@ -46,7 +29,7 @@ void Animator::Init(Sprite* pSprite)
 	nMaxCntY = 0;
 	nInterval = 0;
 
-	// クラス内のpSpriteは NULL じゃなかったら、テクスチャの切り取り座標をリセットする
+	// メンバー変数のpSpriteは NULL じゃなかったら、テクスチャの切り取り座標をリセットする
 	if (NULL != this->pSprite)
 	{
 		this->pSprite->SetCutPos(0, 0);
@@ -65,4 +48,27 @@ void Animator::Init(Sprite* pSprite, int nMaxCntX, int nMaxCntY, int nInterval)
 	this->nMaxCntX = nMaxCntX;
 	this->nMaxCntY = nMaxCntY;
 	this->nInterval = nInterval;
+}
+
+void Animator::Play(void)
+{
+	if (NULL == pSprite) return;
+
+	nFrame++;
+	if (nFrame >= nInterval)
+	{
+		nAnimationCnt++;
+		nFrame = 0;
+	}
+	if (nAnimationCnt > nMaxCntX + nMaxCntY + 1)
+	{
+		nAnimationCnt = 0;
+	}
+	pSprite->SetCutPos(pSprite->GetCutWidth() * (nAnimationCnt % nMaxCntX), pSprite->GetCutHeight() * (nAnimationCnt / nMaxCntY));
+}
+
+void Animator::Pause(void)
+{
+	if (NULL == pSprite) return;
+	pSprite->SetCutPos(pSprite->GetCutWidth() * (nAnimationCnt % nMaxCntX), pSprite->GetCutHeight() * (nAnimationCnt / nMaxCntY));
 }

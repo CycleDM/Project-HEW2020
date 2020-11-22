@@ -34,73 +34,88 @@ void Game_Update(void)
 {
 	// プレイヤー操作
 	GamePlayer* player = g_pScene->GetPlayer();
-	if (!player->isClimbing() && g_pController->GetKeyPress(Controller::LEFT))
+	if (!player->isOnLadder() && g_pController->GetKeyPress(Controller::LEFT))
 	{
 		player->MoveLeft();
 	}
-	if (!player->isClimbing() && g_pController->GetKeyPress(Controller::RIGHT))
+	if (!player->isOnLadder() && g_pController->GetKeyPress(Controller::RIGHT))
 	{
 		player->MoveRight();
 	}
-	// Climb up
-	if (g_pController->GetKeyPress(Controller::UP))
+
+	// はしごを登る・降りる
+	do
 	{
-		// 一番近い梯子を取得
+		// 一番近い梯子のインスタンスを取得
 		GameObject* ladder = g_pScene->GetNearestObject(player->GetGlobalPos(), GameObject::OBJ_LADDER);
-		do
+		if (NULL == ladder) break;
+		// はしごを登れる範囲を限定する
+		if (abs(ladder->GetGlobalPos().x - player->GetGlobalPos().x) > 64.0f) break;
+		// 登る
+		if (g_pController->GetKeyPress(Controller::UP))
 		{
-			// 梯子にのぼる
-			if (abs(ladder->GetGlobalPos().x - player->GetGlobalPos().x) < 64.0f)
+			// はしごの中心座標y　< プレイヤーの足y（一番下の座標）
+			// はしごを登れることを判断する
+			if (ladder->GetCollision()->GetPosition().y < player->GetGlobalPos().y + player->GetCollision()->GetHalfHeight())
 			{
-				player->isOnFloor(false);
-				player->ClimbUp();
-				player->isMoving(false);
-				player->SetGlobalPos(ladder->GetGlobalPos().x, player->GetGlobalPos().y);
-				if (player->GetGlobalPos().y <= ladder->GetGlobalPos().y - 290.0f)
-				{
-					player->isClimbing(false);
-					player->isOnFloor(true);
-					break;
-				}
+				player->isOnLadder(true);
 			}
-		} while (0);
-	}
-	// Climb down
-	if (g_pController->GetKeyPress(Controller::DOWN))
-	{
-		// 一番近い梯子を取得
-		GameObject* ladder = g_pScene->GetNearestObject(player->GetGlobalPos(), GameObject::OBJ_LADDER);
-		do
+			// プレイヤーの足y < 梯子の上境界y
+			// はしごを離れる
+			if (player->GetGlobalPos().y + player->GetCollision()->GetHalfHeight() < ladder->GetCollision()->GetPosition().y - ladder->GetCollision()->GetHalfHeight())
+			{
+				player->isOnLadder(false);
+				player->isClimbing(false);
+			}
+			// はしごを登る
+			if (player->isOnLadder())
+			{
+				player->MoveUp();
+				// x座標の限定
+				player->SetGlobalPos(ladder->GetGlobalPos().x, player->GetGlobalPos().y);
+			}	
+		}
+		// 降りる
+		if (g_pController->GetKeyPress(Controller::DOWN))
 		{
-			if (abs(ladder->GetGlobalPos().x - player->GetGlobalPos().x) < 32.0f)
+			// はしごの中心座標y　> プレイヤーの頭y（一番上の座標）
+			// はしごを登れることを判断する
+			if (ladder->GetCollision()->GetPosition().y > player->GetGlobalPos().y - player->GetCollision()->GetHalfHeight())
 			{
-				player->isOnFloor(false);
-				player->ClimbDown();
-				player->isMoving(false);
-				player->SetGlobalPos(ladder->GetGlobalPos().x, player->GetGlobalPos().y);
-				if (player->GetGlobalPos().y + player->GetCollision()->GetHalfHeight() >= ladder->GetGlobalPos().y + ladder->GetCollision()->GetHalfHeight())
-				{
-					player->isClimbing(false);
-					player->isOnFloor(false);
-					break;
-				}
+				player->isOnLadder(true);
 			}
-		} while (0);
-	}
-	// Cancle Climbing
-	if (g_pController->GetKeyRelease(Controller::UP) || g_pController->GetKeyRelease(Controller::DOWN))
-	{
-		player->isClimbing(false);
-	}
+			// プレイヤーの足y（一番下の座標） > はしごの下境界
+			// はしごを離れる
+			if (player->GetGlobalPos().y + player->GetCollision()->GetHalfHeight() > ladder->GetCollision()->GetPosition().y + ladder->GetCollision()->GetHalfHeight())
+			{
+				player->isOnLadder(false);
+				player->isClimbing(false);
+			}
+			// はしごを降りる
+			if (player->isOnLadder())
+			{
+				// 降りる前に初の座標に移動
+				float startPos = ladder->GetCollision()->GetPosition().y - ladder->GetCollision()->GetHalfHeight();
+				if (player->GetGlobalPos().y < startPos) player->SetGlobalPos(ladder->GetGlobalPos().x, startPos);
+
+				player->MoveDown();
+				// x座標の限定
+				player->SetGlobalPos(ladder->GetGlobalPos().x, player->GetGlobalPos().y);
+			}
+		}
+		// キーを離した時
+		if (!player->isOnLadder()) break;
+		if (g_pController->GetKeyRelease(Controller::UP) || g_pController->GetKeyRelease(Controller::DOWN))
+		{
+			player->isClimbing(false);
+		}
+	} while (0);
+
 	// Switch Debug Mode
 	if (g_pController->GetKeyTrigger(Controller::DEBUG))
 	{
 		g_bDebugMode = g_bDebugMode ? false : true;
 	}
-	//if (g_pController->GetKeyPress(Controller::JUMP))
-	//{
-	//	player->Jump();
-	//}
 
 	g_pController->Update();
 	g_pScene->Update();
