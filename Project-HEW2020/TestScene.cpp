@@ -11,6 +11,7 @@
 #include "TestScene.h"
 #include "debug_font.h"
 #include "game.h"
+#include "fade.h"
 
 TestScene::TestScene()
 {
@@ -97,6 +98,8 @@ void TestScene::Init(void)
 	delete[] test;
 	test = NULL;
 	/*----------é¿å±ÉRÅ[Éh-------------------------------------------------------------------------*/
+
+	FadeEffect::Start(FADE_IN, 0.0f, 0.0f, 0.0f, 30);
 }
 
 void TestScene::Uninit(void)

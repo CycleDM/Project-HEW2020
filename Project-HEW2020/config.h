@@ -21,6 +21,7 @@
 #define SINGLE_SCENE_OVERLAY_MAX	(8)
 
 // テクスチャーのファイル名
+#define TEXTURE_FADE					"assets/texture/fade.png"
 #define TEXTURE_DEBUG					"assets/texture/debug_font_32x64.png"
 #define TEXTURE_BG						"assets/texture/background_only.png"
 #define TEXTURE_BG_OVERLAY				"assets/texture/background_overlay.png"

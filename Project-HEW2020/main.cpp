@@ -21,6 +21,7 @@
 #include "game.h"
 #include "controller.h"
 #include "debug_font.h"
+#include "fade.h"
 
 #define CLASS_NAME "GameWindow"
 #define WINDOW_CAPTION "ゲームタイトル「未定」"
@@ -176,6 +177,8 @@ bool Init(HWND hWnd)
 		SystemTimer_Init();
 
 		DebugFont::Init();
+		FadeEffect::Init();
+		GameControl::Init();
 		Game::Init();
 		// ...
 		// ...
@@ -195,6 +198,8 @@ void Update(void)
 	do
 	{
 		Game::Update();
+		GameControl::Update();
+		FadeEffect::Update();
 		// ...
 		// ...
 		// ...
@@ -227,6 +232,7 @@ void Draw(void)
 	do
 	{
 		Game::Draw();
+		FadeEffect::Draw();
 		// ...
 		// ...
 		// ...
@@ -249,6 +255,7 @@ void Draw(void)
 void Uninit(void)
 {
 	Game::Uninit();
+	FadeEffect::Uninit();
 	DebugFont::Uninit();
 	// Direct3Dの終了処理
 	D3DUtility::Uninit();
