@@ -8,37 +8,38 @@
 // 
 //----------------------------------------------------------------------------
 #include <cmath>
+#include "game.h"
 #include "config.h"
 #include "sprite.h"
 #include "player.h"
-#include "controller.h"
-#include "scene.h"
 #include "TestScene.h"
 
 //-----------------------------------------------------------------------------
 // グローバル変数宣言
 //-----------------------------------------------------------------------------
-static Controller* g_pController = NULL;
-static GameScene* g_pScene = NULL;
-static bool g_bDebugMode = false;
+GameScene* Game::pScene = NULL;
+GameScene* Game::pActiveScene = NULL;
+bool Game::bDebugMode = false;
 
 // ゲームの初期化
-void Game_Init(void)
+void Game::Init(void)
 {
-	g_pController = new Controller;			// コントローラーのインスタンスを作成
-	g_pScene = new TestScene;
+	GameControl::Init();
+
+	delete pScene;
+	pScene = new TestScene;
 }
 
 // ゲームの更新
-void Game_Update(void)
+void Game::Update(void)
 {
 	// プレイヤー操作
-	GamePlayer* player = g_pScene->GetPlayer();
-	if (!player->isOnLadder() && g_pController->GetKeyPress(Controller::LEFT))
+	GamePlayer* player = pScene->GetPlayer();
+	if (!player->isOnLadder() && GameControl::GetKeyPress(GameControl::LEFT))
 	{
 		player->MoveLeft();
 	}
-	if (!player->isOnLadder() && g_pController->GetKeyPress(Controller::RIGHT))
+	if (!player->isOnLadder() && GameControl::GetKeyPress(GameControl::RIGHT))
 	{
 		player->MoveRight();
 	}
@@ -47,12 +48,12 @@ void Game_Update(void)
 	do
 	{
 		// 一番近い梯子のインスタンスを取得
-		GameObject* ladder = g_pScene->GetNearestObject(player->GetGlobalPos(), GameObject::OBJ_LADDER);
+		GameObject* ladder = pScene->GetNearestObject(player->GetGlobalPos(), GameObject::OBJ_LADDER);
 		if (NULL == ladder) break;
 		// はしごを登れる範囲を限定する
 		if (abs(ladder->GetGlobalPos().x - player->GetGlobalPos().x) > 64.0f) break;
 		// 登る
-		if (g_pController->GetKeyPress(Controller::UP))
+		if (GameControl::GetKeyPress(GameControl::UP))
 		{
 			// はしごの中心座標y　< プレイヤーの足y（一番下の座標）
 			// はしごを登れることを判断する
@@ -76,7 +77,7 @@ void Game_Update(void)
 			}	
 		}
 		// 降りる
-		if (g_pController->GetKeyPress(Controller::DOWN))
+		if (GameControl::GetKeyPress(GameControl::DOWN))
 		{
 			// はしごの中心座標y　> プレイヤーの頭y（一番上の座標）
 			// はしごを登れることを判断する
@@ -105,41 +106,39 @@ void Game_Update(void)
 		}
 		// キーを離した時
 		if (!player->isOnLadder()) break;
-		if (g_pController->GetKeyRelease(Controller::UP) || g_pController->GetKeyRelease(Controller::DOWN))
+		if (GameControl::GetKeyRelease(GameControl::UP) || GameControl::GetKeyRelease(GameControl::DOWN))
 		{
 			player->isClimbing(false);
 		}
 	} while (0);
 
 	// Switch Debug Mode
-	if (g_pController->GetKeyTrigger(Controller::DEBUG))
+	if (GameControl::GetKeyTrigger(GameControl::DEBUG))
 	{
-		g_bDebugMode = g_bDebugMode ? false : true;
+		bDebugMode = bDebugMode ? false : true;
 	}
 
-	g_pController->Update();
-	g_pScene->Update();
+	GameControl::Update();
+	pScene->Update();
 }
 
 // ゲームの描画
-void Game_Draw(void)
+void Game::Draw(void)
 {
-	g_pScene->Draw();
+	pScene->Draw();
 }
 
 // ゲームの終了処理
-void Game_Uninit(void)
+void Game::Uninit(void)
 {
 	// メモリ解放
-	delete g_pScene;
-	g_pScene = NULL;
+	delete pScene;
+	pScene = NULL;
 
-	delete g_pController;
-	g_pController = NULL;
 }
 
 // デバッグの状態を取得
-bool Game_IsDebugMode(void)
+bool Game::DebugMode(void)
 {
-	return g_bDebugMode;
+	return bDebugMode;
 }
