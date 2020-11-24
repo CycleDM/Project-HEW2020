@@ -11,6 +11,14 @@
 
 #include <d3d9.h>
 
-bool D3DUtility_Init(HWND hWnd);
-void D3DUtility_Uninit(void);
-LPDIRECT3DDEVICE9 D3DUtility_GetDevice(void);
+class D3DUtility
+{
+public:
+	static bool Init(HWND hWnd);
+	static void Uninit(void);
+	static LPDIRECT3DDEVICE9 GetDevice(void);
+	
+private:
+	static LPDIRECT3D9 pD3D;
+	static LPDIRECT3DDEVICE9 pDevice;
+};

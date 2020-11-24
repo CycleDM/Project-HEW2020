@@ -9,13 +9,19 @@
 //----------------------------------------------------------------------------
 #pragma once
 
-// ゲームの初期化
-void Game_Init(void);
-// ゲームの更新
-void Game_Update(void);
-// ゲームの描画
-void Game_Draw(void);
-// ゲームの終了処理
-void Game_Uninit(void);
-// デバッグの状態を取得
-bool Game_IsDebugMode(void);
+#include "scene.h"
+
+class Game
+{
+public:
+	static void Init(void);
+	static void Update(void);
+	static void Draw(void);
+	static void Uninit(void);
+	static bool DebugMode(void);
+
+private:
+	static GameScene* pScene;
+	static GameScene* pActiveScene;
+	static bool bDebugMode;
+};

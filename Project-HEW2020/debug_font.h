@@ -9,7 +9,15 @@
 //----------------------------------------------------------------------------
 #pragma once
 
-void DebugFont_Init(void);
-void DebugFont_Uninit(void);
-void DebugFont_Draw(float dx, float dy, const char *pString);
+#include "sprite.h"
+
+class DebugFont
+{
+public:
+	static void Init(void);
+	static void Uninit(void);
+	static void Draw(float dx, float dy, const char* pString);
+private:
+	static Sprite* pSpriteDebug;
+};
 

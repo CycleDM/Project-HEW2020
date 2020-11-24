@@ -11,6 +11,7 @@
 #include "TestScene.h"
 #include "debug_font.h"
 #include "game.h"
+#include "fade.h"
 
 TestScene::TestScene()
 {
@@ -97,6 +98,8 @@ void TestScene::Init(void)
 	delete[] test;
 	test = NULL;
 	/*----------実験コード-------------------------------------------------------------------------*/
+
+	FadeEffect::Start(FADE_IN, 0.0f, 0.0f, 0.0f, 30);
 }
 
 void TestScene::Uninit(void)
@@ -156,7 +159,7 @@ void TestScene::Draw(void)
 		pOverlays[3]->Draw();
 
 	// デバッグ文字の表示
-	if (Game_IsDebugMode()) this->Debug();
+	if (Game::DebugMode()) this->Debug();
 }
 
 // プレイヤーの更新処理
@@ -270,51 +273,51 @@ void TestScene::Debug(void)
 
 	sprintf_s(buf, "BgScroll(%.2f, %.2f)", fBgScroll.x, fBgScroll.y);
 	y += 32.0f;
-	DebugFont_Draw(0.0f, y, buf);
+	DebugFont::Draw(0.0f, y, buf);
 
 	y += 64.0f;
 	sprintf_s(buf, "[PlayerInfo]");
-	DebugFont_Draw(0.0f, y, buf);
+	DebugFont::Draw(0.0f, y, buf);
 	y += 32.0f;
 	sprintf_s(buf, ">MoveSpeed = %.2f", pPlayer->GetSpeed());
 	y += 32.0f;
 	sprintf_s(buf, ">ScreenPos(%.2f, %.2f)", pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y);
-	DebugFont_Draw(0.0f, y, buf);
+	DebugFont::Draw(0.0f, y, buf);
 	y += 32.0f;
 	sprintf_s(buf, ">GlobalPos(%.2f, %.2f)", pPlayer->GetGlobalPos().x, pPlayer->GetGlobalPos().y);
-	DebugFont_Draw(0.0f, y, buf);
+	DebugFont::Draw(0.0f, y, buf);
 	y += 32.0f;
 	sprintf_s(buf, ">CollisionCenter(%.2f, %.2f)", pPlayer->GetCollision()->GetPosition().x, pPlayer->GetCollision()->GetPosition().y);
-	DebugFont_Draw(0.0f, y, buf);
+	DebugFont::Draw(0.0f, y, buf);
 	y += 32.0f;
 	sprintf_s(buf, ">CollisionSize(%.2f, %.2f)", pPlayer->GetCollision()->GetWidth(), pPlayer->GetCollision()->GetHeight());
-	DebugFont_Draw(0.0f, y, buf);
+	DebugFont::Draw(0.0f, y, buf);
 	y += 32.0f;
 	sprintf_s(buf, ">isOnLadder = %d", pPlayer->isOnLadder());
-	DebugFont_Draw(0.0f, y, buf);
+	DebugFont::Draw(0.0f, y, buf);
 	y += 32.0f;
 	sprintf_s(buf, ">isClimbing = %d", pPlayer->isClimbing());
-	DebugFont_Draw(0.0f, y, buf);
+	DebugFont::Draw(0.0f, y, buf);
 
 	y += 64.0f;
 	sprintf_s(buf, "[ObjectInfo]");
-	DebugFont_Draw(0.0f, y, buf);
+	DebugFont::Draw(0.0f, y, buf);
 	y += 32.0f;
 	sprintf_s(buf, ">FLOOR S(%.2f, %.2f) G(%.2f, %.2f) CollisionSize(%.2f, %.2f)",
 		pObjects[1]->GetScreenPos().x, pObjects[1]->GetScreenPos().y,
 		pObjects[1]->GetGlobalPos().x, pObjects[1]->GetGlobalPos().y,
 		pObjects[1]->GetCollision()->GetWidth(), pObjects[1]->GetCollision()->GetHeight());
-	DebugFont_Draw(0.0f, y, buf);
+	DebugFont::Draw(0.0f, y, buf);
 	y += 32.0f;
 	sprintf_s(buf, ">LADDER1 S(%.2f, %.2f) G(%.2f, %.2f) CollisionPos(%.2f, %.2f)",
 		pObjects[2]->GetScreenPos().x, pObjects[2]->GetScreenPos().y, 
 		pObjects[2]->GetGlobalPos().x, pObjects[2]->GetGlobalPos().y,
 		pObjects[2]->GetCollision()->GetPosition().x, pObjects[2]->GetCollision()->GetPosition().y);
-	DebugFont_Draw(0.0f, y, buf);
+	DebugFont::Draw(0.0f, y, buf);
 	y += 32.0f;
 	sprintf_s(buf, ">LADDER2 S(%.2f, %.2f) G(%.2f, %.2f) CollisionSize(%.2f, %.2f)",
 		pObjects[3]->GetScreenPos().x, pObjects[3]->GetScreenPos().y,
 		pObjects[3]->GetGlobalPos().x, pObjects[3]->GetGlobalPos().y,
 		pObjects[3]->GetCollision()->GetWidth(), pObjects[2]->GetCollision()->GetHeight());
-	DebugFont_Draw(0.0f, y, buf);
+	DebugFont::Draw(0.0f, y, buf);
 }
