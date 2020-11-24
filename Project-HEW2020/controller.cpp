@@ -14,13 +14,13 @@
 //-----------------------------------------------------------------------------
 // グローバル変数宣言
 //-----------------------------------------------------------------------------
-KeyMapType Controller::currentKeyState = 0; // そのフレームでキーの状態保持用
-KeyMapType Controller::prevKeyState = 0;    // 前フレームでのキーの状態保持用
-KeyMapType Controller::triggerKeyState = 0; // トリガー状態の確認用
-KeyMapType Controller::releaseKeyState = 0; // リリース状態の確認用
+KeyMapType GameControl::currentKeyState = 0; // そのフレームでキーの状態保持用
+KeyMapType GameControl::prevKeyState = 0;    // 前フレームでのキーの状態保持用
+KeyMapType GameControl::triggerKeyState = 0; // トリガー状態の確認用
+KeyMapType GameControl::releaseKeyState = 0; // リリース状態の確認用
 
 // キーの変換表
-static const Keyboard_Keys g_KKs[Controller::MAX] = {
+static const Keyboard_Keys g_KKs[GameControl::KeyMap::MAX] = {
     KK_W,
     KK_S,
     KK_A,
@@ -29,7 +29,7 @@ static const Keyboard_Keys g_KKs[Controller::MAX] = {
     KK_F3,
 };
 
-void Controller::Init(void)
+void GameControl::Init(void)
 {
     currentKeyState = 0;
     prevKeyState = 0;
@@ -37,12 +37,7 @@ void Controller::Init(void)
     releaseKeyState = 0;
 }
 
-void Controller::Uninit(void)
-{
-
-}
-
-void Controller::Update(void)
+void GameControl::Update(void)
 {
     // 前フレームのキー状態を保存しておく
     prevKeyState = currentKeyState;
@@ -63,17 +58,17 @@ void Controller::Update(void)
     releaseKeyState = (prevKeyState ^ currentKeyState) & prevKeyState;
 }
 
-bool Controller::GetKeyPress(KeyMap key)
+bool GameControl::GetKeyPress(KeyMap key)
 {
     return currentKeyState & (1u << key);
 }
 
-bool Controller::GetKeyTrigger(KeyMap key)
+bool GameControl::GetKeyTrigger(KeyMap key)
 {
     return triggerKeyState & (1u << key);
 }
 
-bool Controller::GetKeyRelease(KeyMap key)
+bool GameControl::GetKeyRelease(KeyMap key)
 {
     return releaseKeyState & (1u << key);
 }

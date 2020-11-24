@@ -10,7 +10,35 @@
 #pragma once
 
 typedef unsigned long long KeyMapType;
-class Controller
+typedef unsigned int ControllerIndex;
+
+// KeyboardKey
+enum class KK : ControllerIndex
+{
+	W,
+	A,
+	S,
+	D,
+	SPACE,
+	F3,
+	MAX
+};
+
+// XboxButton
+enum class XB : ControllerIndex
+{
+	UP = (int)KK::MAX + 1,
+	DOWN,
+	LEFT,
+	RIGHT,
+	A,
+	B,
+	X,
+	Y,
+	MAX
+};
+
+class GameControl
 {
 public:
 	enum KeyMap
@@ -24,30 +52,20 @@ public:
 		MAX
 	};
 
-	Controller()
-	{
-		this->Init();
-	}
-	~Controller()
-	{
-		this->Uninit();
-	}
-
-	void Init(void);
-	void Uninit(void);
-	void Update(void);
+	static void Init(void);
+	static void Update(void);
 	// キー入力状態の取得
 	// 引数:
 	//	key	... キーマップのキー
-	bool GetKeyPress(KeyMap key);
+	static bool GetKeyPress(KeyMap key);
 	// キー入力状態の取得（押した瞬間）
 	// 引数:
 	//	key	... キーマップのキー
-	bool GetKeyTrigger(KeyMap key);
+	static bool GetKeyTrigger(KeyMap key);
 	// キー入力状態の取得（離した瞬間）
 	// 引数:
 	//	key	... キーマップのキー
-	bool GetKeyRelease(KeyMap key);
+	static bool GetKeyRelease(KeyMap key);
 private:
 	static KeyMapType currentKeyState; // そのフレームでキーの状態保持用
 	static KeyMapType prevKeyState;    // 前フレームでのキーの状態保持用
