@@ -13,14 +13,14 @@
 //-----------------------------------------------------------------------------
 // グローバル変数宣言
 //-----------------------------------------------------------------------------
-static LPDIRECT3D9 g_pD3D = NULL;          // Direct3Dインターフェース
-static LPDIRECT3DDEVICE9 g_pDevice = NULL; // Direct3Dデバイスインターフェース
+LPDIRECT3D9 D3DUtility::pD3D = NULL;          // Direct3Dインターフェース
+LPDIRECT3DDEVICE9 D3DUtility::pDevice = NULL; // Direct3Dデバイスインターフェース
 
 // Direct3D関連の初期化
-bool D3DUtility_Init(HWND hWnd)
+bool D3DUtility::Init(HWND hWnd)
 {
-	g_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
-	if (NULL == g_pD3D)
+	pD3D = Direct3DCreate9(D3D_SDK_VERSION);
+	if (NULL == pD3D)
 	{
 		MessageBox(NULL, "Direct3Dインターフェースの作成に失敗しました", "エラー", MB_OK);
 		return false;
@@ -42,56 +42,56 @@ bool D3DUtility_Init(HWND hWnd)
 
     // Direct3Dデバイスの取得
     HRESULT hr;
-    hr = g_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &g_pDevice);
+    hr = pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &pDevice);
 
     // HRESULT型変数は成功や失敗が値として入っているので
     // 失敗や成功だけ判定する場合はマクロを利用する　FAILED(hr) SUCCEEDED(hr)
     if (FAILED(hr)) MessageBox(NULL, "Direct3Dデバイスの取得に失敗しました", "エラー", MB_OK);
 
     // UVアドレッシングモードの設定
-    g_pDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-    g_pDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+    pDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+    pDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
     //g_pDevice->SetSamplerState(0, D3DSAMP_BORDERCOLOR, D3DCOLOR_RGBA(255, 255, 0, 255));
 
     // テクスチャフィルダリングの設定
-    g_pDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
-    g_pDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_POINT);
-    g_pDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_POINT);
+    pDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
+    pDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_POINT);
+    pDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_POINT);
     //g_pDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
     //g_pDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
     //g_pDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-    g_pDevice->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 16);
+    pDevice->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 16);
 
     // アルファブレンドの設定
-    g_pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE); // アルファブレンドを有効にする
+    pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE); // アルファブレンドを有効にする
     // 半透明…描画色 = 今から描画するRGB * 今から描画するα + 画面のRGB * ( 1 - 今から描画するα )
-    g_pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-    g_pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    g_pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+    pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
     // 頂点カラーとテクスチャのブレンドの設定
-    g_pDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+    pDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
 
     return true; // 初期化成功
 }
 
 // Direct3D関連の終了処理
-void D3DUtility_Uninit(void)
+void D3DUtility::Uninit(void)
 {
-    if (g_pDevice)
+    if (pDevice)
     {
-        g_pDevice->Release();
-        g_pDevice = NULL;
+        pDevice->Release();
+        pDevice = NULL;
     }
-    if (g_pD3D)
+    if (pD3D)
     {
-        g_pD3D->Release();
-        g_pD3D = NULL;
+        pD3D->Release();
+        pD3D = NULL;
     }
 }
 
 // Direct3Dのデバイスを渡す
-LPDIRECT3DDEVICE9 D3DUtility_GetDevice(void)
+LPDIRECT3DDEVICE9 D3DUtility::GetDevice(void)
 {
-    return g_pDevice;
+    return pDevice;
 }
