@@ -22,26 +22,28 @@
 //-----------------------------------------------------------------------------
 // グローバル変数宣言
 //-----------------------------------------------------------------------------
-static Sprite* g_pSpriteDebug = NULL;
+Sprite* DebugFont::pSpriteDebug = NULL;
 
 // デバッグフォントモジュールの初期化
-void DebugFont_Init(void)
+void DebugFont::Init(void)
 {
-    g_pSpriteDebug = new SpriteNormal(TEXTURE_DEBUG);
-    g_pSpriteDebug->SetCutRange(DEBUG_FONT_WIDTH, DEBUG_FONT_HEIGHT);
-    g_pSpriteDebug->SetPolygonSize(DEBUG_FONT_DRAW_WIDTH, DEBUG_FONT_DRAW_HEIGHT);
-    g_pSpriteDebug->SetColor(D3DCOLOR_RGBA(255, 200, 150, 255));
+    delete pSpriteDebug;
+
+    pSpriteDebug = new SpriteNormal(TEXTURE_DEBUG);
+    pSpriteDebug->SetCutRange(DEBUG_FONT_WIDTH, DEBUG_FONT_HEIGHT);
+    pSpriteDebug->SetPolygonSize(DEBUG_FONT_DRAW_WIDTH, DEBUG_FONT_DRAW_HEIGHT);
+    pSpriteDebug->SetColor(D3DCOLOR_RGBA(255, 200, 150, 255));
 }
 
 // デバッグフォントモジュールの終了処理
-void DebugFont_Uninit(void)
+void DebugFont::Uninit(void)
 {
     // メモリ解放
-    delete g_pSpriteDebug;
-    g_pSpriteDebug = NULL;
+    delete pSpriteDebug;
+    pSpriteDebug = NULL;
 }
 
-void DebugFont_Draw(float dx, float dy, const char *pString)
+void DebugFont::Draw(float dx, float dy, const char *pString)
 {
     for (int i = 0; i < strlen(pString); i++)
     {
@@ -49,8 +51,8 @@ void DebugFont_Draw(float dx, float dy, const char *pString)
         int tcx = (offset % DEBUG_FONT_START_CHAR_CODE * DEBUG_FONT_WIDTH);
         int tcy = (offset / DEBUG_FONT_ONE_LINE_CHAR_COUNT * DEBUG_FONT_HEIGHT);
 
-        g_pSpriteDebug->SetCutPos(tcx, tcy);
-        g_pSpriteDebug->SetDrawPos(dx + i * DEBUG_FONT_DRAW_WIDTH, dy);
-        g_pSpriteDebug->Draw();
+        pSpriteDebug->SetCutPos(tcx, tcy);
+        pSpriteDebug->SetDrawPos(dx + i * DEBUG_FONT_DRAW_WIDTH, dy);
+        pSpriteDebug->Draw();
     }
 }
