@@ -41,7 +41,7 @@ Sprite::Sprite()
 		// デバイスとバッファの初期化は一回だけ行う
 		if (!isDeviceInit)
 		{
-			pDevice = D3DUtility_GetDevice();
+			pDevice = D3DUtility::GetDevice();
 			if (!pDevice)
 			{
 				MessageBox(NULL, "Direct3Dデバイスの取得に失敗しました", "エラー", MB_OK);
