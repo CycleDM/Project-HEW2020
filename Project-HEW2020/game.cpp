@@ -10,6 +10,7 @@
 #include <cmath>
 #include "game.h"
 #include "config.h"
+#include "controller.h"
 #include "sprite.h"
 #include "player.h"
 #include "TestScene.h"
@@ -24,8 +25,6 @@ bool Game::bDebugMode = false;
 // ƒQ[ƒ€‚Ì‰Šú‰»
 void Game::Init(void)
 {
-	GameControl::Init();
-
 	delete pScene;
 	pScene = new TestScene;
 }
@@ -51,7 +50,7 @@ void Game::Update(void)
 		GameObject* ladder = pScene->GetNearestObject(player->GetGlobalPos(), GameObject::OBJ_LADDER);
 		if (NULL == ladder) break;
 		// ‚Í‚µ‚²‚ð“o‚ê‚é”ÍˆÍ‚ðŒÀ’è‚·‚é
-		if (abs(ladder->GetGlobalPos().x - player->GetGlobalPos().x) > 64.0f) break;
+		if (32.0f < abs(ladder->GetGlobalPos().x - player->GetGlobalPos().x)) break;
 		// “o‚é
 		if (GameControl::GetKeyPress(GameControl::UP))
 		{
@@ -118,7 +117,6 @@ void Game::Update(void)
 		bDebugMode = bDebugMode ? false : true;
 	}
 
-	GameControl::Update();
 	pScene->Update();
 }
 

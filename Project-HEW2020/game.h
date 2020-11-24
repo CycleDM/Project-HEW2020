@@ -10,7 +10,6 @@
 #pragma once
 
 #include "scene.h"
-#include "controller.h"
 
 class Game
 {
