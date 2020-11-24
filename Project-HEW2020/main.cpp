@@ -161,7 +161,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 bool Init(HWND hWnd)
 {
 	// Direct3Dの初期化
-	if (!D3DUtility_Init(hWnd))
+	if (!D3DUtility::Init(hWnd))
 	{
 		MessageBox(NULL, "Direct3Dの初期化に失敗しました", "エラー", MB_OK);
 		return false;
@@ -175,8 +175,8 @@ bool Init(HWND hWnd)
 		// システムタイマーの初期化
 		SystemTimer_Init();
 
-		DebugFont_Init();
-		Game_Init();
+		DebugFont::Init();
+		Game::Init();
 		// ...
 		// ...
 		// ...
@@ -194,7 +194,7 @@ void Update(void)
 	// ここに各種の更新処理を入れる
 	do
 	{
-		Game_Update();
+		Game::Update();
 		// ...
 		// ...
 		// ...
@@ -215,7 +215,7 @@ void Update(void)
 void Draw(void)
 {
 	// Direct3Dデバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = D3DUtility_GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = D3DUtility::GetDevice();
 	if (!pDevice) return;
 
 	// 画面のクリア -> 背景色の指定
@@ -226,16 +226,16 @@ void Draw(void)
 	// ここに各種の描画処理を入れる
 	do
 	{
-		Game_Draw();
+		Game::Draw();
 		// ...
 		// ...
 		// ...
 		// FPS表示
-		if (Game_IsDebugMode())
+		if (Game::DebugMode())
 		{
 			char buf[64];
 			sprintf(buf, "FPS=%.2f", g_FPS);
-			DebugFont_Draw(0.0f, 0.0f, buf);
+			DebugFont::Draw(0.0f, 0.0f, buf);
 		}
 	} while (0);
 
@@ -248,8 +248,8 @@ void Draw(void)
 // ゲームシステムの終了処理
 void Uninit(void)
 {
-	Game_Uninit();
-	DebugFont_Uninit();
+	Game::Uninit();
+	DebugFont::Uninit();
 	// Direct3Dの終了処理
-	D3DUtility_Uninit();
+	D3DUtility::Uninit();
 }
