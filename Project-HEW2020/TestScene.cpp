@@ -27,7 +27,7 @@ void TestScene::Init(void)
 {
 	// （スクリーンの幅 / テクスチャの切り取り幅）は拡大・縮小の参照データ
 	SetGlobalScaling((float)SCREEN_WIDTH / 384);
-	isDarkness(false);
+	isDarkness(true);
 
 	fBgScroll = D3DXVECTOR2(0.0f, 0.0f);
 	fBgScrollMax = D3DXVECTOR2(264.0f, 0.0f);

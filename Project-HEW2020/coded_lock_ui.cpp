@@ -143,14 +143,14 @@ void CodedLockUI::Update(void)
 
 		// -69 ~ 552
 		int index = CLUI_KEY_H * nInput[nHSelected] - CLUI_KEY_H;;
-		if (!bSwitching && GameControl::GetKeyTrigger(GameControl::UP))
+		if (!bSwitching && GameControl::GetKeyPress(GameControl::UP))
 		{
 			nInput[nHSelected]--;
 			if (nInput[nHSelected] < 0) nInput[nHSelected] = 9;
 			index = CLUI_KEY_H * nInput[nHSelected] - CLUI_KEY_H;
 			if (index == 8 * CLUI_KEY_H) nKeyCut[nHSelected] = index + CLUI_KEY_H;
 		}
-		if (!bSwitching && GameControl::GetKeyTrigger(GameControl::DOWN))
+		if (!bSwitching && GameControl::GetKeyPress(GameControl::DOWN))
 		{
 			nInput[nHSelected]++;
 			if (nInput[nHSelected] > 9) nInput[nHSelected] = 0;
