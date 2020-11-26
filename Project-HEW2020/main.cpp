@@ -24,7 +24,7 @@
 #include "fade.h"
 
 #define CLASS_NAME "GameWindow"
-#define WINDOW_CAPTION "ゲームタイトル「未定」"
+#define WINDOW_CAPTION "Origin v0.3.1(α)"
 
 //-----------------------------------------------------------------------------
 // プロトタイプ宣言

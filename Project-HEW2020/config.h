@@ -19,6 +19,7 @@
 // ゲームオブジェクトの最大数
 #define SINGLE_SCENE_OBJECT_MAX		(128)
 #define SINGLE_SCENE_OVERLAY_MAX	(8)
+#define UI_OVERLAY_MAX				(16)
 
 // テクスチャーのファイル名
 #define TEXTURE_FADE					"assets/texture/fade.png"
@@ -36,4 +37,10 @@
 #define TEXTURE_OBJ_BED					"assets/texture/start_bed.png"
 #define TEXTURE_OBJ_FLOOR				"assets/texture/2f_ground.png"
 #define TEXTURE_OBJ_FLOOR_OVERLAY		"assets/texture/2f_handrail.png"
-#define TEXTURE_OBJECT_LADDER			"assets/texture/ladder.png"
+#define TEXTURE_OBJ_LADDER				"assets/texture/ladder.png"
+
+#define TEXTURE_OBJ_LOCK_ITEM			"assets/texture/lock/lock_item.png"
+#define TEXTURE_OBJ_LOCK_BASE			"assets/texture/lock/lock_base.png"
+#define TEXTURE_OBJ_LOCK_KEY			"assets/texture/lock/lock_key.png"
+#define TEXTURE_OBJ_LOCK_SHADOW			"assets/texture/lock/lock_shadow.png"
+#define TEXTURE_OBJ_LOCK_LIGHT			"assets/texture/lock/lock_light.png"

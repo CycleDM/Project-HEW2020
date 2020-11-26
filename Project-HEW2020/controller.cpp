@@ -25,6 +25,8 @@ static const Keyboard_Keys g_KKs[GameControl::KeyMap::MAX] = {
     KK_S,
     KK_A,
     KK_D,
+    KK_F,
+    KK_Q,
     KK_SPACE,
     KK_F3,
 };

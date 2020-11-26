@@ -136,12 +136,16 @@ void GameObject::Register(ObjectType type)
 		pCollision = new Collision;
 		break;
 	case GameObject::OBJ_LADDER:
-		pSprite->LoadTexture(TEXTURE_OBJECT_LADDER);
+		pSprite->LoadTexture(TEXTURE_OBJ_LADDER);
 		pCollision = new Collision;
 		break;
 	case GameObject::OBJ_DOOR:
 		break;
 	case GameObject::OBJ_KEY:
+		break;
+	case GameObject::OBJ_LOCK:
+		pSprite->LoadTexture(TEXTURE_OBJ_LOCK_ITEM);
+		pCollision = new Collision;
 		break;
 	default:
 		break;

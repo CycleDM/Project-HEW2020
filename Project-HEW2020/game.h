@@ -14,14 +14,23 @@
 class Game
 {
 public:
+	enum SceneType
+	{
+		SCENE_TITLE,
+		SCENE_TEST,
+		SCENE_FINAL,
+		SCENE_MAX
+	};
 	static void Init(void);
 	static void Update(void);
 	static void Draw(void);
 	static void Uninit(void);
 	static bool DebugMode(void);
 
+	static void ChangeScene(Game::SceneType type);
+
 private:
-	static GameScene* pScene;
-	static GameScene* pActiveScene;
+	static GameScene* pActScene;
+	static SceneType eNowScene;
 	static bool bDebugMode;
 };

@@ -14,6 +14,7 @@
 //----------------------------------------------------------------------------
 float GameScene::fGlobalScaling = 1.0f;	// すべてのテクスチャの拡大・縮小参照データ
 bool GameScene::bDarkness = false;
+bool GameScene::bFrozen = false;
 
 GameScene::GameScene()
 {
@@ -54,9 +55,14 @@ bool GameScene::isDarkness(void)
 	return bDarkness;
 }
 
-void GameScene::SetDarkness(bool bDarkness)
+void GameScene::isDarkness(bool bDarkness)
 {
 	GameScene::bDarkness = bDarkness;
+}
+
+void GameScene::Freeze(bool bFrozen)
+{
+	GameScene::bFrozen = bFrozen;
 }
 
 // 指定の座標に一番近く、特定のオブジェクトを取得
@@ -85,4 +91,94 @@ GameObject* GameScene::GetNearestObject(D3DXVECTOR2 position, GameObject::Object
 		}
 	}
 	return target;
+}
+
+void GameScene::PlayerControl(void)
+{
+	// プレイヤー操作
+	GamePlayer* player = this->GetPlayer();
+	if (NULL == player) return;
+	if (bFrozen) return;
+
+	// 移動に関する処理
+	do
+	{
+		if (!player->isOnLadder() && GameControl::GetKeyPress(GameControl::LEFT))
+		{
+			player->MoveLeft();
+		}
+		if (!player->isOnLadder() && GameControl::GetKeyPress(GameControl::RIGHT))
+		{
+			player->MoveRight();
+		}
+	} while (0);
+
+	// はしごに関する処理
+	do
+	{
+		// はしごを登る・降りる
+		// 一番近い梯子のインスタンスを取得
+		GameObject* ladder = this->GetNearestObject(player->GetGlobalPos(), GameObject::OBJ_LADDER);
+		if (NULL == ladder) break;
+		// はしごを登れる範囲を限定する
+		if (32.0f < abs(ladder->GetGlobalPos().x - player->GetGlobalPos().x)) break;
+		// 登る
+		if (GameControl::GetKeyPress(GameControl::UP))
+		{
+			// はしごの中心座標y　< プレイヤーの足y（一番下の座標）
+			// はしごを登れることを判断する
+			if (ladder->GetCollision()->GetPosition().y < player->GetGlobalPos().y + player->GetCollision()->GetHalfHeight())
+			{
+				player->isOnLadder(true);
+			}
+			// プレイヤーの足y < 梯子の上境界y
+			// はしごを離れる
+			if (player->GetGlobalPos().y + player->GetCollision()->GetHalfHeight() < ladder->GetCollision()->GetPosition().y - ladder->GetCollision()->GetHalfHeight())
+			{
+				player->isOnLadder(false);
+				player->isClimbing(false);
+			}
+			// はしごを登る
+			if (player->isOnLadder())
+			{
+				player->MoveUp();
+				// x座標の限定
+				player->SetGlobalPos(ladder->GetGlobalPos().x, player->GetGlobalPos().y);
+			}
+		}
+		// 降りる
+		if (GameControl::GetKeyPress(GameControl::DOWN))
+		{
+			// はしごの中心座標y　> プレイヤーの頭y（一番上の座標）
+			// はしごを登れることを判断する
+			if (ladder->GetCollision()->GetPosition().y > player->GetGlobalPos().y - player->GetCollision()->GetHalfHeight())
+			{
+				player->isOnLadder(true);
+			}
+			// プレイヤーの足y（一番下の座標） > はしごの下境界
+			// はしごを離れる
+			if (player->GetGlobalPos().y + player->GetCollision()->GetHalfHeight() > ladder->GetCollision()->GetPosition().y + ladder->GetCollision()->GetHalfHeight())
+			{
+				player->isOnLadder(false);
+				player->isClimbing(false);
+			}
+			// はしごを降りる
+			if (player->isOnLadder())
+			{
+				// 降りる前に初の座標に移動
+				float startPos = ladder->GetCollision()->GetPosition().y - ladder->GetCollision()->GetHalfHeight();
+				if (player->GetGlobalPos().y < startPos) player->SetGlobalPos(ladder->GetGlobalPos().x, startPos);
+
+				player->MoveDown();
+				// x座標の限定
+				player->SetGlobalPos(ladder->GetGlobalPos().x, player->GetGlobalPos().y);
+			}
+		}
+		// キーを離した時
+		if (!player->isOnLadder()) break;
+		if (GameControl::GetKeyRelease(GameControl::UP) || GameControl::GetKeyRelease(GameControl::DOWN))
+		{
+			player->isClimbing(false);
+		}
+	} while (0);
 }

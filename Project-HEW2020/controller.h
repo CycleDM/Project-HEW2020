@@ -47,6 +47,8 @@ public:
 		DOWN,
 		LEFT,
 		RIGHT,
+		USE,
+		QUIT,
 		JUMP,
 		DEBUG,
 		MAX
