@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="animator.cpp" />
+    <ClCompile Include="coded_lock_ui.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="d3dutility.cpp" />
     <ClCompile Include="debug_font.cpp" />
@@ -38,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animator.h" />
+    <ClInclude Include="coded_lock_ui.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="d3dutility.h" />
