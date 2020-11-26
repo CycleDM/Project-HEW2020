@@ -11,6 +11,7 @@
 
 #include <d3dx9.h>
 #include "scene.h"
+#include "coded_lock_ui.h"
 
 class TestScene : public GameScene
 {
@@ -24,7 +25,11 @@ public:
 	void Draw(void);
 	void Debug(void);
 
+private:
 	void UpdatePlayer(void);
 	void UpdateObject(void);
 	void UpdateOverlay(void);
+	void PlayerControl(void);
+
+	CodedLockUI* pCodedLockUI;
 };

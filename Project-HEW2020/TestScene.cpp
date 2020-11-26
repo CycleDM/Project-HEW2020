@@ -25,15 +25,15 @@ TestScene::~TestScene()
 
 void TestScene::Init(void)
 {
-	SetGlobalScaling(3.3333333333f);
-	SetDarkness(false);
-	//SetDarkness(true);
+	// （スクリーンの幅 / テクスチャの切り取り幅）は拡大・縮小の参照データ
+	SetGlobalScaling((float)SCREEN_WIDTH / 384);
+	isDarkness(false);
 
 	fBgScroll = D3DXVECTOR2(0.0f, 0.0f);
 	fBgScrollMax = D3DXVECTOR2(264.0f, 0.0f);
 	fGroundHeight = 64.0f;
 
-	// プレイヤーインスタンス
+	// プレイヤーインスタンスを作成
 	pPlayer = new GamePlayer;
 	// プレイヤーの座標
 	pPlayer->SetGlobalPos(64.0f, (float)SCREEN_HEIGHT - fGroundHeight);
@@ -64,12 +64,17 @@ void TestScene::Init(void)
 	// LADDER 2
 	pObjects[3] = new GameObject(GameObject::OBJ_LADDER);
 	pObjects[3]->SetGlobalPos(1255.0f, 490.0f);
+	// LOCK
+	pObjects[4] = new GameObject(GameObject::OBJ_LOCK);
+	pObjects[4]->SetGlobalPos(1020.5f, 170.0f);
+	pObjects[4]->SetSize(pObjects[4]->GetWidth() * 0.3f, pObjects[4]->GetHeight() * 0.3f);
 
 
 	// オブジェクトのサイズ一気に初期化
 	for (GameObject* obj : pObjects)
 	{
 		if (NULL == obj) continue;
+		if (GameObject::OBJ_LOCK == obj->GetType()) continue;
 		obj->SetSize(obj->GetWidth() * fGlobalScaling, obj->GetHeight() * fGlobalScaling);
 	}
 
@@ -85,19 +90,10 @@ void TestScene::Init(void)
 	pOverlays[3]->GetSprite()->SetCutRange(SCREEN_WIDTH, SCREEN_HEIGHT);
 	pOverlays[3]->SetSize(pOverlays[3]->GetWidth() * fGlobalScaling * 4.0f, pOverlays[3]->GetHeight() * fGlobalScaling * 4.0f);
 
-	/*----------実験コード-------------------------------------------------------------------------*/
-	GameObject* test = NULL;
-	test = new GameObject[2];
-	test[0].Register(GameObject::OBJ_BED);
-	test[0].SetGlobalPos(120.0f, 435.0f);
-	test[0].SetSize(test[0].GetWidth() * fGlobalScaling, test[0].GetHeight() * fGlobalScaling);
-	test[1].Register(GameObject::OBJ_LADDER);
-	test[1].SetGlobalPos(120.0f, 435.0f);
-	test[1].SetSize(test[1].GetWidth() * fGlobalScaling, test[1].GetHeight() * fGlobalScaling);
 
-	delete[] test;
-	test = NULL;
-	/*----------実験コード-------------------------------------------------------------------------*/
+	// ロック
+	pCodedLockUI = new CodedLockUI;
+	pCodedLockUI->SetPassword(6, 8, 9);
 
 	FadeEffect::Start(FADE_IN, 0.0f, 0.0f, 0.0f, 30);
 }
@@ -109,16 +105,17 @@ void TestScene::Uninit(void)
 	pPlayer = NULL;
 	for (GameObject* p : pObjects)
 	{
-		if (NULL == p) continue;
 		delete p;
-		p = NULL;
 	}
+	memset(pObjects, NULL, sizeof(pObjects));
 	for (GameOverlay* p : pOverlays)
 	{
-		if (NULL == p) continue;
 		delete p;
-		p = NULL;
 	}
+	memset(pOverlays, NULL, sizeof(pOverlays));
+
+	delete pCodedLockUI;
+	pCodedLockUI = NULL;
 }
 
 void TestScene::Update(void)
@@ -144,6 +141,7 @@ void TestScene::Update(void)
 
 void TestScene::Draw(void)
 {
+	// 背景
 	pOverlays[0]->Draw();
 
 	for (GameObject* object : pObjects)
@@ -158,6 +156,8 @@ void TestScene::Draw(void)
 	if (isDarkness())
 		pOverlays[3]->Draw();
 
+	pCodedLockUI->Draw();
+
 	// デバッグ文字の表示
 	if (Game::DebugMode()) this->Debug();
 }
@@ -165,6 +165,8 @@ void TestScene::Draw(void)
 // プレイヤーの更新処理
 void TestScene::UpdatePlayer(void)
 {
+	this->PlayerControl();
+
 	// プレイヤーのコリジョンを取得
 	Collision* collision = pPlayer->GetCollision();
 	// スクリーン座標とワールド座標の同期
@@ -183,8 +185,7 @@ void TestScene::UpdatePlayer(void)
 	float maximumX = (float)SCREEN_WIDTH - collision->GetHalfWidth() + offsetX;
 	float minimumY = 0.0f + collision->GetHalfHeight();
 	float maximumY = (float)SCREEN_HEIGHT - fGroundHeight - collision->GetHalfHeight();
-
-	//
+	//	プレイヤーが2F以上の場合
 	do
 	{
 		// 一番近いFLOORを取得
@@ -204,7 +205,7 @@ void TestScene::UpdatePlayer(void)
 		minimumX = floor->GetGlobalPos().x - floor->GetCollision()->GetHalfWidth() + pPlayer->GetCollision()->GetHalfWidth();
 		maximumX = floor->GetGlobalPos().x + floor->GetCollision()->GetHalfWidth() - pPlayer->GetCollision()->GetHalfWidth();
 	} while (0);
-	
+	// プレイヤーは画面を出ることを防止
 	// 左壁
 	if (collision->GetPosition().x < minimumX)
 		pPlayer->SetGlobalPos(minimumX, pPlayer->GetGlobalPos().y);
@@ -259,9 +260,29 @@ void TestScene::UpdateOverlay(void)
 	// ここからはUIの更新処理
 	do
 	{
+		pCodedLockUI->Update();
 		// ...
 		// ...
 		// ...
+	} while (0);
+}
+
+void TestScene::PlayerControl(void)
+{
+	GameScene::PlayerControl();
+
+	if (GameScene::bFrozen) return;
+	// ロックに関する処理
+	do
+	{
+		GameObject* lock = GetNearestObject(pPlayer->GetGlobalPos(), GameObject::OBJ_LOCK);
+		if (NULL == lock) break;
+		if (64.0f < abs(lock->GetGlobalPos().x - pPlayer->GetGlobalPos().x)) break;
+
+		if (!pCodedLockUI->isUnlocked() && GameControl::GetKeyPress(GameControl::USE))
+		{
+			pCodedLockUI->OpenUI();
+		}
 	} while (0);
 }
 
@@ -280,6 +301,7 @@ void TestScene::Debug(void)
 	DebugFont::Draw(0.0f, y, buf);
 	y += 32.0f;
 	sprintf_s(buf, ">MoveSpeed = %.2f", pPlayer->GetSpeed());
+	DebugFont::Draw(0.0f, y, buf);
 	y += 32.0f;
 	sprintf_s(buf, ">ScreenPos(%.2f, %.2f)", pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y);
 	DebugFont::Draw(0.0f, y, buf);
