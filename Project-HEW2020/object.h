@@ -61,6 +61,7 @@ public:
 		OBJ_LADDER,
 		OBJ_DOOR,
 		OBJ_KEY,
+		OBJ_LOCK,
 		OBJ_MAX
 	};
 
