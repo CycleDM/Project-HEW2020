@@ -18,26 +18,32 @@ public:
 	virtual ~Animator();
 
 	// アニメーションを再生する
-	virtual void Play(void);
+	virtual void Play(Sprite* pSprite);
+	// アニメーションを再生する（一回だけ）
+	virtual void PlayOnce(Sprite* pSprite);
 	// アニメーションを一時的に中止する
-	virtual void Pause(void);
+	virtual void Pause(Sprite* pSprite);
 	// 初期化
 	virtual void Init(Sprite* pSprite = NULL);
-	// 初期化・指定した値を代入する
+	// アニメーターの各種パラメータを代入する
 	// 引数:
-	//	pSprite		... 操作されるスプライト
 	//	nMaxCntX	... テクスチャの切り取りXの最大数
 	//	nMaxCntY	... テクスチャの切り取りYの最大数
 	//	nInterval	... テクスチャ切り替えの間隔（フレーム）
-	virtual void Init(Sprite* pSprite, int nMaxCntX, int nMaxCntY, int nInterval);
+	virtual void Preset(int nMaxCntX, int nMaxCntY, int nInterval);
+	// テクスチャの状態を元に戻す（元データにより）
+	virtual void Reset(Sprite* pSprite);
 
 private:
-	Sprite* pSprite;	// アニメーションとして使われるスプライト
-	int nFrame;			// フレーム計測用の変数
-	int nAnimationCnt;	// テクスチャの切り取り番号
+	int nFrame;				// フレーム計測用の変数
+	int nAnimationCnt;		// テクスチャの切り取り番号
 
-	int nMaxCntX;		// テクスチャの切り取りXの最大値
-	int nMaxCntY;		// テクスチャの切り取りYの最大値
-	int nInterval;		// テクスチャ切り替えの間隔（フレーム）
+	int nMaxCntX;			// テクスチャの切り取りXの最大値
+	int nMaxCntY;			// テクスチャの切り取りYの最大値
+	int nInterval;			// テクスチャ切り替えの間隔（フレーム）
+
+	int originalData[2];	// テクスチャの元データを格納する所(tcx, tcy)
+
+	bool bOncePlayed;		// PlayOnce()で使われるフラグ
 };
 

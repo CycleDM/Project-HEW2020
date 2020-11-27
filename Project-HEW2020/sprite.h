@@ -47,6 +47,8 @@ public:
 	//	tcx	... テクスチャの切り取り座標x
 	//	tcy	... テクスチャの切り取り座標y
 	virtual void SetCutPos(int tcx, int tcy) = 0;
+	// テクスチャの切り取り座標座標を取得
+	virtual D3DXVECTOR2 GetCutPos(void) = 0;
 	// テクスチャの切り取り幅を指定
 	// 引数:
 	//	tcw	... テクスチャの切り取り長さ
@@ -124,6 +126,8 @@ public:
 	virtual void SetCutPos(int tcx, int tcy);
 	// テクスチャの切り取り幅を指定
 	virtual void SetCutRange(int tcw, int tch);
+	// テクスチャの切り取り幅を取得
+	virtual D3DXVECTOR2 GetCutPos(void);
 	// ポリゴンサイズを指定
 	virtual void SetPolygonSize(float dw, float dh);
 	// テクスチャの切り取り幅を取得

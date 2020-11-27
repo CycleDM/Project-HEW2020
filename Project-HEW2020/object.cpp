@@ -104,6 +104,7 @@ GameObject::GameObject()
 {
 	type = OBJ_NONE;
 	pCollision = NULL;
+	bCustomized = false;
 	Register(type);
 }
 
@@ -111,6 +112,7 @@ GameObject::GameObject(ObjectType type)
 {
 	this->type = type;
 	pCollision = NULL;
+	pAnimator = NULL;
 	Register(type);
 }
 
@@ -118,6 +120,8 @@ GameObject::~GameObject()
 {
 	delete pCollision;
 	pCollision = NULL;
+	delete pAnimator;
+	pAnimator = NULL;
 }
 
 void GameObject::Register(ObjectType type)
@@ -139,19 +143,29 @@ void GameObject::Register(ObjectType type)
 		pSprite->LoadTexture(TEXTURE_OBJ_LADDER);
 		pCollision = new Collision;
 		break;
-	case GameObject::OBJ_DOOR:
+	case GameObject::OBJ_DOOR1:
+		pSprite->LoadTexture(TEXTURE_OBJ_DOOR1);
+		pCollision = new Collision;
+		pSprite->SetCutPos(0, 0);
+		pSprite->SetCutRange(17, 91);
+		width = pSprite->GetCutWidth();
+		height = pSprite->GetCutHeight();
+		pAnimator = new Animator();
+		pAnimator->Init(pSprite);
+		pAnimator->Preset(6, 1, 8);
+		bCustomized = true;
 		break;
 	case GameObject::OBJ_KEY:
 		break;
-	case GameObject::OBJ_LOCK:
-		pSprite->LoadTexture(TEXTURE_OBJ_LOCK_ITEM);
+	case GameObject::OBJ_CODED_LOCK:
+		pSprite->LoadTexture(TEXTURE_OBJ_CODED_LOCK_ITEM);
 		pCollision = new Collision;
 		break;
 	default:
 		break;
 	}
 
-	if (NULL != pSprite)
+	if (!bCustomized && NULL != pSprite)
 	{
 		width = (float)pSprite->GetTextureWidth();
 		height = (float)pSprite->GetTextureHeight();
@@ -168,6 +182,11 @@ Collision* GameObject::GetCollision(void)
 	return pCollision;
 }
 
+Animator* GameObject::GetAnimator(void)
+{
+	return pAnimator;
+}
+
 GameObject::ObjectType GameObject::GetType(void)
 {
 	return this->type;
@@ -175,9 +194,9 @@ GameObject::ObjectType GameObject::GetType(void)
 
 void GameObject::Update(void)
 {
-	if (NULL != pCollision)
+	if (!bCustomized && NULL != pCollision)
 	{
-		pCollision->SetPosition(screenPos.x, screenPos.y);
+		pCollision->SetPosition(globalPos.x, globalPos.y);
 	}
 }
 

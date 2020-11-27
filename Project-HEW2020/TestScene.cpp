@@ -27,7 +27,7 @@ void TestScene::Init(void)
 {
 	// （スクリーンの幅 / テクスチャの切り取り幅）は拡大・縮小の参照データ
 	SetGlobalScaling((float)SCREEN_WIDTH / 384);
-	isDarkness(true);
+	isDarkness(false);
 
 	fBgScroll = D3DXVECTOR2(0.0f, 0.0f);
 	fBgScrollMax = D3DXVECTOR2(264.0f, 0.0f);
@@ -65,16 +65,18 @@ void TestScene::Init(void)
 	pObjects[3] = new GameObject(GameObject::OBJ_LADDER);
 	pObjects[3]->SetGlobalPos(1255.0f, 490.0f);
 	// LOCK
-	pObjects[4] = new GameObject(GameObject::OBJ_LOCK);
+	pObjects[4] = new GameObject(GameObject::OBJ_CODED_LOCK);
 	pObjects[4]->SetGlobalPos(1020.5f, 170.0f);
 	pObjects[4]->SetSize(pObjects[4]->GetWidth() * 0.3f, pObjects[4]->GetHeight() * 0.3f);
-
+	// DOOR1
+	pObjects[5] = new GameObject(GameObject::OBJ_DOOR1);
+	pObjects[5]->SetGlobalPos(1557.0f, 538.0f);
 
 	// オブジェクトのサイズ一気に初期化
 	for (GameObject* obj : pObjects)
 	{
 		if (NULL == obj) continue;
-		if (GameObject::OBJ_LOCK == obj->GetType()) continue;
+		if (GameObject::OBJ_CODED_LOCK == obj->GetType()) continue;
 		obj->SetSize(obj->GetWidth() * fGlobalScaling, obj->GetHeight() * fGlobalScaling);
 	}
 
@@ -89,7 +91,6 @@ void TestScene::Init(void)
 	pOverlays[3]->GetSprite()->SetCutPos(640, 360);
 	pOverlays[3]->GetSprite()->SetCutRange(SCREEN_WIDTH, SCREEN_HEIGHT);
 	pOverlays[3]->SetSize(pOverlays[3]->GetWidth() * fGlobalScaling * 4.0f, pOverlays[3]->GetHeight() * fGlobalScaling * 4.0f);
-
 
 	// ロック
 	pCodedLockUI = new CodedLockUI;
@@ -137,6 +138,12 @@ void TestScene::Update(void)
 	UpdatePlayer();
 	UpdateObject();
 	UpdateOverlay();
+
+	// END
+	if (pPlayer->GetGlobalPos().x > 2000.0f)
+	{
+		Game::ChangeScene(Game::SCENE_TITLE);
+	}
 }
 
 void TestScene::Draw(void)
@@ -168,7 +175,7 @@ void TestScene::UpdatePlayer(void)
 	this->PlayerControl();
 
 	// プレイヤーのコリジョンを取得
-	Collision* collision = pPlayer->GetCollision();
+	Collision* pPC = pPlayer->GetCollision();
 	// スクリーン座標とワールド座標の同期
 	float offsetX = fBgScroll.x * fGlobalScaling;
 	float offsetY = 0.0f;
@@ -181,15 +188,15 @@ void TestScene::UpdatePlayer(void)
 		pPlayer->SetScreenPos((float)SCREEN_WIDTH / 2, pPlayer->GetGlobalPos().y);
 
 	// プレイヤーは画面を出ることを防止
-	float minimumX = 0.0f + collision->GetHalfWidth();
-	float maximumX = (float)SCREEN_WIDTH - collision->GetHalfWidth() + offsetX;
-	float minimumY = 0.0f + collision->GetHalfHeight();
-	float maximumY = (float)SCREEN_HEIGHT - fGroundHeight - collision->GetHalfHeight();
+	float minimumX = 0.0f + pPC->GetHalfWidth();
+	float maximumX = (float)SCREEN_WIDTH - pPC->GetHalfWidth() + offsetX;
+	float minimumY = 0.0f + pPC->GetHalfHeight();
+	float maximumY = (float)SCREEN_HEIGHT - fGroundHeight - pPC->GetHalfHeight();
 	//	プレイヤーが2F以上の場合
 	do
 	{
 		// 一番近いFLOORを取得
-		GameObject* floor = GetNearestObject(collision->GetPosition(), GameObject::OBJ_FLOOR);
+		GameObject* floor = GetNearestObject(pPlayer->GetGlobalPos(), GameObject::OBJ_FLOOR);
 		// 取得出来なかった場合、break;
 		if (NULL == floor) break;
 		
@@ -201,34 +208,23 @@ void TestScene::UpdatePlayer(void)
 		// プレイヤーの中心座標y > floorの中心座標y ... break
 		if (pPlayer->GetGlobalPos().y > floor->GetCollision()->GetPosition().y) break;
 
-		maximumY = fTop - pPlayer->GetCollision()->GetHalfHeight();
-		minimumX = floor->GetGlobalPos().x - floor->GetCollision()->GetHalfWidth() + pPlayer->GetCollision()->GetHalfWidth();
-		maximumX = floor->GetGlobalPos().x + floor->GetCollision()->GetHalfWidth() - pPlayer->GetCollision()->GetHalfWidth();
+		maximumY = fTop - pPC->GetHalfHeight();
+		minimumX = floor->GetGlobalPos().x - floor->GetCollision()->GetHalfWidth() + pPC->GetHalfWidth();
+		maximumX = floor->GetGlobalPos().x + floor->GetCollision()->GetHalfWidth() - pPC->GetHalfWidth();
 	} while (0);
 	// プレイヤーは画面を出ることを防止
 	// 左壁
-	if (collision->GetPosition().x < minimumX)
+	if (pPC->GetPosition().x < minimumX)
 		pPlayer->SetGlobalPos(minimumX, pPlayer->GetGlobalPos().y);
 	// 右壁
-	if (collision->GetPosition().x > maximumX)
+	if (pPC->GetPosition().x > maximumX)
 		pPlayer->SetGlobalPos(maximumX, pPlayer->GetGlobalPos().y);
 	// 上境界
-	if (collision->GetPosition().y < minimumY)
+	if (pPC->GetPosition().y < minimumY)
 		pPlayer->SetGlobalPos(pPlayer->GetGlobalPos().x, minimumY);
 	// 下境界
-	if (collision->GetPosition().y > maximumY)
+	if (pPC->GetPosition().y > maximumY)
 		pPlayer->SetGlobalPos(pPlayer->GetGlobalPos().x, maximumY);
-
-	// 当たり判定(テスト用)
-	do
-	{
-		GameObject* obj = GetNearestObject(collision->GetPosition(), GameObject::OBJ_LADDER);
-		if (NULL == obj) break;
-		if (obj->GetGlobalPos().x - collision->GetPosition().x < obj->GetCollision()->GetHalfWidth() + collision->GetHalfWidth())
-		{
-			//pPlayer->SetGlobalPos(obj->GetGlobalPos().x - obj->GetCollision()->GetHalfWidth() - collision->GetHalfWidth(), pPlayer->GetGlobalPos().y);
-		}
-	} while (0);
 
 	// プレイヤーインスタンスを更新
 	pPlayer->Update();
@@ -244,6 +240,40 @@ void TestScene::UpdateObject(void)
 		object->SetScreenPos(object->GetGlobalPos().x - fGlobalPosOffset, object->GetGlobalPos().y);
 		object->Update();
 	}
+
+	// コリジョンにより当たり判定
+	Collision* pPC = pPlayer->GetCollision();
+
+	GameObject* obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_DOOR1);
+	Collision* pOC = obj->GetCollision();
+	do
+	{
+		if (NULL == obj) break;
+		if (NULL == pOC) break;
+
+		if (pCodedLockUI->isUnlocked())
+		{
+			obj->GetAnimator()->PlayOnce(obj->GetSprite());
+			// DOOR1 コリジョンの調整
+			pOC->SetPosition(pOC->GetPosition().x, pOC->GetPosition().y - pOC->GetHalfHeight());
+			pOC->SetSize(pOC->GetWidth(), 0.0f);
+		}
+		else
+		{
+			pOC->SetPosition(obj->GetGlobalPos().x, obj->GetGlobalPos().y);
+			pOC->SetSize(obj->GetSprite()->GetPolygonWidth(), obj->GetSprite()->GetPolygonHeight());
+		}
+
+		//-----------------------------------------------------------------------------------
+		if (abs(pPC->GetPosition().y - pOC->GetPosition().y)
+			> pPC->GetHalfHeight() + pOC->GetHalfHeight()) break;
+		//-----------------------------------------------------------------------------------
+
+		if (obj->GetGlobalPos().x - pPC->GetPosition().x < pOC->GetHalfWidth() + pPC->GetHalfWidth())
+		{
+			pPlayer->SetGlobalPos(obj->GetGlobalPos().x - pOC->GetHalfWidth() - pPC->GetHalfWidth(), pPlayer->GetGlobalPos().y);
+		}
+	} while (0);
 }
 
 // オーバーレイの更新処理
@@ -275,7 +305,7 @@ void TestScene::PlayerControl(void)
 	// ロックに関する処理
 	do
 	{
-		GameObject* lock = GetNearestObject(pPlayer->GetGlobalPos(), GameObject::OBJ_LOCK);
+		GameObject* lock = GetNearestObject(pPlayer->GetGlobalPos(), GameObject::OBJ_CODED_LOCK);
 		if (NULL == lock) break;
 		if (64.0f < abs(lock->GetGlobalPos().x - pPlayer->GetGlobalPos().x)) break;
 

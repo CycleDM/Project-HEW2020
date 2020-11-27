@@ -266,6 +266,12 @@ void SpriteNormal::SetCutPos(int tcx, int tcy)
 	this->tcx = tcx;
 	this->tcy = tcy;
 }
+
+D3DXVECTOR2 SpriteNormal::GetCutPos(void)
+{
+	return D3DXVECTOR2(tcx, tcy);
+}
+
 void SpriteNormal::SetCutRange(int tcw, int tch)
 {
 	this->tcw = tcw;

@@ -12,13 +12,11 @@
 
 Animator::Animator()
 {
-	pSprite = NULL;
 	Init();
 }
 
 Animator::~Animator()
 {
-	pSprite = NULL;
 }
 
 void Animator::Init(Sprite* pSprite)
@@ -29,28 +27,40 @@ void Animator::Init(Sprite* pSprite)
 	nMaxCntY = 0;
 	nInterval = 0;
 
+	bOncePlayed = false;
+
 	// メンバー変数のpSpriteは NULL じゃなかったら、テクスチャの切り取り座標をリセットする
-	if (NULL != this->pSprite)
-	{
-		this->pSprite->SetCutPos(0, 0);
-		this->pSprite = NULL;
-	}
-	// 引数のpSpriteは NULL じゃなかったら、引数のスプライトを使う
 	if (NULL != pSprite)
 	{
-		this->pSprite = pSprite;
+		originalData[0] = pSprite->GetCutPos().x;
+		originalData[1] = pSprite->GetCutPos().y;
+	}
+	else
+	{
+		originalData[0] = 0;
+		originalData[1] = 0;
 	}
 }
 
-void Animator::Init(Sprite* pSprite, int nMaxCntX, int nMaxCntY, int nInterval)
+void Animator::Preset(int nMaxCntX, int nMaxCntY, int nInterval)
 {
-	this->pSprite = pSprite;
 	this->nMaxCntX = nMaxCntX;
 	this->nMaxCntY = nMaxCntY;
 	this->nInterval = nInterval;
 }
 
-void Animator::Play(void)
+void Animator::Reset(Sprite* pSprite)
+{
+	if (NULL == pSprite) return;
+	pSprite->SetCutPos(originalData[0], originalData[1]);
+
+	nFrame = 0;
+	nAnimationCnt = 0;
+	Preset(0, 0, 0);
+	bOncePlayed = false;
+}
+
+void Animator::Play(Sprite* pSprite)
 {
 	if (NULL == pSprite) return;
 
@@ -60,14 +70,34 @@ void Animator::Play(void)
 		nAnimationCnt++;
 		nFrame = 0;
 	}
-	if (nAnimationCnt > nMaxCntX + nMaxCntY + 1)
+	if (nAnimationCnt > nMaxCntX * nMaxCntY - 1)
 	{
 		nAnimationCnt = 0;
 	}
 	pSprite->SetCutPos(pSprite->GetCutWidth() * (nAnimationCnt % nMaxCntX), pSprite->GetCutHeight() * (nAnimationCnt / nMaxCntY));
 }
 
-void Animator::Pause(void)
+void Animator::PlayOnce(Sprite* pSprite)
+{
+	if (NULL == pSprite) return;
+	if (bOncePlayed) return;
+
+	nFrame++;
+	if (nFrame >= nInterval)
+	{
+		nAnimationCnt++;
+		nFrame = 0;
+	}
+	if (nAnimationCnt > nMaxCntX * nMaxCntY - 1)
+	{
+		nAnimationCnt = 0;
+		bOncePlayed = true;
+		return;
+	}
+	pSprite->SetCutPos(pSprite->GetCutWidth() * (nAnimationCnt % nMaxCntX), pSprite->GetCutHeight() * (nAnimationCnt / nMaxCntY));
+}
+
+void Animator::Pause(Sprite* pSprite)
 {
 	if (NULL == pSprite) return;
 	pSprite->SetCutPos(pSprite->GetCutWidth() * (nAnimationCnt % nMaxCntX), pSprite->GetCutHeight() * (nAnimationCnt / nMaxCntY));
