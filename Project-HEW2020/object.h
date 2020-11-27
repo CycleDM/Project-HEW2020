@@ -11,6 +11,7 @@
 
 #include "sprite.h"
 #include "collision.h"
+#include "animator.h"
 
 //----------------------------------------------------------------------------
 // 基本クラス
@@ -59,9 +60,9 @@ public:
 		OBJ_BED,
 		OBJ_FLOOR,
 		OBJ_LADDER,
-		OBJ_DOOR,
+		OBJ_DOOR1,
 		OBJ_KEY,
-		OBJ_LOCK,
+		OBJ_CODED_LOCK,
 		OBJ_MAX
 	};
 
@@ -75,9 +76,12 @@ public:
 	void SetSize(float, float);
 
 	Collision* GetCollision(void);
+	Animator* GetAnimator(void);
 	ObjectType GetType(void);
 
 private:
 	ObjectType type;			// 自分のタイプを保存する所
-	Collision* pCollision;		// ***未完成***
+	Collision* pCollision;		// コリジョン
+	Animator* pAnimator;		// アニメーター
+	bool bCustomized;
 };

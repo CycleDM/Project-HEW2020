@@ -44,18 +44,18 @@ void CodedLockUI::Init(void)
 
 	int n = 0;
 	// BASE 0
-	pLockUI[n] = new GameOverlay(TEXTURE_OBJ_LOCK_BASE);
+	pLockUI[n] = new GameOverlay(TEXTURE_CLUI_BASE);
 	fOffsetY[n] = pLockUI[n]->GetSprite()->GetTextureHeight() / 2;
 	n++;
 	// SHADOW 1
-	pLockUI[n] = new GameOverlay(TEXTURE_OBJ_LOCK_SHADOW);
+	pLockUI[n] = new GameOverlay(TEXTURE_CLUI_SHADOW);
 	n++;
 	// KEY 2-4
 	for (int i = 0; i < 3; i++, n++)
 	{
 		fOffsetX[n] = 62.0f;
 		fOffsetY[n] = 0.0f;
-		pLockUI[n] = new GameOverlay(TEXTURE_OBJ_LOCK_KEY);
+		pLockUI[n] = new GameOverlay(TEXTURE_CLUI_KEY);
 		pLockUI[n]->SetSize((float)50, (float)207);
 		pLockUI[n]->GetSprite()->SetCutPos(0, -CLUI_KEY_H);
 		pLockUI[n]->GetSprite()->SetCutRange(50, 207);
@@ -65,7 +65,7 @@ void CodedLockUI::Init(void)
 	{
 		fOffsetX[n] = 60.5f;
 		fOffsetY[n] = 107.5f;
-		pLockUI[n] = new GameOverlay(TEXTURE_OBJ_LOCK_LIGHT);
+		pLockUI[n] = new GameOverlay(TEXTURE_CLUI_LIGHT);
 	}
 	this->ResetPos();
 
@@ -182,7 +182,7 @@ void CodedLockUI::Update(void)
 	do
 	{
 		if (bOpening || bQuiting) break;
-		if (GameControl::GetKeyTrigger(GameControl::USE))
+		if (!bTrying && GameControl::GetKeyTrigger(GameControl::USE))
 		{
 			nFrame = 0;
 			bTrying = true;	
@@ -220,6 +220,7 @@ void CodedLockUI::Draw(void)
 {
 	if (!bActive) return;
 	pBgOverlay->Draw();
+	// ï`âÊèáî‘
 	int number[] = { 2, 3, 4, 0, 1, 5, 6, 7 };
 	for (int i = 0; i < sizeof(number) / sizeof(number[0]); i++)
 	{
@@ -299,9 +300,9 @@ void CodedLockUI::TryToUnlock(void)
 	do
 	{
 		if (bCorrect) break;
-		if (nFrame <= 180)
+		if (nFrame <= 75)
 		{
-			if (nFrame <= 30 || (nFrame >= 60 && nFrame <= 90) || nFrame >= 120)
+			if (nFrame <= 15 || (nFrame >= 30 && nFrame <= 45) || nFrame >= 60)
 			{
 				pLockUI[5]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 0, 0, 255));
 				pLockUI[6]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 0, 0, 255));

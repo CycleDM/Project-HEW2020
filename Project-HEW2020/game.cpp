@@ -13,12 +13,13 @@
 #include "controller.h"
 #include "sprite.h"
 #include "player.h"
+#include "TitleScene.h"
 #include "TestScene.h"
 
 //-----------------------------------------------------------------------------
 // ÉOÉçÅ[ÉoÉãïœêîêÈåæ
 //-----------------------------------------------------------------------------
-Game::SceneType Game::eNowScene = SCENE_TEST;
+Game::SceneType Game::eNowScene = SCENE_TITLE;
 GameScene* Game::pActScene = NULL;
 bool Game::bDebugMode = false;
 
@@ -31,6 +32,7 @@ void Game::Init(void)
 	switch (eNowScene)
 	{
 	case Game::SCENE_TITLE:
+		pActScene = new TitleScene;
 		break;
 	case Game::SCENE_TEST:
 		pActScene = new TestScene;

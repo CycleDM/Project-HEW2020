@@ -95,7 +95,8 @@ void GamePlayer::Init(void)
 
 	// アニメーション制御用のインスタンスを作成
 	pAnimator = new Animator;
-	pAnimator->Init(pSprite, 4, 2, 8);
+	pAnimator->Init(pActiveSprite);
+	pAnimator->Preset(4, 2, 8);
 }
 
 void GamePlayer::Uninit(void)
@@ -117,29 +118,29 @@ void GamePlayer::Update(void)
 	if (isWalking())
 	{
 		pActiveSprite = pSprite;
-		pAnimator->Init(pSprite, 4, 2, 8);
-		pAnimator->Play();
+		pAnimator->Preset(4, 2, 8);
+		pAnimator->Play(pActiveSprite);
 	}
 	else if (bClimbingUp)
 	{
 		pActiveSprite = pSprite + 1;
-		pAnimator->Init(pActiveSprite, 5, 5, 5);
-		pAnimator->Play();
+		pAnimator->Preset(5, 5, 5);
+		pAnimator->Play(pActiveSprite);
 	}
 	else if (bClimbingDown)
 	{
 		pActiveSprite = pSprite + 2;
-		pAnimator->Init(pActiveSprite, 1, 1, 0);
-		pAnimator->Play();
+		pAnimator->Preset(1, 1, 0);
+		pAnimator->Play(pActiveSprite);
 	}
 	else if (!isClimbing() && isOnLadder())
 	{
-		pAnimator->Pause();
+		pAnimator->Pause(pActiveSprite);
 	}
 	else
 	{
 		pActiveSprite = pSprite;
-		pAnimator->Init(pSprite);
+		pAnimator->Reset(pSprite);
 	}
 	/*----------アニメーション-------------------------------------------------------------------------*/
 
