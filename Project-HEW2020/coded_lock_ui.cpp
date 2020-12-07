@@ -90,7 +90,7 @@ void CodedLockUI::Uninit(void)
 
 void CodedLockUI::Update(void)
 {
-	nFrame = (bActive || bOpening || bQuiting) ? nFrame + 1 : 0;
+	nFrame = (bActive || bOpening || bQuiting) ? ++nFrame : 0;
 
 	if (nFrame >= 3000) nFrame = 0;
 
@@ -276,7 +276,7 @@ void CodedLockUI::TryToUnlock(void)
 	bool bCorrect = false;
 	for (int i = 0; i < 3; i++)
 	{
-		bCorrect = nInput[i] == nPassword[i] ? true : false;
+		bCorrect = (nInput[i] == nPassword[i]);
 		if (!bCorrect) break;
 	}
 	do
