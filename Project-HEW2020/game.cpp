@@ -54,7 +54,7 @@ void Game::Update(void)
 	// Switch Debug Mode
 	if (GameControl::GetKeyTrigger(GameControl::DEBUG))
 	{
-		bDebugMode = bDebugMode ? false : true;
+		bDebugMode = !bDebugMode;
 	}
 }
 
