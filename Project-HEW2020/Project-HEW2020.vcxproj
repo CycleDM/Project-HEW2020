@@ -33,6 +33,7 @@
     <ClCompile Include="overlay.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="scene.cpp" />
+    <ClCompile Include="GameScene01.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="system_timer.cpp" />
     <ClCompile Include="TestScene.cpp" />
@@ -53,6 +54,7 @@
     <ClInclude Include="overlay.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="scene.h" />
+    <ClInclude Include="GameScene01.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="system_timer.h" />
     <ClInclude Include="TestScene.h" />

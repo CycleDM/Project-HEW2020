@@ -161,6 +161,12 @@ void GameObject::Register(ObjectType type)
 		pSprite->LoadTexture(TEXTURE_OBJ_CODED_LOCK_ITEM);
 		pCollision = new Collision;
 		break;
+	case GameObject::OBJ_TRASH_STACK:
+		pSprite->LoadTexture(TEXTURE_OBJ_TRASH1);
+		break;
+	case GameObject::OBJ_TRASH_CORE:
+		pSprite->LoadTexture(TEXTURE_OBJ_TRASH2);
+		break;
 	default:
 		break;
 	}

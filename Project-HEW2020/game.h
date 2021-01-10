@@ -17,6 +17,9 @@ public:
 	enum SceneType
 	{
 		SCENE_TITLE,
+		SCENE_01,
+		SCENE_02,
+		SCENE_03,
 		SCENE_TEST,
 		SCENE_FINAL,
 		SCENE_MAX

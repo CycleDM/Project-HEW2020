@@ -15,11 +15,12 @@
 #include "player.h"
 #include "TitleScene.h"
 #include "TestScene.h"
+#include "GameScene01.h"
 
 //-----------------------------------------------------------------------------
 // ÉOÉçÅ[ÉoÉãïœêîêÈåæ
 //-----------------------------------------------------------------------------
-Game::SceneType Game::eNowScene = SCENE_TITLE;
+Game::SceneType Game::eNowScene = SCENE_01;
 GameScene* Game::pActScene = NULL;
 bool Game::bDebugMode = false;
 
@@ -33,6 +34,13 @@ void Game::Init(void)
 	{
 	case Game::SCENE_TITLE:
 		pActScene = new TitleScene;
+		break;
+	case Game::SCENE_01:
+		pActScene = new GameScene01;
+		break;
+	case Game::SCENE_02:
+		break;
+	case Game::SCENE_03:
 		break;
 	case Game::SCENE_TEST:
 		pActScene = new TestScene;
