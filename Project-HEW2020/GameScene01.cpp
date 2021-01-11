@@ -55,11 +55,19 @@ void GameScene01::Init()
 	pObjects[0]->SetGlobalPos(900.0f, 310.0f);
 	pObjects[1] = new GameObject(GameObject::OBJ_TRASH_CORE);
 	pObjects[1]->SetGlobalPos(900.0f, 310.0f);
+	// DOOR1
+	pObjects[2] = new GameObject(GameObject::OBJ_DOOR1);
+	pObjects[2]->SetGlobalPos(3100.0f, 415.0f);
+
 	// OBJ Size
 	for (GameObject* obj : pObjects)
 	{
 		if (NULL == obj) continue;
-		if (GameObject::OBJ_CODED_LOCK == obj->GetType()) continue;
+		if (GameObject::OBJ_DOOR1 == obj->GetType())
+		{
+			obj->SetSize(obj->GetWidth() * 1.5f, obj->GetHeight() * 2.0f);
+			continue;
+		}
 		obj->SetSize(obj->GetWidth() * fGlobalScaling, obj->GetHeight() * fGlobalScaling);
 	}
 }
