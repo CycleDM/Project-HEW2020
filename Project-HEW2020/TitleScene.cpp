@@ -37,6 +37,12 @@ void TitleScene::Init(void)
 	// ICON
 	pOverlays[1] = new GameOverlay("assets/texture/title_icon.png");
 	pOverlays[1]->SetScreenPos((float)SCREEN_WIDTH / 2, 300.0f);
+	pOverlays[1]->GetSprite()->SetCutPos(0, 0);
+	pOverlays[1]->GetSprite()->SetCutRange(1280, 720);
+	pOverlays[1]->SetSize(1280.0f, 720.0f);
+	pAnimator = new Animator;
+	pAnimator->Init(pOverlays[1]->GetSprite());
+	pAnimator->Preset(7, 1, 8);
 
 	// BUTTON1
 	pOverlays[2] = new GameOverlay("assets/texture/title_button1.png");
@@ -62,6 +68,8 @@ void TitleScene::Uninit(void)
 
 void TitleScene::Update(void)
 {
+	pAnimator->Play(pOverlays[1]->GetSprite());
+
 	if (GameControl::GetKeyTrigger(GameControl::JUMP))
 	{
 		Game::ChangeScene(Game::SCENE_TEST);

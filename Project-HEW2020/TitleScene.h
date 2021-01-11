@@ -27,5 +27,7 @@ private:
 	void UpdatePlayer(void);
 	void UpdateObject(void);
 	void UpdateOverlay(void);
+
+	Animator* pAnimator;
 };
 

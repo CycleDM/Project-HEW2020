@@ -20,7 +20,7 @@
 //-----------------------------------------------------------------------------
 // ƒOƒ[ƒoƒ‹•Ï”éŒ¾
 //-----------------------------------------------------------------------------
-Game::SceneType Game::eNowScene = SCENE_01;
+Game::SceneType Game::eNowScene = SCENE_TITLE;
 GameScene* Game::pActScene = NULL;
 bool Game::bDebugMode = false;
 
