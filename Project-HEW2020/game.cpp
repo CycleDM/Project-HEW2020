@@ -22,6 +22,13 @@
 //-----------------------------------------------------------------------------
 Game::SceneType Game::eNowScene = SCENE_TITLE;
 GameScene* Game::pActScene = NULL;
+
+HWND Game::hWnd = NULL;
+POINT Game::mousePosition = { 0, 0 };
+int Game::window_width = 0;
+int Game::window_height = 0;
+bool Game::onFocus = true;
+
 bool Game::bDebugMode = false;
 
 // ƒQ[ƒ€‚Ì‰Šú‰»
@@ -64,6 +71,35 @@ void Game::Update(void)
 	{
 		bDebugMode = !bDebugMode;
 	}
+
+	//Mouse Position
+	GetCursorPos(&mousePosition);
+	ScreenToClient(hWnd, &mousePosition);
+	
+	//do
+	//{
+	//	if (!onFocus) break;
+	//
+	//	POINT new_pos = { mousePosition.x, mousePosition.y };
+	//	if (mousePosition.x > SCREEN_WIDTH)
+	//	{
+	//		new_pos = { 1280, mousePosition.y };
+	//	}
+	//	if (mousePosition.x < 0)
+	//	{
+	//		new_pos = { 0, mousePosition.y };
+	//	}
+	//	if (mousePosition.y > SCREEN_HEIGHT)
+	//	{
+	//		new_pos = { mousePosition.x, SCREEN_HEIGHT };
+	//	}
+	//	if (mousePosition.y < SCREEN_HEIGHT - window_height)
+	//	{
+	//		new_pos = { mousePosition.x, SCREEN_HEIGHT - window_height };
+	//	}
+	//	ClientToScreen(hWnd, &new_pos);
+	//	SetCursorPos(new_pos.x, new_pos.y);
+	//} while (0);
 }
 
 // ƒQ[ƒ€‚Ì•`‰æ
@@ -92,4 +128,31 @@ void Game::ChangeScene(Game::SceneType type)
 {
 	eNowScene = type;
 	Init();
+}
+
+void Game::BindWindow(HWND hWnd, int window_width, int window_height)
+{
+	Game::hWnd = hWnd;
+	Game::window_width = window_width;
+	Game::window_height = window_height;
+}
+
+long Game::GetMouseX(void)
+{
+	return mousePosition.x;
+}
+
+long Game::GetMouseY(void)
+{
+	return mousePosition.y;
+}
+
+void Game::SetFocus(bool onFocus)
+{
+	Game::onFocus = onFocus;
+}
+
+HWND Game::GetWindow(void)
+{
+	return hWnd;
 }

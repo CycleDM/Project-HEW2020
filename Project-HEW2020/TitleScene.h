@@ -28,6 +28,12 @@ private:
 	void UpdateObject(void);
 	void UpdateOverlay(void);
 
+	void UpdateTitleButton(void);
+
 	Animator* pAnimator;
+	// -1 = NONE
+	// 0 = Start
+	// 1 = Quit
+	int buttonSelected;
 };
 
