@@ -1,21 +1,22 @@
 //----------------------------------------------------------------------------
 // 
-// Project-HEW2020 [TitleScene.h]
-// タイトル画面シーン
+// Project-HEW2020 [GameScene01.h]
+// シーン01
 // 
-// Date:   2020/11/27
+// Date:   2021/01/10
 // Author: AT12D187_17_周進
 // 
 //----------------------------------------------------------------------------
 #pragma once
 
+#include <d3dx9.h>
 #include "scene.h"
 
-class TitleScene : public GameScene
+class GameScene01 : public GameScene
 {
 public:
-	TitleScene();
-	~TitleScene();
+	GameScene01();
+	~GameScene01();
 
 	void Init(void);
 	void Uninit(void);
@@ -27,13 +28,5 @@ private:
 	void UpdatePlayer(void);
 	void UpdateObject(void);
 	void UpdateOverlay(void);
-
-	void UpdateTitleButton(void);
-
-	Animator* pAnimator;
-	// -1 = NONE
-	// 0 = Start
-	// 1 = Quit
-	int buttonSelected;
+	void PlayerControl(void);
 };
-

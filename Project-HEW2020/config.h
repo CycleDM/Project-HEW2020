@@ -45,3 +45,9 @@
 #define TEXTURE_CLUI_KEY				"assets/texture/lock/lock_key.png"
 #define TEXTURE_CLUI_SHADOW				"assets/texture/lock/lock_shadow.png"
 #define TEXTURE_CLUI_LIGHT				"assets/texture/lock/lock_light.png"
+
+// GameScene01
+#define TEXTURE_SCENE01_BG				"assets/texture/scene01/background.png"
+#define TEXTURE_SCENE01_BG_OVERLAY		"assets/texture/scene01/background_overlay.png"
+#define TEXTURE_OBJ_TRASH1				"assets/texture/scene01/trash_stack.png"
+#define TEXTURE_OBJ_TRASH2				"assets/texture/scene01/trash_core.png"

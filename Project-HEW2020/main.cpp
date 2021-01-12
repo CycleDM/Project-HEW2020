@@ -30,7 +30,7 @@
 // プロトタイプ宣言
 //-----------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-bool Init(HWND hWnd);
+bool Init(HWND hWnd, HINSTANCE hInstance);
 void Update(void);
 void Draw(void);
 void Uninit(void);
@@ -38,7 +38,6 @@ void Uninit(void);
 //-----------------------------------------------------------------------------
 // グローバル変数宣言
 //-----------------------------------------------------------------------------
-static HWND g_hWnd = NULL; // ウィンドウハンドル
 static int g_FrameCount = 0;
 static int g_BaseFrame = 0;
 static double g_BaseTime = 0;
@@ -98,7 +97,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	if (NULL == hWnd) return 0;
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
-	if (!Init(hWnd)) return 0;
+	if (!Init(hWnd, hInstance)) return 0;
+	Game::BindWindow(hWnd, window_width, window_height);
 
 	// ゲームのメーンループ
 	MSG msg = {};
@@ -132,11 +132,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
 	{
+	case WM_SETFOCUS:
+		Game::SetFocus(true);
+		break;
+	case WM_KILLFOCUS:
+		Game::SetFocus(false);
+		break;
 	case WM_KEYDOWN:
-		if (wParam == VK_ESCAPE)
-		{
-			SendMessage(hWnd, WM_CLOSE, 0, 0);
-		}
+		//if (wParam == VK_ESCAPE)
+		//{
+		//	SendMessage(hWnd, WM_CLOSE, 0, 0);
+		//}
 	case WM_ACTIVATEAPP:
 	case WM_SYSKEYDOWN:
 	case WM_KEYUP:
@@ -159,10 +165,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 // ゲームシステムの初期化
-bool Init(HWND hWnd)
+bool Init(HWND hWnd, HINSTANCE hInstance)
 {
 	// Direct3Dの初期化
-	if (!D3DUtility::Init(hWnd))
+	if (!D3DUtility::Init(hWnd, hInstance))
 	{
 		MessageBox(NULL, "Direct3Dの初期化に失敗しました", "エラー", MB_OK);
 		return false;
