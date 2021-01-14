@@ -212,6 +212,11 @@ void GameScene01::UpdatePlayer()
 void GameScene01::PlayerControl()
 {
 	GameScene::PlayerControl();
+
+	if (GameControl::GetKeyTrigger(GameControl::JUMP))
+	{
+		SendMessage(Game::GetWindow(), WM_CLOSE, 0, 0);
+	}
 }
 
 void GameScene01::Debug()

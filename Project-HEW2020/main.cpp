@@ -125,6 +125,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			//Scene_ExecuteChange();
 		}
 	}
+	// 終了処理
+	Uninit();
 	return (int)msg.wParam;
 }
 
@@ -186,9 +188,6 @@ bool Init(HWND hWnd, HINSTANCE hInstance)
 		FadeEffect::Init();
 		GameControl::Init();
 		Game::Init();
-		// ...
-		// ...
-		// ...
 	} while (0);
 	g_ReserveTime = g_BaseTime = SystemTimer_GetTime();
 	g_FrameCount = g_BaseFrame = 0;
@@ -206,9 +205,6 @@ void Update(void)
 		Game::Update();
 		GameControl::Update();
 		FadeEffect::Update();
-		// ...
-		// ...
-		// ...
 	} while (0);
 
 	// 計測
@@ -239,9 +235,6 @@ void Draw(void)
 	{
 		Game::Draw();
 		FadeEffect::Draw();
-		// ...
-		// ...
-		// ...
 		// FPS表示
 		if (Game::DebugMode())
 		{
@@ -253,7 +246,6 @@ void Draw(void)
 
 	// 描画バッチ命令の終了
 	pDevice->EndScene();
-	// バックバッファをフリップ（タイミングはD3DPRESENT_PARAMETERSの設定による）
 	pDevice->Present(NULL, NULL, NULL, NULL);
 }
 
@@ -263,6 +255,5 @@ void Uninit(void)
 	Game::Uninit();
 	FadeEffect::Uninit();
 	DebugFont::Uninit();
-	// Direct3Dの終了処理
 	D3DUtility::Uninit();
 }

@@ -22,6 +22,7 @@
 #define UI_OVERLAY_MAX				(16)
 
 // テクスチャーのファイル名
+#define TEXTURE_LOADING					"assets/texture/loading.png"
 #define TEXTURE_FADE					"assets/texture/fade.png"
 #define TEXTURE_DEBUG					"assets/texture/debug_font_32x64.png"
 #define TEXTURE_BG						"assets/texture/background_only.png"
