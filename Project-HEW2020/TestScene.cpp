@@ -142,7 +142,7 @@ void TestScene::Update(void)
 	// END
 	if (pPlayer->GetGlobalPos().x > 2000.0f)
 	{
-		Game::ChangeScene(Game::SCENE_TITLE);
+		Game::SwitchScene(Game::SCENE_TITLE);
 	}
 }
 

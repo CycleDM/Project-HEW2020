@@ -84,7 +84,7 @@ void TitleScene::Update(void)
 
 	if (buttonSelected == 0 && ((g_MouseState.rgbButtons[0] & 0x80) || GameControl::GetKeyTrigger(GameControl::JUMP)))
 	{
-		Game::ChangeScene(Game::SCENE_01);
+		Game::SwitchScene(Game::SCENE_01);
 	}
 	if (buttonSelected == 1 && (g_MouseState.rgbButtons[0] & 0x80))
 	{

@@ -11,6 +11,7 @@
 
 #include <d3dx9.h>
 #include "scene.h"
+#include "generator_ui.h"
 
 class GameScene01 : public GameScene
 {
@@ -29,4 +30,12 @@ private:
 	void UpdateObject(void);
 	void UpdateOverlay(void);
 	void PlayerControl(void);
+
+	bool bIdea[3];
+	bool bIdeaHand[2];
+	bool bCodeTaken[2];
+	bool bDoorUnlockded[2];
+	bool bEndScene;
+
+	GeneratorUI* pGeneratorUI;
 };

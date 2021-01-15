@@ -9,7 +9,27 @@
 //----------------------------------------------------------------------------
 #pragma once
 
+#include <thread>
 #include "scene.h"
+
+using namespace std;
+
+class LoadingScreen
+{
+public:
+	LoadingScreen();
+	~LoadingScreen();
+
+	void Update(void);
+	void Draw(void);
+	void Show(void);
+	void Hide(void);
+
+private:
+	Sprite* pSprite;
+	Animator* pAnimator;
+	bool isHidden;
+};
 
 class Game
 {
@@ -25,12 +45,16 @@ public:
 		SCENE_MAX
 	};
 	static void Init(void);
+	static void InitScene(void);
+	static void Uninit(void);
+	static void UninitScene(void);
+
 	static void Update(void);
 	static void Draw(void);
-	static void Uninit(void);
+
 	static bool DebugMode(void);
 
-	static void ChangeScene(Game::SceneType type);
+	static void SwitchScene(Game::SceneType type);
 
 	static void BindWindow(HWND hWnd, int window_width, int window_height);
 	static long GetMouseX(void);
@@ -41,11 +65,13 @@ private:
 	static HWND hWnd;
 	static GameScene* pActScene;
 	static SceneType eNowScene;
+	static LoadingScreen* pLoadingScreen;
 
 	static POINT mousePosition;
 	static bool onFocus;
 	static int window_width;
 	static int window_height;
 
+	static bool bLoadingFlag;
 	static bool bDebugMode;
 };
