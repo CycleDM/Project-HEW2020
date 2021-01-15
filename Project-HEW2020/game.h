@@ -45,7 +45,7 @@ public:
 		SCENE_MAX
 	};
 	static void Init(void);
-	static void InitScene(bool* flag);
+	static void InitScene(void);
 	static void Uninit(void);
 	static void UninitScene(void);
 
@@ -74,7 +74,4 @@ private:
 
 	static bool bLoadingFlag;
 	static bool bDebugMode;
-
-	// LOADING THREAD
-	static thread lt;
 };

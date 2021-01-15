@@ -18,8 +18,8 @@
 
 // ゲームオブジェクトの最大数
 #define SINGLE_SCENE_OBJECT_MAX		(128)
-#define SINGLE_SCENE_OVERLAY_MAX	(8)
-#define UI_OVERLAY_MAX				(16)
+#define SINGLE_SCENE_OVERLAY_MAX	(64)
+#define UI_OVERLAY_MAX				(64)
 
 // テクスチャーのファイル名
 #define TEXTURE_LOADING					"assets/texture/loading.png"
@@ -32,6 +32,8 @@
 #define TEXTURE_PLAYER					"assets/texture/player.png"
 #define TEXTURE_PLAYER_CLIMBING			"assets/texture/player_climbing.png"
 #define TEXTURE_PLAYER_CLIMBING_PAUSED	"assets/texture/player_climbing_paused.png"
+#define TEXTURE_PLAYER_IDEA				"assets/texture/player/idea.png"
+#define TEXTURE_PLAYER_IDEA_HAND		"assets/texture/player/idea_hand.png"
 // Enemy
 #define TEXTURE_ROBOT					"assets/texture/wurenji01.png"
 // Object
@@ -52,3 +54,11 @@
 #define TEXTURE_SCENE01_BG_OVERLAY		"assets/texture/scene01/background_overlay.png"
 #define TEXTURE_OBJ_TRASH1				"assets/texture/scene01/trash_stack.png"
 #define TEXTURE_OBJ_TRASH2				"assets/texture/scene01/trash_core.png"
+#define TEXTURE_OBJ_CRASH_ROBOT			"assets/texture/scene01/crash_robot.png"
+#define TEXTURE_OBJ_DIGITAL_DOOR		"assets/texture/scene01/digital_door.png"
+#define TEXTURE_ITEM_CODE_CUT1			"assets/texture/scene01/code_cut01.png"
+#define TEXTURE_ITEM_CODE_CUT2			"assets/texture/scene01/code_cut02.png"
+#define TEXTURE_OBJ_GENERATOR			"assets/texture/scene01/generator.png"
+#define TEXTURE_GENERATOR_UI_BASE		"assets/texture/scene01/generator_ui_base.png"
+#define TEXTURE_GENERATOR_UI_LINE1		"assets/texture/scene01/generator_ui_line01.png"
+#define TEXTURE_GENERATOR_UI_LINE2		"assets/texture/scene01/generator_ui_line02.png"

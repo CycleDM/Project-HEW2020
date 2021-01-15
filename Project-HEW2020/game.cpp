@@ -33,8 +33,6 @@ bool Game::onFocus = true;
 bool Game::bLoadingFlag = false;
 bool Game::bDebugMode = false;
 
-thread Game::lt = {};
-
 void func(void)
 {
 	int a = 0;
@@ -54,15 +52,12 @@ void Game::Init(void)
 	bLoadingFlag = false;
 
 	//SwitchScene(eNowScene);
-	InitScene(NULL);
+	InitScene();
 }
 
 // ゲームの終了処理
 void Game::Uninit(void)
 {
-	// Check loading thread
-	if (lt.joinable()) lt.join();
-
 	// メモリ解放
 	delete pActScene;
 	pActScene = NULL;
@@ -70,7 +65,7 @@ void Game::Uninit(void)
 	pLoadingScreen = NULL;
 }
 
-void Game::InitScene(bool* flag)
+void Game::InitScene(void)
 {
 	switch (eNowScene)
 	{
@@ -92,14 +87,6 @@ void Game::InitScene(bool* flag)
 	default:
 		break;
 	}
-
-	if (NULL == flag) return;
-	if (NULL != pActScene)
-	{
-		*flag = false;
-		pLoadingScreen->Hide();
-		return;
-	}
 }
 
 void Game::UninitScene()
@@ -111,8 +98,6 @@ void Game::UninitScene()
 // ゲームの更新
 void Game::Update(void)
 {
-	if (!bLoadingFlag && lt.joinable()) lt.join();
-
 	pLoadingScreen->Update();
 	if (NULL == pActScene) return;
 	pActScene->Update();
@@ -179,11 +164,10 @@ void Game::SwitchScene(Game::SceneType type)
 
 	/*** LOADING THREAD ***/
 	//lt = thread(&Game::InitScene, &bLoadingFlag);
-	lt = thread(func);
-	lt.detach();
 
 	//InitScene(NULL);
 	//bLoadingFlag = false;
+	InitScene();
 }
 
 void Game::BindWindow(HWND hWnd, int window_width, int window_height)

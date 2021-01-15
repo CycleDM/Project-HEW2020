@@ -11,6 +11,7 @@
 #include "GameScene01.h"
 #include "debug_font.h"
 #include "game.h"
+#include "d3dutility.h"
 
 GameScene01::GameScene01()
 {
@@ -32,6 +33,12 @@ void GameScene01::Init()
 	fBgScrollMax = D3DXVECTOR2(4719.0f, 5279.0f);
 	fGroundHeight = 230.0f;
 
+	bIdea[0] = bIdea[1] = bIdea[2] = false;
+	bIdeaHand[0] = bIdeaHand[1] = false;
+	bCodeTaken[0] = bCodeTaken[1] = false;
+	bDoorUnlockded[0] = bDoorUnlockded[1] = false;
+	bEndScene = false;
+
 	// Init Player
 	pPlayer = new GamePlayer;
 	pPlayer->SetGlobalPos(600.0f, (float)SCREEN_HEIGHT - fGroundHeight);
@@ -50,14 +57,37 @@ void GameScene01::Init()
 	pOverlays[1]->GetSprite()->SetCutRange(1280, 720);
 	pOverlays[1]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 230));
 
+	// IDEA
+	pOverlays[2] = new GameOverlay(TEXTURE_PLAYER_IDEA);
+	pOverlays[3] = new GameOverlay(TEXTURE_PLAYER_IDEA_HAND);
+	
+	// ITEM
+	pOverlays[4] = new GameOverlay(TEXTURE_ITEM_CODE_CUT1);
+	pOverlays[4]->SetScreenPos(64.0f, (float)SCREEN_HEIGHT - 65.0f);
+	pOverlays[4]->SetSize(pOverlays[4]->GetWidth() * 0.3f, pOverlays[4]->GetHeight() * 0.3f);
+	pOverlays[5] = new GameOverlay(TEXTURE_ITEM_CODE_CUT2);
+	pOverlays[5]->SetScreenPos(64.0f, (float)SCREEN_HEIGHT - 30.0f);
+	pOverlays[5]->SetSize(pOverlays[5]->GetWidth() * 0.3f, pOverlays[5]->GetHeight() * 0.3f);
+
 	// Init OBJ
 	pObjects[0] = new GameObject(GameObject::OBJ_TRASH_STACK);
 	pObjects[0]->SetGlobalPos(900.0f, 310.0f);
-	pObjects[1] = new GameObject(GameObject::OBJ_TRASH_CORE);
+	pObjects[1] = new GameObject(GameObject::OBJ_TRASH_LEG);
 	pObjects[1]->SetGlobalPos(900.0f, 310.0f);
 	// DOOR1
 	pObjects[2] = new GameObject(GameObject::OBJ_DOOR1);
-	pObjects[2]->SetGlobalPos(3100.0f, 415.0f);
+	pObjects[2]->SetGlobalPos(3111.0f, 412.0f);
+	// CRASH_ROBOT
+	pObjects[3] = new GameObject(GameObject::OBJ_CRASH_ROBOT);
+	pObjects[3]->SetGlobalPos(2450.0f, 426.0f);
+	pObjects[3]->GetSprite()->SetColor(D3DCOLOR_RGBA(155, 155, 155, 255));
+	// DIGITAL_DOOR
+	pObjects[4] = new GameObject(GameObject::OBJ_DIGITAL_DOOR);
+	pObjects[4]->SetGlobalPos(5345.0f, 420.0f);
+	pObjects[4]->SetSize(64.0f, 64.0f);
+	// GENERATOR
+	pObjects[5] = new GameObject(GameObject::OBJ_GENERATOR);
+	pObjects[5]->SetGlobalPos(5615.0f, 440.0f);
 
 	// OBJ Size
 	for (GameObject* obj : pObjects)
@@ -70,6 +100,10 @@ void GameScene01::Init()
 		}
 		obj->SetSize(obj->GetWidth() * fGlobalScaling, obj->GetHeight() * fGlobalScaling);
 	}
+	pObjects[2]->SetSize(pObjects[2]->GetWidth(), pObjects[2]->GetHeight() * 1.1f);
+
+	// Create UI
+	pGeneratorUI = new GeneratorUI;
 }
 
 void GameScene01::Uninit()
@@ -86,6 +120,9 @@ void GameScene01::Uninit()
 		delete p;
 	}
 	memset(pOverlays, NULL, sizeof(pOverlays));
+
+	delete pGeneratorUI;
+	pGeneratorUI = NULL;
 }
 
 void GameScene01::Update()
@@ -105,6 +142,11 @@ void GameScene01::Update()
 	UpdatePlayer();
 	UpdateObject();
 	UpdateOverlay();
+
+	// UI
+	pGeneratorUI->Update();
+
+	if (bEndScene) Game::SwitchScene(Game::SCENE_TEST);
 }
 
 void GameScene01::Draw()
@@ -118,10 +160,18 @@ void GameScene01::Draw()
 	}
 	pPlayer->Draw();
 
+	if (bIdea[0] || bIdea[1] || bIdea[2]) pOverlays[2]->Draw();
+	if (bIdeaHand[0] || bIdeaHand[1]) pOverlays[3]->Draw();
+	if (bCodeTaken[0]) pOverlays[4]->Draw();
+	if (bCodeTaken[1]) pOverlays[5]->Draw();
+	
+	pOverlays[1]->Draw();
+
+	// UI
+	pGeneratorUI->Draw();
+
 	// デバッグ文字の表示
 	if (Game::DebugMode()) this->Debug();
-
-	pOverlays[1]->Draw();
 }
 
 void GameScene01::UpdateObject()
@@ -134,6 +184,138 @@ void GameScene01::UpdateObject()
 		object->SetScreenPos(object->GetGlobalPos().x - fGlobalPosOffset, object->GetGlobalPos().y);
 		object->Update();
 	}
+
+	if (bDoorUnlockded[0])
+	{
+		pObjects[2]->GetAnimator()->PlayOnce(pObjects[2]->GetSprite());
+	}
+	if (bDoorUnlockded[1])
+	{
+		pObjects[4]->GetAnimator()->PlayOnce(pObjects[4]->GetSprite());
+	}
+
+	// コリジョンにより当たり判定
+	Collision* pPC = pPlayer->GetCollision();
+
+	// DOOR1
+	GameObject* obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_DOOR1);
+	Collision* pOC = obj->GetCollision();
+	do
+	{
+		if (NULL == obj) break;
+		if (NULL == pOC) break;
+		if (bDoorUnlockded[0]) break;
+
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			bIdeaHand[0] = true;
+			// FBI Open the door!
+			if (bCodeTaken[0] && bCodeTaken[1] && GameControl::GetKeyTrigger(GameControl::USE))
+			{
+				bDoorUnlockded[0] = true;
+				bIdeaHand[0] = false;
+				break;
+			}
+		}
+		else
+		{
+			bIdeaHand[0] = false;
+		}
+
+		if (obj->GetGlobalPos().x - pPC->GetPosition().x < pOC->GetHalfWidth() + pPC->GetHalfWidth())
+		{
+			pPlayer->SetGlobalPos(obj->GetGlobalPos().x - pOC->GetHalfWidth() - pPC->GetHalfWidth(), pPlayer->GetGlobalPos().y);
+		}
+	} while (0);
+
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_DIGITAL_DOOR);
+	pOC = obj->GetCollision();
+	// DIGITAL_DOOR
+	do
+	{
+		if (NULL == obj) break;
+		if (NULL == pOC) break;
+		
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			if (GameControl::GetKeyTrigger(GameControl::UP) && bDoorUnlockded[1])
+			{
+				bEndScene = true;
+				return;
+			}
+			if (bDoorUnlockded[1]) break;
+			bIdeaHand[1] = true;
+			// FBI Open the door!
+			if (GameControl::GetKeyTrigger(GameControl::USE) && pGeneratorUI->isUnlocked())
+			{
+				bDoorUnlockded[1] = true;
+				bIdeaHand[1] = false;
+				break;
+			}
+		}
+		else
+		{
+			bIdeaHand[1] = false;
+		}
+	} while (0);
+
+	// CODE01
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_TRASH_LEG);
+	do
+	{
+		if (bCodeTaken[0]) break;
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			bIdea[0] = true;
+			if (GameControl::GetKeyTrigger(GameControl::USE))
+			{
+				bCodeTaken[0] = true;
+				bIdea[0] = false;
+			}
+		}
+		else
+		{
+			bIdea[0] = false;
+		}
+	} while (0);
+
+	// CODE02
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_CRASH_ROBOT);
+	do
+	{
+		if (bCodeTaken[1]) break;
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			bIdea[1] = true;
+			if (GameControl::GetKeyTrigger(GameControl::USE))
+			{
+				bCodeTaken[1] = true;
+				bIdea[1] = false;
+			}
+		}
+		else
+		{
+			bIdea[1] = false;
+		}
+	} while (0);
+
+	// GENERATOR
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_GENERATOR);
+	do
+	{
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			bIdea[2] = true;
+			if (GameControl::GetKeyTrigger(GameControl::USE))
+			{
+				pGeneratorUI->OpenUI();
+			}
+		}
+		else
+		{
+			bIdea[2] = false;
+		}
+	} while (0);
 }
 
 void GameScene01::UpdateOverlay()
@@ -144,9 +326,8 @@ void GameScene01::UpdateOverlay()
 	// ここからはUIの更新処理
 	do
 	{
-		// ...
-		// ...
-		// ...
+		pOverlays[2]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y - 100.0f);
+		pOverlays[3]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y - 100.0f);
 	} while (0);
 }
 
@@ -251,5 +432,35 @@ void GameScene01::Debug()
 	DebugFont::Draw(0.0f, y, buf);
 	y += 32.0f;
 	sprintf_s(buf, ">isClimbing = %d", pPlayer->isClimbing());
+	DebugFont::Draw(0.0f, y, buf);
+
+	y += 32.0f;
+	DebugFont::Draw(0.0f, y, buf);
+	sprintf_s(buf, "[Mouse States]");
+	y += 32.0f;
+	DebugFont::Draw(0.0f, y, buf);
+	sprintf_s(buf, ">rgbButton0 = %d", (D3DUtility::GetMouseState().rgbButtons[0] & 0x80));
+	y += 32.0f;
+	DebugFont::Draw(0.0f, y, buf);
+	sprintf_s(buf, ">rgbButton1 = %d", (D3DUtility::GetMouseState().rgbButtons[1] & 0x80));
+	y += 32.0f;
+	DebugFont::Draw(0.0f, y, buf);
+	sprintf_s(buf, ">rgbButton2 = %d", (D3DUtility::GetMouseState().rgbButtons[2] & 0x80));
+	y += 32.0f;
+	DebugFont::Draw(0.0f, y, buf);
+	sprintf_s(buf, ">lX = %d", D3DUtility::GetMouseState().lX);
+	y += 32.0f;
+	DebugFont::Draw(0.0f, y, buf);
+	sprintf_s(buf, ">lY = %d", D3DUtility::GetMouseState().lY);
+	y += 32.0f;
+	DebugFont::Draw(0.0f, y, buf);
+	sprintf_s(buf, ">lZ = %d", D3DUtility::GetMouseState().lZ);
+	y += 32.0f;
+	DebugFont::Draw(0.0f, y, buf);
+	sprintf_s(buf, ">PosX = %d", Game::GetMouseX());
+	y += 32.0f;
+	DebugFont::Draw(0.0f, y, buf);
+	sprintf_s(buf, ">PosY = %d", Game::GetMouseY());
+	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
 }

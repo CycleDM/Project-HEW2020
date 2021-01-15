@@ -155,6 +155,18 @@ void GameObject::Register(ObjectType type)
 		pAnimator->Preset(6, 1, 8);
 		bCustomized = true;
 		break;
+	case GameObject::OBJ_DIGITAL_DOOR:
+		pSprite->LoadTexture(TEXTURE_OBJ_DIGITAL_DOOR);
+		pCollision = new Collision;
+		pSprite->SetCutPos(0, 0);
+		pSprite->SetCutRange(32, 32);
+		width = pSprite->GetCutWidth();
+		height = pSprite->GetCutHeight();
+		pAnimator = new Animator();
+		pAnimator->Init(pSprite);
+		pAnimator->Preset(5, 1, 6);
+		bCustomized = true;
+		break;
 	case GameObject::OBJ_KEY:
 		break;
 	case GameObject::OBJ_CODED_LOCK:
@@ -164,8 +176,14 @@ void GameObject::Register(ObjectType type)
 	case GameObject::OBJ_TRASH_STACK:
 		pSprite->LoadTexture(TEXTURE_OBJ_TRASH1);
 		break;
-	case GameObject::OBJ_TRASH_CORE:
+	case GameObject::OBJ_TRASH_LEG:
 		pSprite->LoadTexture(TEXTURE_OBJ_TRASH2);
+		break;
+	case GameObject::OBJ_CRASH_ROBOT:
+		pSprite->LoadTexture(TEXTURE_OBJ_CRASH_ROBOT);
+		break;
+	case GameObject::OBJ_GENERATOR:
+		pSprite->LoadTexture(TEXTURE_OBJ_GENERATOR);
 		break;
 	default:
 		break;
