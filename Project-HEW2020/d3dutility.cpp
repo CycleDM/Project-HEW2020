@@ -9,22 +9,12 @@
 //----------------------------------------------------------------------------
 #include "d3dutility.h"
 #include "config.h"
-#include <atlstr.h>
-
-#pragma comment(lib,"winmm.lib")
-#pragma comment(lib,"d3d9.lib")
-#pragma comment(lib,"d3dx9.lib")
-#pragma comment(lib,"dinput8.lib")
-#pragma comment(lib,"dxguid.lib")
 
 //-----------------------------------------------------------------------------
 // グローバル変数宣言
 //-----------------------------------------------------------------------------
 LPDIRECT3D9 D3DUtility::pD3D = NULL;          // Direct3Dインターフェース
 LPDIRECT3DDEVICE9 D3DUtility::pDevice = NULL; // Direct3Dデバイスインターフェース
-LPDIRECTINPUT8 D3DUtility::pDirectInput = NULL;
-LPDIRECTINPUTDEVICE8 D3DUtility::pMouseDevice = NULL;
-DIMOUSESTATE D3DUtility::m_state = { 0 };
 
 // Direct3D関連の初期化
 bool D3DUtility::Init(HWND hWnd, HINSTANCE hInstance)
@@ -49,13 +39,6 @@ bool D3DUtility::Init(HWND hWnd, HINSTANCE hInstance)
     d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT; // フルスクリーン時のリフレッシュレートの指定
     //d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;   // リフレッシュレートとPresent処理の関係
     d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE; // リフレッシュレートとPresent処理の関係
-
-    // Create Input Devices
-    DirectInput8Create(hInstance, 0x0800, IID_IDirectInput8, (void**)&pDirectInput, NULL);
-    pDirectInput->CreateDevice(GUID_SysMouse, &pMouseDevice, NULL);
-    pMouseDevice->SetDataFormat(&c_dfDIMouse);
-    pMouseDevice->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
-    pMouseDevice->Acquire();
 
     // Direct3Dデバイスの取得
     HRESULT hr;
@@ -105,44 +88,10 @@ void D3DUtility::Uninit(void)
         pD3D->Release();
         pD3D = NULL;
     }
-
-    if (pMouseDevice)
-    {
-        pMouseDevice->Unacquire();
-        pMouseDevice = NULL;
-    }
-    if (pDirectInput)
-    {
-        pDirectInput->Release();
-        pDirectInput = NULL;
-    }
 }
 
 // Direct3Dのデバイスを渡す
 LPDIRECT3DDEVICE9 D3DUtility::GetDevice(void)
 {
     return pDevice;
-}
-
-void D3DUtility::ReadDevice(void)
-{
-    static HRESULT hr;
-    while (true)
-    {
-        pMouseDevice->Poll();
-        if (SUCCEEDED(hr = pMouseDevice->GetDeviceState(sizeof(DIMOUSESTATE), &m_state)))
-            break;
-        if (hr != DIERR_INPUTLOST && hr != DIERR_NOTACQUIRED)
-            return;
-
-        // Reacquire the device if the focus was lost.
-        if (FAILED(pMouseDevice->Acquire()))
-            return;
-    }
-}
-
-DIMOUSESTATE D3DUtility::GetMouseState(void)
-{
-    D3DUtility::ReadDevice();
-    return m_state;
 }

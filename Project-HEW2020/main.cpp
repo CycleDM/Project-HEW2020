@@ -22,6 +22,7 @@
 #include "controller.h"
 #include "debug_font.h"
 #include "fade.h"
+#include "input.h"
 
 #define CLASS_NAME "GameWindow"
 #define WINDOW_CAPTION "Origin v0.4.1(beta)"
@@ -179,6 +180,8 @@ bool Init(HWND hWnd, HINSTANCE hInstance)
 	// ここに各種の初期化処理を入れる
 	do
 	{
+		// DINPUT
+		Input::Init(hWnd, hInstance);
 		// キーボードの初期化
 		Keyboard_Init();
 		// システムタイマーの初期化
@@ -202,6 +205,7 @@ void Update(void)
 	// ここに各種の更新処理を入れる
 	do
 	{
+		Input::Update();
 		Game::Update();
 		GameControl::Update();
 		FadeEffect::Update();
@@ -255,5 +259,6 @@ void Uninit(void)
 	Game::Uninit();
 	FadeEffect::Uninit();
 	DebugFont::Uninit();
+	Input::Uninit();
 	D3DUtility::Uninit();
 }

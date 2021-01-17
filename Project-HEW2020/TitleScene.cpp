@@ -14,6 +14,7 @@
 #include "game.h"
 #include "fade.h"
 #include "d3dutility.h"
+#include "input.h"
 
 static DIMOUSESTATE g_MouseState = { 0 };
 
@@ -79,14 +80,11 @@ void TitleScene::Update(void)
 
 	UpdateTitleButton();
 
-	// Mouse State
-	g_MouseState = D3DUtility::GetMouseState();
-
-	if (buttonSelected == 0 && ((g_MouseState.rgbButtons[0] & 0x80) || GameControl::GetKeyTrigger(GameControl::JUMP)))
+	if (buttonSelected == 0 && Input::GetMouseButtonTrigger(0) || GameControl::GetKeyTrigger(GameControl::JUMP))
 	{
 		Game::SwitchScene(Game::SCENE_01);
 	}
-	if (buttonSelected == 1 && (g_MouseState.rgbButtons[0] & 0x80))
+	if (buttonSelected == 1 && Input::GetMouseButtonTrigger(0))
 	{
 		SendMessage(Game::GetWindow(), WM_CLOSE, 0, 0);
 	}
@@ -118,28 +116,28 @@ void TitleScene::Debug(void)
 	sprintf_s(buf, "[Mouse States]");
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">rgbButton0 = %d", (g_MouseState.rgbButtons[0] & 0x80));
+	sprintf_s(buf, ">leftButton = %d", Input::GetMouseButtonTrigger(0));
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">rgbButton1 = %d", (g_MouseState.rgbButtons[1] & 0x80));
+	sprintf_s(buf, ">rightButton = %d", Input::GetMouseButtonTrigger(1));
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">rgbButton2 = %d", (g_MouseState.rgbButtons[2] & 0x80));
+	sprintf_s(buf, ">middleButton = %d", Input::GetMouseButtonTrigger(2));
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">lX = %d", g_MouseState.lX);
+	sprintf_s(buf, ">deltaX = %d", Input::GetMouseDeltaX());
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">lY = %d", g_MouseState.lY);
+	sprintf_s(buf, ">deltaY = %d", Input::GetMouseDeltaY());
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">lZ = %d", g_MouseState.lZ);
+	sprintf_s(buf, ">deltaWheel = %d", Input::GetMouseDeltaWheel());
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">PosX = %d", Game::GetMouseX());
+	sprintf_s(buf, ">PosX = %d", Input::GetMouseX());
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">PosY = %d", Game::GetMouseY());
+	sprintf_s(buf, ">PosY = %d", Input::GetMouseY());
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
 }
@@ -164,10 +162,10 @@ void TitleScene::UpdateTitleButton(void)
 	for (int i = 0; i < 2; i++)
 	{
 		GameOverlay* po = pOverlays[2 + i];
-		if (Game::GetMouseX() > po->GetScreenPos().x - po->GetWidth() / 2 &&
-			Game::GetMouseX() < po->GetScreenPos().x + po->GetWidth() / 2 &&
-			Game::GetMouseY() > po->GetScreenPos().y - po->GetHeight() / 2 &&
-			Game::GetMouseY() < po->GetScreenPos().y + po->GetHeight() / 2)
+		if (Input::GetMouseX() > po->GetScreenPos().x - po->GetWidth() / 2 &&
+			Input::GetMouseX() < po->GetScreenPos().x + po->GetWidth() / 2 &&
+			Input::GetMouseY() > po->GetScreenPos().y - po->GetHeight() / 2 &&
+			Input::GetMouseY() < po->GetScreenPos().y + po->GetHeight() / 2)
 		{
 			buttonSelected = i;
 			break;

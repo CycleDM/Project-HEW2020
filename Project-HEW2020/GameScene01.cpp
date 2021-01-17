@@ -12,6 +12,7 @@
 #include "debug_font.h"
 #include "game.h"
 #include "d3dutility.h"
+#include "input.h"
 
 GameScene01::GameScene01()
 {
@@ -439,28 +440,28 @@ void GameScene01::Debug()
 	sprintf_s(buf, "[Mouse States]");
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">rgbButton0 = %d", (D3DUtility::GetMouseState().rgbButtons[0] & 0x80));
+	sprintf_s(buf, ">rgbButton0 = %d", Input::GetMouseButtonTrigger(0));
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">rgbButton1 = %d", (D3DUtility::GetMouseState().rgbButtons[1] & 0x80));
+	sprintf_s(buf, ">rgbButton1 = %d", Input::GetMouseButtonTrigger(1));
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">rgbButton2 = %d", (D3DUtility::GetMouseState().rgbButtons[2] & 0x80));
+	sprintf_s(buf, ">rgbButton2 = %d", Input::GetMouseButtonTrigger(2));
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">lX = %d", D3DUtility::GetMouseState().lX);
+	sprintf_s(buf, ">lX = %d", Input::GetMouseDeltaX());
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">lY = %d", D3DUtility::GetMouseState().lY);
+	sprintf_s(buf, ">lY = %d", Input::GetMouseDeltaY());
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">lZ = %d", D3DUtility::GetMouseState().lZ);
+	sprintf_s(buf, ">lZ = %d", Input::GetMouseDeltaWheel());
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">PosX = %d", Game::GetMouseX());
+	sprintf_s(buf, ">PosX = %d", Input::GetMouseX());
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">PosY = %d", Game::GetMouseY());
+	sprintf_s(buf, ">PosY = %d", Input::GetMouseY());
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
 }

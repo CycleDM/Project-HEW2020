@@ -28,6 +28,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="generator_ui.cpp" />
+    <ClCompile Include="input.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="object.cpp" />
@@ -51,6 +52,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="generator_ui.h" />
+    <ClInclude Include="input.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="overlay.h" />

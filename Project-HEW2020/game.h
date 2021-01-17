@@ -57,8 +57,6 @@ public:
 	static void SwitchScene(Game::SceneType type);
 
 	static void BindWindow(HWND hWnd, int window_width, int window_height);
-	static long GetMouseX(void);
-	static long GetMouseY(void);
 	static void SetFocus(bool onFocus);
 	static HWND GetWindow(void);
 private:
@@ -67,7 +65,6 @@ private:
 	static SceneType eNowScene;
 	static LoadingScreen* pLoadingScreen;
 
-	static POINT mousePosition;
 	static bool onFocus;
 	static int window_width;
 	static int window_height;
