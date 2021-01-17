@@ -25,7 +25,6 @@ GameScene* Game::pActScene = NULL;
 LoadingScreen* Game::pLoadingScreen = NULL;
 
 HWND Game::hWnd = NULL;
-POINT Game::mousePosition = { 0, 0 };
 int Game::window_width = 0;
 int Game::window_height = 0;
 bool Game::onFocus = true;
@@ -107,10 +106,6 @@ void Game::Update(void)
 	{
 		bDebugMode = !bDebugMode;
 	}
-
-	//Mouse Position
-	GetCursorPos(&mousePosition);
-	ScreenToClient(hWnd, &mousePosition);
 	
 	//do
 	//{
@@ -175,16 +170,6 @@ void Game::BindWindow(HWND hWnd, int window_width, int window_height)
 	Game::hWnd = hWnd;
 	Game::window_width = window_width;
 	Game::window_height = window_height;
-}
-
-long Game::GetMouseX(void)
-{
-	return mousePosition.x;
-}
-
-long Game::GetMouseY(void)
-{
-	return mousePosition.y;
 }
 
 void Game::SetFocus(bool onFocus)

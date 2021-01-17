@@ -14,6 +14,7 @@
 #include "d3dutility.h"
 #include "game.h"
 #include "controller.h"
+#include "input.h"
 
 // Correct Rotation
 const int GeneratorUI::correctRotation[GENERATOR_UI_SLOT_MAX] = 
@@ -129,8 +130,7 @@ void GeneratorUI::Update()
 	do
 	{
 		if (bUnlocked) break;
-		DIMOUSESTATE mState = D3DUtility::GetMouseState();
-		D3DXVECTOR2 mPos = { (float)Game::GetMouseX(), (float)Game::GetMouseY() };
+		D3DXVECTOR2 mPos = { (float)Input::GetMouseX(), (float)Input::GetMouseY() };
 		for (int i = 0; i < GENERATOR_UI_SLOT_MAX; i++)
 		{
 			if (!gUISlots[i].bEnable) continue;
@@ -148,7 +148,7 @@ void GeneratorUI::Update()
 			gUISlots[i].bSelected = true;
 		}
 		// Rotate
-		if (GameControl::GetKeyTrigger(GameControl::USE))
+		if (Input::GetMouseButtonTrigger(0))
 		{
 			for (int i = 0; i < GENERATOR_UI_SLOT_MAX; i++)
 			{
