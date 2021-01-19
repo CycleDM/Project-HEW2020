@@ -17,7 +17,7 @@ LPDIRECT3D9 D3DUtility::pD3D = NULL;          // Direct3Dインターフェース
 LPDIRECT3DDEVICE9 D3DUtility::pDevice = NULL; // Direct3Dデバイスインターフェース
 
 // Direct3D関連の初期化
-bool D3DUtility::Init(HWND hWnd, HINSTANCE hInstance)
+bool D3DUtility::Init(HWND hWnd)
 {
 	pD3D = Direct3DCreate9(D3D_SDK_VERSION);
 	if (NULL == pD3D)

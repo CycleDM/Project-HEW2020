@@ -50,6 +50,10 @@ void Input::Init(HWND hWnd, HINSTANCE hInstance)
 	m_position = { 0, 0 };
 
 	m_window = hWnd;
+	if (NULL == hInstance)
+	{
+		hInstance = GetModuleHandle(NULL);
+	}
 
 	// Create Input Devices
 	DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pDirectInput, NULL);

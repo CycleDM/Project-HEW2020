@@ -31,7 +31,7 @@
 // プロトタイプ宣言
 //-----------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-bool Init(HWND hWnd, HINSTANCE hInstance);
+bool Init(HWND hWnd);
 void Update(void);
 void Draw(void);
 void Uninit(void);
@@ -98,7 +98,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	if (NULL == hWnd) return 0;
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
-	if (!Init(hWnd, hInstance)) return 0;
+	if (!Init(hWnd)) return 0;
 	Game::BindWindow(hWnd, window_width, window_height);
 
 	// ゲームのメーンループ
@@ -168,10 +168,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 // ゲームシステムの初期化
-bool Init(HWND hWnd, HINSTANCE hInstance)
+bool Init(HWND hWnd)
 {
 	// Direct3Dの初期化
-	if (!D3DUtility::Init(hWnd, hInstance))
+	if (!D3DUtility::Init(hWnd))
 	{
 		MessageBox(NULL, "Direct3Dの初期化に失敗しました", "エラー", MB_OK);
 		return false;
@@ -181,7 +181,7 @@ bool Init(HWND hWnd, HINSTANCE hInstance)
 	do
 	{
 		// DINPUT
-		Input::Init(hWnd, hInstance);
+		Input::Init(hWnd, NULL);
 		// キーボードの初期化
 		Keyboard_Init();
 		// システムタイマーの初期化

@@ -14,7 +14,7 @@
 class D3DUtility
 {
 public:
-	static bool Init(HWND hWnd, HINSTANCE hInstance);
+	static bool Init(HWND hWnd);
 	static void Uninit(void);
 	static LPDIRECT3DDEVICE9 GetDevice(void);
 	
