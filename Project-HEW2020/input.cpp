@@ -3,7 +3,7 @@
 // C++ Module [input.cpp]
 // Used for controlling with mouse, keyboard and gamepad
 // 
-// Author: CycleDM (Jin Zhou)
+// Author: CycleDM (Jin Zhou) @HAL_Tokyo_95097_AT12D187_17
 // Date:   2021/01/17
 // Update: 2021/01/19
 // 
