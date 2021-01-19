@@ -116,13 +116,13 @@ void TitleScene::Debug(void)
 	sprintf_s(buf, "[Mouse States]");
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">leftButton = %d", Input::GetMouseButtonTrigger(0));
+	sprintf_s(buf, ">leftButton = %d", Input::GetMouseButtonPress(0));
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">rightButton = %d", Input::GetMouseButtonTrigger(1));
+	sprintf_s(buf, ">rightButton = %d", Input::GetMouseButtonPress(1));
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">middleButton = %d", Input::GetMouseButtonTrigger(2));
+	sprintf_s(buf, ">middleButton = %d", Input::GetMouseButtonPress(2));
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
 	sprintf_s(buf, ">deltaX = %d", Input::GetMouseDeltaX());

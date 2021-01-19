@@ -440,13 +440,13 @@ void GameScene01::Debug()
 	sprintf_s(buf, "[Mouse States]");
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">rgbButton0 = %d", Input::GetMouseButtonTrigger(0));
+	sprintf_s(buf, ">rgbButton0 = %d", Input::GetMouseButtonPress(0));
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">rgbButton1 = %d", Input::GetMouseButtonTrigger(1));
+	sprintf_s(buf, ">rgbButton1 = %d", Input::GetMouseButtonPress(1));
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">rgbButton2 = %d", Input::GetMouseButtonTrigger(2));
+	sprintf_s(buf, ">rgbButton2 = %d", Input::GetMouseButtonPress(2));
 	y += 32.0f;
 	DebugFont::Draw(0.0f, y, buf);
 	sprintf_s(buf, ">lX = %d", Input::GetMouseDeltaX());

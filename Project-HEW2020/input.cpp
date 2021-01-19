@@ -27,7 +27,7 @@ LPDIRECTINPUTDEVICE8 Input::m_pKeyboard;
 LPDIRECTINPUTDEVICE8 Input::m_pMouse;
 DIMOUSESTATE Input::m_mouseState;
 
-unsigned long Input::m_pressStamp;
+unsigned long Input::m_recordStamp;
 
 //  Members for device control
 char Input::m_keyState[256];
@@ -43,7 +43,7 @@ void Input::Init(HWND hWnd, HINSTANCE hInstance)
 	m_pDirectInput = NULL;
 	m_pMouse = NULL;
 	m_mouseState = {};
-	m_pressStamp = 0;
+	m_recordStamp = 0;
 	memset(m_keyState, 0, sizeof(m_keyState));
 	memset(m_keyPressStamp, 0, sizeof(m_keyPressStamp));
 	memset(m_mouseButtonStamp, 0, sizeof(m_mouseButtonStamp));
@@ -127,7 +127,7 @@ void Input::Update()
 	ScreenToClient(m_window, &m_position);
 
 	// Increment the press stamp (each frame)
-	m_pressStamp++;
+	m_recordStamp++;
 }
 
 // Keyboard
@@ -140,16 +140,32 @@ bool Input::GetKeyTrigger(char key)
 {
 	if (!GetKeyPress(key)) return false;
 
-	bool pressed = true;
+	bool flag = true;
 
-	if (m_keyPressStamp[key] == m_pressStamp - 1 || m_keyPressStamp[key] == m_pressStamp)
+	if (m_keyPressStamp[key] == m_recordStamp - 1 || m_keyPressStamp[key] == m_recordStamp)
 	{
-		pressed = false;
+		flag = false;
 	}
 
-	m_keyPressStamp[key] = m_pressStamp;
+	m_keyPressStamp[key] = m_recordStamp;
 
-	return pressed;
+	return flag;
+}
+
+bool Input::GetKeyRelease(char key)
+{
+	if (GetKeyPress(key)) return false;
+	
+	bool flag = !GetKeyPress(key) && !GetKeyTrigger(key);
+
+	if (m_keyPressStamp[key] == m_recordStamp - 1 || m_keyPressStamp[key] == m_recordStamp)
+	{
+		flag = false;
+	}
+
+	m_keyPressStamp[key] = m_recordStamp;
+
+	return flag;
 }
 
 // Mouse
@@ -162,16 +178,32 @@ bool Input::GetMouseButtonTrigger(char button)
 {
 	if (!GetMouseButtonPress(button)) return false;
 
-	bool pressed = true;
+	bool flag = true;
 
-	if (m_mouseButtonStamp[button] == m_pressStamp - 1 || m_mouseButtonStamp[button] == m_pressStamp)
+	if (m_mouseButtonStamp[button] == m_recordStamp - 1 || m_mouseButtonStamp[button] == m_recordStamp)
 	{
-		pressed = false;
+		flag = false;
 	}
 
-	m_mouseButtonStamp[button] = m_pressStamp;
+	m_mouseButtonStamp[button] = m_recordStamp;
 
-	return pressed;
+	return flag;
+}
+
+bool Input::GetMouseButtonRelease(char button)
+{
+	if (GetMouseButtonPress(button)) return false;
+	
+	bool flag = !GetMouseButtonPress(button) && !GetMouseButtonTrigger(button);
+
+	if (m_mouseButtonStamp[button] == m_recordStamp - 1 || m_mouseButtonStamp[button] == m_recordStamp)
+	{
+		flag = false;
+	}
+
+	m_mouseButtonStamp[button] = m_recordStamp;
+
+	return flag;
 }
 
 // Return the mouse position

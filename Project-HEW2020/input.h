@@ -28,6 +28,10 @@ public:
 	//	Parameters:
 	//	key ... specific keyboard key [DIK_*]
 	static bool GetKeyTrigger(char key);
+	// Return whether specific keyboard key was released or not
+	//	Parameters:
+	//	key ... specific keyboard key [DIK_*]
+	static bool GetKeyRelease(char key);
 	
 	// Return whether specific mouse button was pressed or not
 	//	Parameters:
@@ -37,6 +41,10 @@ public:
 	//	Parameters:
 	//	button ... 0: left. 1: right. 2: middle
 	static bool GetMouseButtonTrigger(char button);
+	// Return whether specific mouse button was released or not
+	//	Parameters:
+	//	button ... 0: left. 1: right. 2: middle
+	static bool GetMouseButtonRelease(char button);
 	// Return the mouse position
 	static long GetMouseX();
 	// Return the mouse position
@@ -57,7 +65,7 @@ private:
 	static DIMOUSESTATE m_mouseState;				// Stores the mouse state
 
 	//  Members for device control
-	static unsigned long m_pressStamp;				// Current press stamp, incremented every frame
+	static unsigned long m_recordStamp;				// Current record stamp, incremented every frame
 
 	static char m_keyState[256];					// Stores the state of the keyboard keys
 	static unsigned long m_keyPressStamp[256];		// Stamps the lase frame for each keyboard key
