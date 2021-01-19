@@ -395,7 +395,7 @@ void GameScene01::PlayerControl()
 {
 	GameScene::PlayerControl();
 
-	if (GameControl::GetKeyTrigger(GameControl::JUMP))
+	if (Input::GetKeyTrigger(DIK_SPACE))
 	{
 		SendMessage(Game::GetWindow(), WM_CLOSE, 0, 0);
 	}

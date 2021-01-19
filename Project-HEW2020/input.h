@@ -1,10 +1,11 @@
 //----------------------------------------------------------------------------
 // 
-// Project-HEW2020 [input.h]
-// キーボード、マオス、コントローラー等のインプット制御
+// C++ Module [input.h]
+// Used for controlling with mouse, keyboard and gamepad
 // 
+// Author: CycleDM (Jin Zhou)
 // Date:   2021/01/17
-// Author: AT12D187_17_周進
+// Update: 2021/01/19
 // 
 //----------------------------------------------------------------------------
 #pragma once
@@ -18,6 +19,15 @@ public:
 	static void Init(HWND hWnd, HINSTANCE hInstance);
 	static void Uninit();
 	static void Update();
+
+	// Return whether specific keyboard key was pressed or not
+	//	Parameters:
+	//	key ... specific keyboard key [DIK_*]
+	static bool GetKeyPress(char key);
+	// Return whether specific keyboard key was triggered or not
+	//	Parameters:
+	//	key ... specific keyboard key [DIK_*]
+	static bool GetKeyTrigger(char key);
 	
 	// Return whether specific mouse button was pressed or not
 	//	Parameters:
@@ -39,13 +49,18 @@ public:
 	static long GetMouseDeltaWheel();
 
 private:
-	static HWND m_window;						// Stores the window handle
-	static LPDIRECTINPUT8 m_pDevice;			// Stores the direct input device
-	static LPDIRECTINPUTDEVICE8 m_pMouse;		// Stores the mouse device
-	static DIMOUSESTATE m_mouseState;			// Stores the mouse state
+	static HWND m_window;							// Stores the window handle
+	static LPDIRECTINPUT8 m_pDirectInput;			// DirectInput object
+	
+	static LPDIRECTINPUTDEVICE8 m_pKeyboard;		// Keyboard device
+	static LPDIRECTINPUTDEVICE8 m_pMouse;			// Mouse device
+	static DIMOUSESTATE m_mouseState;				// Stores the mouse state
 
-	//  Member For Mouse Control
-	static unsigned long m_pressStamp;			// Current press stamp, incremented every frame
-	static unsigned long m_mouseButtonStamp[3];	// Stamps the last frame for each mouse button
-	static POINT m_position;					// Stores the mouse position(cursor)
+	//  Members for device control
+	static unsigned long m_pressStamp;				// Current press stamp, incremented every frame
+
+	static char m_keyState[256];					// Stores the state of the keyboard keys
+	static unsigned long m_keyPressStamp[256];		// Stamps the lase frame for each keyboard key
+	static unsigned long m_mouseButtonStamp[3];		// Stamps the last frame for each mouse button
+	static POINT m_position;						// Stores the mouse position(cursor)
 };
