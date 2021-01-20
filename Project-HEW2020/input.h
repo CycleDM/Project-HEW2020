@@ -16,7 +16,7 @@
 class Input
 {
 public:
-	static void Init(HWND hWnd, HINSTANCE hInstance);
+	static void Init(HWND hWnd, HINSTANCE hInstance = NULL);
 	static void Uninit();
 	static void Update();
 

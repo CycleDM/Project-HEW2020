@@ -13,6 +13,10 @@
 #define SCREEN_WIDTH (1280)
 #define SCREEN_HEIGHT (720)
 
+// FONT
+#define FONT_FILE_NAME					"assets/font/LanaPixel.ttf"
+#define FONT_NAME						"LanaPixel"
+
 // 重力システム
 #define GAME_GRAVITY	(9.8f)
 
@@ -24,7 +28,6 @@
 // テクスチャーのファイル名
 #define TEXTURE_LOADING					"assets/texture/loading.png"
 #define TEXTURE_FADE					"assets/texture/fade.png"
-#define TEXTURE_DEBUG					"assets/texture/debug_font_32x64.png"
 #define TEXTURE_BG						"assets/texture/background_only.png"
 #define TEXTURE_BG_OVERLAY				"assets/texture/background_overlay.png"
 #define TEXTURE_OVERLAY_RANGE			"assets/texture/overlay_range.png"

@@ -13,6 +13,8 @@
 #include "controller.h"
 #include "sprite.h"
 #include "player.h"
+#include "input.h"
+#include "d3dfont.h"
 #include "TitleScene.h"
 #include "TestScene.h"
 #include "GameScene01.h"
@@ -139,6 +141,17 @@ void Game::Draw(void)
 	pLoadingScreen->Draw();
 	if (NULL == pActScene) return;
 	pActScene->Draw();
+
+#ifdef _DEBUG
+	D3DFont::Draw(
+		Input::GetMouseX() + 16,
+		Input::GetMouseY() - 16, 
+		"DEBUG\nProject-HEW2020", 
+		FONT_NAME, 
+		32, 
+		D3DCOLOR_RGBA(200, 200, 200, 155)
+	);
+#endif // _DEBUG
 }
 
 // デバッグの状態を取得

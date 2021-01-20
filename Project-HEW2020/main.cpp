@@ -20,9 +20,9 @@
 #include "sprite.h"
 #include "game.h"
 #include "controller.h"
-#include "debug_font.h"
 #include "fade.h"
 #include "input.h"
+#include "d3dfont.h"
 
 #define CLASS_NAME "GameWindow"
 #define WINDOW_CAPTION "Origin v0.4.1(beta)"
@@ -181,13 +181,15 @@ bool Init(HWND hWnd)
 	do
 	{
 		// DINPUT
-		Input::Init(hWnd, NULL);
+		Input::Init(hWnd);
+		// D3DFONT
+		D3DFont::Init(hWnd, SHIFTJIS_CHARSET);
+		D3DFont::LoadFontFromFile(FONT_FILE_NAME);
 		// キーボードの初期化
 		Keyboard_Init();
 		// システムタイマーの初期化
 		SystemTimer_Init();
 
-		DebugFont::Init();
 		FadeEffect::Init();
 		GameControl::Init();
 		Game::Init();
@@ -244,7 +246,7 @@ void Draw(void)
 		{
 			char buf[64];
 			sprintf(buf, "FPS=%.2f", g_FPS);
-			DebugFont::Draw(0.0f, 0.0f, buf);
+			D3DFont::Draw(0, 0, buf, FONT_NAME, 64);
 		}
 	} while (0);
 
@@ -258,7 +260,7 @@ void Uninit(void)
 {
 	Game::Uninit();
 	FadeEffect::Uninit();
-	DebugFont::Uninit();
+	D3DFont::Uninit();
 	Input::Uninit();
 	D3DUtility::Uninit();
 }

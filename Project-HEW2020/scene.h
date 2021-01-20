@@ -15,6 +15,8 @@
 #include "object.h"
 #include "overlay.h"
 #include "controller.h"
+#include "input.h"
+#include "d3dfont.h"
 
 //-----------------------------------------------------------------------------
 // ゲームシーン・基本クラス - 必ず派生を作ってください

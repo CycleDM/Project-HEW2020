@@ -10,6 +10,7 @@
 #pragma once
 
 #include <d3d9.h>
+#define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p) = NULL;}}
 
 class D3DUtility
 {

@@ -9,7 +9,6 @@
 //----------------------------------------------------------------------------
 #include <stdio.h>
 #include "TestScene.h"
-#include "debug_font.h"
 #include "game.h"
 #include "fade.h"
 
@@ -320,56 +319,56 @@ void TestScene::PlayerControl(void)
 void TestScene::Debug(void)
 {
 	char buf[1024];
-	float y = 0.0f;
+	int y = 32;
 
 	sprintf_s(buf, "BgScroll(%.2f, %.2f)", fBgScroll.x, fBgScroll.y);
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 
-	y += 64.0f;
+	y += 32;
 	sprintf_s(buf, "[PlayerInfo]");
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32, D3DCOLOR_RGBA(100, 220, 255, 255));
+	y += 32;
 	sprintf_s(buf, ">MoveSpeed = %.2f", pPlayer->GetSpeed());
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	y += 32;
 	sprintf_s(buf, ">ScreenPos(%.2f, %.2f)", pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y);
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	y += 32;
 	sprintf_s(buf, ">GlobalPos(%.2f, %.2f)", pPlayer->GetGlobalPos().x, pPlayer->GetGlobalPos().y);
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	y += 32;
 	sprintf_s(buf, ">CollisionCenter(%.2f, %.2f)", pPlayer->GetCollision()->GetPosition().x, pPlayer->GetCollision()->GetPosition().y);
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	y += 32;
 	sprintf_s(buf, ">CollisionSize(%.2f, %.2f)", pPlayer->GetCollision()->GetWidth(), pPlayer->GetCollision()->GetHeight());
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	y += 32;
 	sprintf_s(buf, ">isOnLadder = %d", pPlayer->isOnLadder());
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	y += 32;
 	sprintf_s(buf, ">isClimbing = %d", pPlayer->isClimbing());
-	DebugFont::Draw(0.0f, y, buf);
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 
-	y += 64.0f;
+	y += 32;
 	sprintf_s(buf, "[ObjectInfo]");
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32, D3DCOLOR_RGBA(100, 220, 255, 255));
+	y += 32;
 	sprintf_s(buf, ">FLOOR S(%.2f, %.2f) G(%.2f, %.2f) CollisionSize(%.2f, %.2f)",
 		pObjects[1]->GetScreenPos().x, pObjects[1]->GetScreenPos().y,
 		pObjects[1]->GetGlobalPos().x, pObjects[1]->GetGlobalPos().y,
 		pObjects[1]->GetCollision()->GetWidth(), pObjects[1]->GetCollision()->GetHeight());
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	y += 32;
 	sprintf_s(buf, ">LADDER1 S(%.2f, %.2f) G(%.2f, %.2f) CollisionPos(%.2f, %.2f)",
 		pObjects[2]->GetScreenPos().x, pObjects[2]->GetScreenPos().y, 
 		pObjects[2]->GetGlobalPos().x, pObjects[2]->GetGlobalPos().y,
 		pObjects[2]->GetCollision()->GetPosition().x, pObjects[2]->GetCollision()->GetPosition().y);
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	y += 32;
 	sprintf_s(buf, ">LADDER2 S(%.2f, %.2f) G(%.2f, %.2f) CollisionSize(%.2f, %.2f)",
 		pObjects[3]->GetScreenPos().x, pObjects[3]->GetScreenPos().y,
 		pObjects[3]->GetGlobalPos().x, pObjects[3]->GetGlobalPos().y,
 		pObjects[3]->GetCollision()->GetWidth(), pObjects[2]->GetCollision()->GetHeight());
-	DebugFont::Draw(0.0f, y, buf);
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 }

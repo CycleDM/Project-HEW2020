@@ -78,16 +78,8 @@ bool D3DUtility::Init(HWND hWnd)
 // Direct3D関連の終了処理
 void D3DUtility::Uninit(void)
 {
-    if (pDevice)
-    {
-        pDevice->Release();
-        pDevice = NULL;
-    }
-    if (pD3D)
-    {
-        pD3D->Release();
-        pD3D = NULL;
-    }
+    SAFE_RELEASE(pDevice);
+    SAFE_RELEASE(pD3D);
 }
 
 // Direct3Dのデバイスを渡す
