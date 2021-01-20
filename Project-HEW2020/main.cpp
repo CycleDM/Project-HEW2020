@@ -20,9 +20,9 @@
 #include "sprite.h"
 #include "game.h"
 #include "controller.h"
-#include "debug_font.h"
 #include "fade.h"
 #include "input.h"
+#include "d3dfont.h"
 
 #define CLASS_NAME "GameWindow"
 #define WINDOW_CAPTION "Origin v0.4.1(beta)"
@@ -31,7 +31,7 @@
 // プロトタイプ宣言
 //-----------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-bool Init(HWND hWnd, HINSTANCE hInstance);
+bool Init(HWND hWnd);
 void Update(void);
 void Draw(void);
 void Uninit(void);
@@ -98,7 +98,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	if (NULL == hWnd) return 0;
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
-	if (!Init(hWnd, hInstance)) return 0;
+	if (!Init(hWnd)) return 0;
 	Game::BindWindow(hWnd, window_width, window_height);
 
 	// ゲームのメーンループ
@@ -168,10 +168,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 // ゲームシステムの初期化
-bool Init(HWND hWnd, HINSTANCE hInstance)
+bool Init(HWND hWnd)
 {
 	// Direct3Dの初期化
-	if (!D3DUtility::Init(hWnd, hInstance))
+	if (!D3DUtility::Init(hWnd))
 	{
 		MessageBox(NULL, "Direct3Dの初期化に失敗しました", "エラー", MB_OK);
 		return false;
@@ -181,13 +181,15 @@ bool Init(HWND hWnd, HINSTANCE hInstance)
 	do
 	{
 		// DINPUT
-		Input::Init(hWnd, hInstance);
+		Input::Init(hWnd);
+		// D3DFONT
+		D3DFont::Init(hWnd, SHIFTJIS_CHARSET);
+		D3DFont::LoadFontFromFile(FONT_FILE_NAME);
 		// キーボードの初期化
 		Keyboard_Init();
 		// システムタイマーの初期化
 		SystemTimer_Init();
 
-		DebugFont::Init();
 		FadeEffect::Init();
 		GameControl::Init();
 		Game::Init();
@@ -244,7 +246,7 @@ void Draw(void)
 		{
 			char buf[64];
 			sprintf(buf, "FPS=%.2f", g_FPS);
-			DebugFont::Draw(0.0f, 0.0f, buf);
+			D3DFont::Draw(0, 0, buf, FONT_NAME, 64);
 		}
 	} while (0);
 
@@ -258,7 +260,7 @@ void Uninit(void)
 {
 	Game::Uninit();
 	FadeEffect::Uninit();
-	DebugFont::Uninit();
+	D3DFont::Uninit();
 	Input::Uninit();
 	D3DUtility::Uninit();
 }

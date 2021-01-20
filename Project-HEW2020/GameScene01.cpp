@@ -9,10 +9,8 @@
 //----------------------------------------------------------------------------
 #include <stdio.h>
 #include "GameScene01.h"
-#include "debug_font.h"
 #include "game.h"
 #include "d3dutility.h"
-#include "input.h"
 
 GameScene01::GameScene01()
 {
@@ -404,64 +402,55 @@ void GameScene01::PlayerControl()
 void GameScene01::Debug()
 {
 	char buf[1024];
-	float y = 0.0f;
+	int y = 32;
 
 	sprintf_s(buf, "BgScroll(%.2f, %.2f)", fBgScroll.x, fBgScroll.y);
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
-
-	y += 64.0f;
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	y += 32;
 	sprintf_s(buf, "[PlayerInfo]");
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32, D3DCOLOR_RGBA(100, 220, 255, 255));
+	y += 32;
 	sprintf_s(buf, ">MoveSpeed = %.2f", pPlayer->GetSpeed());
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	y += 32;
 	sprintf_s(buf, ">ScreenPos(%.2f, %.2f)", pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y);
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	y += 32;
 	sprintf_s(buf, ">GlobalPos(%.2f, %.2f)", pPlayer->GetGlobalPos().x, pPlayer->GetGlobalPos().y);
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	y += 32;
 	sprintf_s(buf, ">CollisionCenter(%.2f, %.2f)", pPlayer->GetCollision()->GetPosition().x, pPlayer->GetCollision()->GetPosition().y);
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	y += 32;
 	sprintf_s(buf, ">CollisionSize(%.2f, %.2f)", pPlayer->GetCollision()->GetWidth(), pPlayer->GetCollision()->GetHeight());
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
-	sprintf_s(buf, ">isOnLadder = %d", pPlayer->isOnLadder());
-	DebugFont::Draw(0.0f, y, buf);
-	y += 32.0f;
-	sprintf_s(buf, ">isClimbing = %d", pPlayer->isClimbing());
-	DebugFont::Draw(0.0f, y, buf);
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
 	sprintf_s(buf, "[Mouse States]");
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">rgbButton0 = %d", Input::GetMouseButtonTrigger(0));
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">rgbButton1 = %d", Input::GetMouseButtonTrigger(1));
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">rgbButton2 = %d", Input::GetMouseButtonTrigger(2));
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">lX = %d", Input::GetMouseDeltaX());
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">lY = %d", Input::GetMouseDeltaY());
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">lZ = %d", Input::GetMouseDeltaWheel());
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32, D3DCOLOR_RGBA(100, 220, 255, 255));
+	sprintf_s(buf, ">LB = %d", Input::GetMouseButtonPress(0));
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, ">RB = %d", Input::GetMouseButtonPress(1));
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, ">MB = %d", Input::GetMouseButtonPress(2));
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, ">deltaX = %d", Input::GetMouseDeltaX());
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, ">deltaY = %d", Input::GetMouseDeltaY());
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, ">deltaZ = %d", Input::GetMouseDeltaWheel());
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	sprintf_s(buf, ">PosX = %d", Input::GetMouseX());
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	sprintf_s(buf, ">PosY = %d", Input::GetMouseY());
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 }

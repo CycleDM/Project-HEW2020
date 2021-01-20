@@ -8,13 +8,11 @@
 // 
 //----------------------------------------------------------------------------
 #include <stdio.h>
-#include "debug_font.h"
 #include "TitleScene.h"
 #include "controller.h"
 #include "game.h"
 #include "fade.h"
 #include "d3dutility.h"
-#include "input.h"
 
 static DIMOUSESTATE g_MouseState = { 0 };
 
@@ -105,41 +103,41 @@ void TitleScene::Draw(void)
 void TitleScene::Debug(void)
 {
 	char buf[1024];
-	float y = 0.0f;
+	int y = 32;
 
 	sprintf_s(buf, "Button1 = (%.2f, %.2f)", pOverlays[2]->GetScreenPos().x, pOverlays[2]->GetScreenPos().y);
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	sprintf_s(buf, "Button2 = (%.2f, %.2f)", pOverlays[3]->GetScreenPos().x, pOverlays[3]->GetScreenPos().y);
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	sprintf_s(buf, "[Mouse States]");
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">leftButton = %d", Input::GetMouseButtonTrigger(0));
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">rightButton = %d", Input::GetMouseButtonTrigger(1));
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
-	sprintf_s(buf, ">middleButton = %d", Input::GetMouseButtonTrigger(2));
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32, D3DCOLOR_RGBA(100, 220, 255, 255));
+	sprintf_s(buf, ">LB = %d", Input::GetMouseButtonPress(0));
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, ">RB = %d", Input::GetMouseButtonPress(1));
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, ">MB = %d", Input::GetMouseButtonPress(2));
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	sprintf_s(buf, ">deltaX = %d", Input::GetMouseDeltaX());
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	sprintf_s(buf, ">deltaY = %d", Input::GetMouseDeltaY());
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	sprintf_s(buf, ">deltaWheel = %d", Input::GetMouseDeltaWheel());
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	sprintf_s(buf, ">PosX = %d", Input::GetMouseX());
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	sprintf_s(buf, ">PosY = %d", Input::GetMouseY());
-	y += 32.0f;
-	DebugFont::Draw(0.0f, y, buf);
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 }
 
 void TitleScene::UpdatePlayer(void)

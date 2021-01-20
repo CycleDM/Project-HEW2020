@@ -10,11 +10,12 @@
 #pragma once
 
 #include <d3d9.h>
+#define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p) = NULL;}}
 
 class D3DUtility
 {
 public:
-	static bool Init(HWND hWnd, HINSTANCE hInstance);
+	static bool Init(HWND hWnd);
 	static void Uninit(void);
 	static LPDIRECT3DDEVICE9 GetDevice(void);
 	
