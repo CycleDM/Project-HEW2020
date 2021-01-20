@@ -145,8 +145,8 @@ void Game::Draw(void)
 #ifdef _DEBUG
 	D3DFont::Draw(
 		Input::GetMouseX() + 16,
-		Input::GetMouseY() - 16, 
-		"DEBUG\nProject-HEW2020", 
+		Input::GetMouseY(), 
+		"DEBUG\nデバッグ\nProject-HEW2020", 
 		FONT_NAME, 
 		32, 
 		D3DCOLOR_RGBA(200, 200, 200, 155)
