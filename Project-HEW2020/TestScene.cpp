@@ -23,6 +23,7 @@ TestScene::~TestScene()
 
 void TestScene::Init(void)
 {
+	GameScene::Freeze(false);
 	// （スクリーンの幅 / テクスチャの切り取り幅）は拡大・縮小の参照データ
 	SetGlobalScaling((float)SCREEN_WIDTH / 384);
 	isDarkness(false);

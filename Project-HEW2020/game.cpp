@@ -118,16 +118,6 @@ void Game::Update(void)
 	if (NULL == pActScene) return;
 	pActScene->Update();
 
-	// Freeze the active scene while fading
-	if (FadeEffect::IsFading())
-	{
-		pActScene->Freeze(true);
-	}
-	else
-	{
-		pActScene->Freeze(false);
-	}
-
 	// Switching Debug Mode
 	if (GameControl::GetKeyTrigger(GameControl::DEBUG))
 	{

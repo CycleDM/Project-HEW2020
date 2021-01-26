@@ -12,6 +12,7 @@
 #include "controller.h"
 #include "game.h"
 #include "d3dutility.h"
+#include "fade.h"
 
 static DIMOUSESTATE g_MouseState = { 0 };
 
@@ -27,6 +28,7 @@ TitleScene::~TitleScene()
 
 void TitleScene::Init(void)
 {
+	GameScene::Freeze(false);
 	SetGlobalScaling(1.0f);
 	fBgScroll = D3DXVECTOR2(0.0f, 0.0f);
 	fGroundHeight = 64.0f;
@@ -73,6 +75,7 @@ void TitleScene::Update(void)
 {
 	pAnimator->Play(pOverlays[1]->GetSprite());
 
+	if (FadeEffect::IsFading()) return;
 	UpdateTitleButton();
 }
 

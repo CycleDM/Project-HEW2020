@@ -24,6 +24,7 @@ GameScene01::~GameScene01()
 
 void GameScene01::Init()
 {
+	GameScene::Freeze(false);
 	// Init Screen
 	SetGlobalScaling(2.0f);
 	isDarkness(false);
@@ -32,11 +33,11 @@ void GameScene01::Init()
 	fBgScrollMax = D3DXVECTOR2(2310.0f, (float)3000 - (720 / 2 + 1));
 	fGroundHeight = 230.0f;
 
-	memset(bIdea, false, sizeof(bIdea));
-	memset(bIdeaHand, false, sizeof(bIdeaHand));
 	memset(bCodeTaken, false, sizeof(bCodeTaken));
 	memset(bDoorUnlockded, false, sizeof(bDoorUnlockded));
 	memset(bBodyTaken, false, sizeof(bBodyTaken));
+	bIdea = false;
+	bIdeaHand = false;
 	bEndScene = false;
 
 	// Init Player
@@ -163,8 +164,8 @@ void GameScene01::Draw()
 	}
 	pPlayer->Draw();
 
-	if (bIdea[0] || bIdea[1] || bIdea[2] || bIdea[3]) pOverlays[2]->Draw();
-	if (bIdeaHand[0] || bIdeaHand[1]) pOverlays[3]->Draw();
+	if (bIdea) pOverlays[2]->Draw();
+	if (bIdeaHand) pOverlays[3]->Draw();
 	if (bCodeTaken[0]) pOverlays[4]->Draw();
 	if (bCodeTaken[1]) pOverlays[5]->Draw();
 	
@@ -199,6 +200,8 @@ void GameScene01::UpdateObject()
 	// ƒRƒŠƒWƒ‡ƒ“‚É‚æ‚è“–‚½‚è”»’è
 	Collision* pPC = pPlayer->GetCollision();
 
+	bIdea = false;
+	bIdeaHand = false;
 	// DOOR1
 	GameObject* obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_DOOR1);
 	Collision* pOC = obj->GetCollision();
@@ -210,18 +213,13 @@ void GameScene01::UpdateObject()
 
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			bIdeaHand[0] = true;
 			// FBI Open the door!
 			if (bCodeTaken[0] && bCodeTaken[1] && GameControl::GetKeyTrigger(GameControl::USE))
 			{
 				bDoorUnlockded[0] = true;
-				bIdeaHand[0] = false;
 				break;
 			}
-		}
-		else
-		{
-			bIdeaHand[0] = false;
+			bIdeaHand = true;
 		}
 
 		if (obj->GetGlobalPos().x - pPC->GetPosition().x < pOC->GetHalfWidth() + pPC->GetHalfWidth())
@@ -246,18 +244,13 @@ void GameScene01::UpdateObject()
 				return;
 			}
 			if (bDoorUnlockded[1]) break;
-			bIdeaHand[1] = true;
 			// FBI Open the door!
 			if (GameControl::GetKeyTrigger(GameControl::USE) && pGeneratorUI->isUnlocked())
 			{
 				bDoorUnlockded[1] = true;
-				bIdeaHand[1] = false;
 				break;
 			}
-		}
-		else
-		{
-			bIdeaHand[1] = false;
+			bIdeaHand = true;
 		}
 	} while (0);
 
@@ -268,18 +261,13 @@ void GameScene01::UpdateObject()
 		if (bBodyTaken[0]) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			bIdea[0] = true;
 			if (GameControl::GetKeyTrigger(GameControl::USE))
 			{
 				pPlayer->SetStatusFlag(0, -1, -1, -1);
 				obj->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
 				bBodyTaken[0] = true;
-				bIdea[0] = false;
 			}
-		}
-		else
-		{
-			bIdea[0] = false;
+			bIdea = true;
 		}
 	} while (0);
 
@@ -287,18 +275,14 @@ void GameScene01::UpdateObject()
 	do
 	{
 		if (bCodeTaken[0]) break;
-		if (pPlayer->GetGlobalPos().x >= 700 - 32.0f || pPlayer->GetGlobalPos().x <= 700 + 32.0f)
+		if (pPlayer->GetGlobalPos().x >= 700 - 32.0f && pPlayer->GetGlobalPos().x <= 700 + 32.0f)
 		{
-			bIdea[1] = true;
 			if (GameControl::GetKeyTrigger(GameControl::USE))
 			{
 				bCodeTaken[0] = true;
-				bIdea[1] = false;
+				break;
 			}
-		}
-		else
-		{
-			bIdea[1] = false;
+			bIdea = true;
 		}
 	} while (0);
 	// CODE02
@@ -308,16 +292,12 @@ void GameScene01::UpdateObject()
 		if (bCodeTaken[1]) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			bIdea[2] = true;
 			if (GameControl::GetKeyTrigger(GameControl::USE))
 			{
 				bCodeTaken[1] = true;
-				bIdea[2] = false;
+				break;
 			}
-		}
-		else
-		{
-			bIdea[2] = false;
+			bIdea = true;
 		}
 	} while (0);
 
@@ -327,15 +307,12 @@ void GameScene01::UpdateObject()
 	{
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			bIdea[3] = true;
 			if (GameControl::GetKeyTrigger(GameControl::USE))
 			{
 				pGeneratorUI->OpenUI();
+				break;
 			}
-		}
-		else
-		{
-			bIdea[3] = false;
+			bIdea = true;
 		}
 	} while (0);
 }
