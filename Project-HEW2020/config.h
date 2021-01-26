@@ -37,6 +37,9 @@
 #define TEXTURE_PLAYER_CLIMBING_PAUSED	"assets/texture/player_climbing_paused.png"
 #define TEXTURE_PLAYER_IDEA				"assets/texture/player/idea.png"
 #define TEXTURE_PLAYER_IDEA_HAND		"assets/texture/player/idea_hand.png"
+#define TEXTURE_PLAYER_LOST_HAND1		"assets/texture/player/lost_hand_1.png"
+#define TEXTURE_PLAYER_LOST_HAND2		"assets/texture/player/lost_hand_2.png"
+#define TEXTURE_PLAYER_LOST_LEG			"assets/texture/player/lost_leg.png"
 // Enemy
 #define TEXTURE_ROBOT					"assets/texture/wurenji01.png"
 // Object

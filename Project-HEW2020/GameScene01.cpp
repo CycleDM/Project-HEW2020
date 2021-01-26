@@ -32,16 +32,18 @@ void GameScene01::Init()
 	fBgScrollMax = D3DXVECTOR2(2310.0f, (float)3000 - (720 / 2 + 1));
 	fGroundHeight = 230.0f;
 
-	bIdea[0] = bIdea[1] = bIdea[2] = false;
-	bIdeaHand[0] = bIdeaHand[1] = false;
-	bCodeTaken[0] = bCodeTaken[1] = false;
-	bDoorUnlockded[0] = bDoorUnlockded[1] = false;
+	memset(bIdea, false, sizeof(bIdea));
+	memset(bIdeaHand, false, sizeof(bIdeaHand));
+	memset(bCodeTaken, false, sizeof(bCodeTaken));
+	memset(bDoorUnlockded, false, sizeof(bDoorUnlockded));
+	memset(bBodyTaken, false, sizeof(bBodyTaken));
 	bEndScene = false;
 
 	// Init Player
 	pPlayer = new GamePlayer;
-	pPlayer->SetGlobalPos(910.0f, (float)SCREEN_HEIGHT - fGroundHeight);
+	pPlayer->SetGlobalPos(1050.0f, (float)SCREEN_HEIGHT - fGroundHeight);
 	pPlayer->SetWalkingSpeed(5.0f);
+	pPlayer->SetStatusFlag(1, 0, 1, 1);
 
 	// Init BG
 	pOverlays[0] = new GameOverlay(TEXTURE_SCENE01_BG);
@@ -72,6 +74,7 @@ void GameScene01::Init()
 	// Init OBJ
 	pObjects[0] = new GameObject(GameObject::OBJ_TRASH_STACK);
 	pObjects[0]->SetGlobalPos(1000.0f, 310.0f);
+	pObjects[0]->GetSprite()->SetColor(D3DCOLOR_RGBA(155, 155, 155, 255));
 	pObjects[1] = new GameObject(GameObject::OBJ_TRASH_LEG);
 	pObjects[1]->SetGlobalPos(1000.0f, 310.0f);
 	// DOOR1
@@ -160,7 +163,7 @@ void GameScene01::Draw()
 	}
 	pPlayer->Draw();
 
-	if (bIdea[0] || bIdea[1] || bIdea[2]) pOverlays[2]->Draw();
+	if (bIdea[0] || bIdea[1] || bIdea[2] || bIdea[3]) pOverlays[2]->Draw();
 	if (bIdeaHand[0] || bIdeaHand[1]) pOverlays[3]->Draw();
 	if (bCodeTaken[0]) pOverlays[4]->Draw();
 	if (bCodeTaken[1]) pOverlays[5]->Draw();
@@ -258,17 +261,19 @@ void GameScene01::UpdateObject()
 		}
 	} while (0);
 
-	// CODE01
+	// LEG
 	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_TRASH_LEG);
 	do
 	{
-		if (bCodeTaken[0]) break;
+		if (bBodyTaken[0]) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
 			bIdea[0] = true;
 			if (GameControl::GetKeyTrigger(GameControl::USE))
 			{
-				bCodeTaken[0] = true;
+				pPlayer->SetStatusFlag(0, -1, -1, -1);
+				obj->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
+				bBodyTaken[0] = true;
 				bIdea[0] = false;
 			}
 		}
@@ -278,6 +283,24 @@ void GameScene01::UpdateObject()
 		}
 	} while (0);
 
+	// CODE01
+	do
+	{
+		if (bCodeTaken[0]) break;
+		if (pPlayer->GetGlobalPos().x >= 700 - 32.0f || pPlayer->GetGlobalPos().x <= 700 + 32.0f)
+		{
+			bIdea[1] = true;
+			if (GameControl::GetKeyTrigger(GameControl::USE))
+			{
+				bCodeTaken[0] = true;
+				bIdea[1] = false;
+			}
+		}
+		else
+		{
+			bIdea[1] = false;
+		}
+	} while (0);
 	// CODE02
 	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_CRASH_ROBOT);
 	do
@@ -285,16 +308,16 @@ void GameScene01::UpdateObject()
 		if (bCodeTaken[1]) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			bIdea[1] = true;
+			bIdea[2] = true;
 			if (GameControl::GetKeyTrigger(GameControl::USE))
 			{
 				bCodeTaken[1] = true;
-				bIdea[1] = false;
+				bIdea[2] = false;
 			}
 		}
 		else
 		{
-			bIdea[1] = false;
+			bIdea[2] = false;
 		}
 	} while (0);
 
@@ -304,7 +327,7 @@ void GameScene01::UpdateObject()
 	{
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			bIdea[2] = true;
+			bIdea[3] = true;
 			if (GameControl::GetKeyTrigger(GameControl::USE))
 			{
 				pGeneratorUI->OpenUI();
@@ -312,7 +335,7 @@ void GameScene01::UpdateObject()
 		}
 		else
 		{
-			bIdea[2] = false;
+			bIdea[3] = false;
 		}
 	} while (0);
 }
