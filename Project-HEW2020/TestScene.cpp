@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include "TestScene.h"
 #include "game.h"
-#include "fade.h"
 
 TestScene::TestScene()
 {
@@ -94,8 +93,6 @@ void TestScene::Init(void)
 	// ƒƒbƒN
 	pCodedLockUI = new CodedLockUI;
 	pCodedLockUI->SetPassword(6, 8, 9);
-
-	FadeEffect::Start(FADE_IN, 0.0f, 0.0f, 0.0f, 30);
 }
 
 void TestScene::Uninit(void)
@@ -141,7 +138,7 @@ void TestScene::Update(void)
 	// END
 	if (pPlayer->GetGlobalPos().x > 2000.0f)
 	{
-		Game::SwitchScene(Game::SCENE_TITLE);
+		Game::LoadNextScene(Game::SCENE_TITLE);
 	}
 }
 

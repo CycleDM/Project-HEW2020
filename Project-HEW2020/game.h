@@ -9,27 +9,8 @@
 //----------------------------------------------------------------------------
 #pragma once
 
-#include <thread>
 #include "scene.h"
-
-using namespace std;
-
-class LoadingScreen
-{
-public:
-	LoadingScreen();
-	~LoadingScreen();
-
-	void Update(void);
-	void Draw(void);
-	void Show(void);
-	void Hide(void);
-
-private:
-	Sprite* pSprite;
-	Animator* pAnimator;
-	bool isHidden;
-};
+#include "loadingscreen.h"
 
 class Game
 {
@@ -54,7 +35,7 @@ public:
 
 	static bool DebugMode(void);
 
-	static void SwitchScene(Game::SceneType type);
+	static void LoadNextScene(Game::SceneType type);
 
 	static void BindWindow(HWND hWnd, int window_width, int window_height);
 	static void SetFocus(bool onFocus);
@@ -63,6 +44,7 @@ private:
 	static HWND hWnd;
 	static GameScene* pActScene;
 	static SceneType eNowScene;
+	static SceneType eNextScene;
 	static LoadingScreen* pLoadingScreen;
 
 	static bool onFocus;

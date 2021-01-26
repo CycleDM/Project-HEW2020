@@ -145,7 +145,7 @@ void GameScene01::Update()
 	// UI
 	pGeneratorUI->Update();
 
-	if (bEndScene) Game::SwitchScene(Game::SCENE_TEST);
+	if (bEndScene) Game::LoadNextScene(Game::SCENE_TEST);
 }
 
 void GameScene01::Draw()
