@@ -25,7 +25,7 @@
 #include "d3dfont.h"
 
 #define CLASS_NAME "GameWindow"
-#define WINDOW_CAPTION "Origin v0.4.1(beta)"
+#define WINDOW_CAPTION "Origin v1.0.0"
 
 //-----------------------------------------------------------------------------
 // プロトタイプ宣言
