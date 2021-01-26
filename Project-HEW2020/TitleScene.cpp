@@ -74,15 +74,6 @@ void TitleScene::Update(void)
 	pAnimator->Play(pOverlays[1]->GetSprite());
 
 	UpdateTitleButton();
-
-	if (buttonSelected == 0 && Input::GetMouseButtonTrigger(0) || GameControl::GetKeyTrigger(GameControl::JUMP))
-	{
-		Game::LoadNextScene(Game::SCENE_01);
-	}
-	if (buttonSelected == 1 && Input::GetMouseButtonTrigger(0))
-	{
-		SendMessage(Game::GetWindow(), WM_CLOSE, 0, 0);
-	}
 }
 
 void TitleScene::Draw(void)
@@ -154,6 +145,7 @@ void TitleScene::UpdateOverlay(void)
 
 void TitleScene::UpdateTitleButton(void)
 {
+	if (bFrozen) return;
 	for (int i = 0; i < 2; i++)
 	{
 		GameOverlay* po = pOverlays[2 + i];
@@ -184,5 +176,14 @@ void TitleScene::UpdateTitleButton(void)
 	case -1:
 	default:
 		break;
+	}
+
+	if (buttonSelected == 0 && Input::GetMouseButtonTrigger(0) || GameControl::GetKeyTrigger(GameControl::JUMP))
+	{
+		Game::LoadNextScene(Game::SCENE_01);
+	}
+	if (buttonSelected == 1 && Input::GetMouseButtonTrigger(0))
+	{
+		SendMessage(Game::GetWindow(), WM_CLOSE, 0, 0);
 	}
 }

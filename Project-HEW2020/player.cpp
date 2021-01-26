@@ -69,25 +69,6 @@ void GamePlayer::Init(void)
 
 	pActiveSprite = pSprite;
 
-	/*----------実験コード-------------------------------------------------------------------------*/
-	Sprite* test = NULL;
-	test = new SpriteNormal[2];
-	test->LoadTexture(TEXTURE_PLAYER);
-	test->SetDrawPos(screenPos.x - PLAYER_DRAW_WIDTH / 2, screenPos.y - PLAYER_DRAW_HEIGHT / 2);
-	test->SetCutPos(0, 0);
-	test->SetCutRange(PLAYER_TEXTURE_CUT_WIDTH, PLAYER_TEXTURE_CUT_HEIGHT);
-	test->SetPolygonSize(PLAYER_DRAW_WIDTH, PLAYER_DRAW_HEIGHT);
-	
-	(test+1)->LoadTexture(TEXTURE_PLAYER);
-	(test+1)->SetDrawPos(screenPos.x - PLAYER_DRAW_WIDTH / 2, screenPos.y - PLAYER_DRAW_HEIGHT / 2);
-	(test+1)->SetCutPos(0, 0);
-	(test+1)->SetCutRange(PLAYER_TEXTURE_CUT_WIDTH, PLAYER_TEXTURE_CUT_HEIGHT);
-	(test+1)->SetPolygonSize(PLAYER_DRAW_WIDTH, PLAYER_DRAW_HEIGHT);
-	
-	delete[] test;
-	test = NULL;
-	/*----------実験コード-------------------------------------------------------------------------*/
-
 	// コリジョンを作成
 	pCollision = new Collision;
 	pCollision->SetSize(PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -308,4 +289,9 @@ void GamePlayer::Jump(void)
 		// ジャンプ中の状態に設定（多重ジャンプ防止）
 		bJumping = true;
 	}
+}
+
+void GamePlayer::SetWalkingSpeed(float speed)
+{
+	velocity = speed;
 }

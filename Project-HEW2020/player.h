@@ -50,6 +50,7 @@ public:
 	void MoveUp(void);
 	void MoveDown(void);
 	void Jump(void);
+	void SetWalkingSpeed(float speed);
 
 private:
 	Sprite* pSprite;

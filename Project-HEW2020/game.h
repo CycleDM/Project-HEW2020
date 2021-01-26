@@ -9,8 +9,11 @@
 //----------------------------------------------------------------------------
 #pragma once
 
+#include <thread>
 #include "scene.h"
 #include "loadingscreen.h"
+
+using namespace std;
 
 class Game
 {
@@ -26,7 +29,7 @@ public:
 		SCENE_MAX
 	};
 	static void Init(void);
-	static void InitScene(void);
+	static void InitSceneThread(GameScene** pTarget, bool* flag);
 	static void Uninit(void);
 	static void UninitScene(void);
 
@@ -53,4 +56,6 @@ private:
 
 	static bool bLoadingFlag;
 	static bool bDebugMode;
+
+	static thread lt;
 };

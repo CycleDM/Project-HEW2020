@@ -39,6 +39,7 @@ bool Game::onFocus = true;
 bool Game::bLoadingFlag = false;
 bool Game::bDebugMode = false;
 
+thread Game::lt;
 
 // ƒQ[ƒ€‚Ì‰Šú‰»
 void Game::Init(void)
@@ -62,37 +63,38 @@ void Game::Uninit(void)
 	pLoadingScreen = NULL;
 }
 
-void Game::InitScene()
+void Game::InitSceneThread(GameScene** pTarget, bool* flag)
 {
-	bLoadingFlag = true;
+	*flag = true;
+	GameScene* pScene = NULL;
 
-	do
+	switch (eNextScene)
 	{
-		switch (eNextScene)
-		{
-		case Game::SCENE_TITLE:
-			pActScene = new TitleScene;
-			break;
-		case Game::SCENE_01:
-			pActScene = new GameScene01;
-			break;
-		case Game::SCENE_02:
-			break;
-		case Game::SCENE_03:
-			break;
-		case Game::SCENE_TEST:
-			pActScene = new TestScene;
-			break;
-		case Game::SCENE_FINAL:
-			break;
-		default:
-			break;
-		}
-	} while (NULL == pActScene);
+	case Game::SCENE_TITLE:
+		pScene = new TitleScene;
+		break;
+	case Game::SCENE_01:
+		pScene = new GameScene01;
+		break;
+	case Game::SCENE_02:
+		break;
+	case Game::SCENE_03:
+		break;
+	case Game::SCENE_TEST:
+		pScene = new TestScene;
+		break;
+	case Game::SCENE_FINAL:
+		break;
+	default:
+		break;
+	}
 
-	bLoadingFlag = false;
+	if (NULL == pScene) return;
 
-	FadeEffect::Start(FADE_IN, 0.0f, 0.0f, 0.0f, 60);
+	*pTarget = pScene;
+	*flag = false;
+
+	FadeEffect::Start(FADE_IN, 0.0f, 0.0f, 0.0f, 30);
 }
 
 void Game::UninitScene()
@@ -116,7 +118,17 @@ void Game::Update(void)
 	if (NULL == pActScene) return;
 	pActScene->Update();
 
-	// Switch Debug Mode
+	// Freeze the active scene while fading
+	if (FadeEffect::IsFading())
+	{
+		pActScene->Freeze(true);
+	}
+	else
+	{
+		pActScene->Freeze(false);
+	}
+
+	// Switching Debug Mode
 	if (GameControl::GetKeyTrigger(GameControl::DEBUG))
 	{
 		bDebugMode = !bDebugMode;
@@ -154,7 +166,8 @@ void Game::LoadNextScene(Game::SceneType type)
 	eNextScene = type;
 
 	/*** LOADING THREAD ***/
-	thread(&Game::InitScene).detach();
+	lt = thread(&Game::InitSceneThread, &pActScene, &bLoadingFlag);
+	lt.detach();
 }
 
 void Game::BindWindow(HWND hWnd, int window_width, int window_height)
