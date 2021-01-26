@@ -8,6 +8,7 @@
 // 
 //----------------------------------------------------------------------------
 #include <cmath>
+#include <thread>
 #include "game.h"
 #include "config.h"
 #include "controller.h"
@@ -15,14 +16,18 @@
 #include "player.h"
 #include "input.h"
 #include "d3dfont.h"
+#include "fade.h"
 #include "TitleScene.h"
 #include "TestScene.h"
 #include "GameScene01.h"
+
+using namespace std;
 
 //-----------------------------------------------------------------------------
 // ƒOƒ[ƒoƒ‹•Ï”éŒ¾
 //-----------------------------------------------------------------------------
 Game::SceneType Game::eNowScene = SCENE_TITLE;
+Game::SceneType Game::eNextScene = eNowScene;
 GameScene* Game::pActScene = NULL;
 LoadingScreen* Game::pLoadingScreen = NULL;
 
@@ -34,14 +39,7 @@ bool Game::onFocus = true;
 bool Game::bLoadingFlag = false;
 bool Game::bDebugMode = false;
 
-void func(void)
-{
-	int a = 0;
-	while (1)
-	{
-		a++;
-	}
-}
+thread Game::lt;
 
 // ƒQ[ƒ€‚Ì‰Šú‰»
 void Game::Init(void)
@@ -52,8 +50,7 @@ void Game::Init(void)
 	pLoadingScreen = new LoadingScreen;
 	bLoadingFlag = false;
 
-	//SwitchScene(eNowScene);
-	InitScene();
+	LoadNextScene(eNowScene);
 }
 
 // ƒQ[ƒ€‚ÌI—¹ˆ—
@@ -66,28 +63,38 @@ void Game::Uninit(void)
 	pLoadingScreen = NULL;
 }
 
-void Game::InitScene(void)
+void Game::InitSceneThread(GameScene** pTarget, bool* flag)
 {
-	switch (eNowScene)
+	*flag = true;
+	GameScene* pScene = NULL;
+
+	switch (eNextScene)
 	{
 	case Game::SCENE_TITLE:
-		pActScene = new TitleScene;
+		pScene = new TitleScene;
 		break;
 	case Game::SCENE_01:
-		pActScene = new GameScene01;
+		pScene = new GameScene01;
 		break;
 	case Game::SCENE_02:
 		break;
 	case Game::SCENE_03:
 		break;
 	case Game::SCENE_TEST:
-		pActScene = new TestScene;
+		pScene = new TestScene;
 		break;
 	case Game::SCENE_FINAL:
 		break;
 	default:
 		break;
 	}
+
+	if (NULL == pScene) return;
+
+	*pTarget = pScene;
+	*flag = false;
+
+	FadeEffect::Start(FADE_IN, 0.0f, 0.0f, 0.0f, 30);
 }
 
 void Game::UninitScene()
@@ -99,40 +106,23 @@ void Game::UninitScene()
 // ƒQ[ƒ€‚ÌXV
 void Game::Update(void)
 {
+	if (bLoadingFlag) pLoadingScreen->Show();
+	else pLoadingScreen->Hide();
+
+	if (eNowScene != eNextScene && !bLoadingFlag)
+	{
+		eNowScene = eNextScene;
+	}
+
 	pLoadingScreen->Update();
 	if (NULL == pActScene) return;
 	pActScene->Update();
 
-	// Switch Debug Mode
+	// Switching Debug Mode
 	if (GameControl::GetKeyTrigger(GameControl::DEBUG))
 	{
 		bDebugMode = !bDebugMode;
 	}
-	
-	//do
-	//{
-	//	if (!onFocus) break;
-	//
-	//	POINT new_pos = { mousePosition.x, mousePosition.y };
-	//	if (mousePosition.x > SCREEN_WIDTH)
-	//	{
-	//		new_pos = { 1280, mousePosition.y };
-	//	}
-	//	if (mousePosition.x < 0)
-	//	{
-	//		new_pos = { 0, mousePosition.y };
-	//	}
-	//	if (mousePosition.y > SCREEN_HEIGHT)
-	//	{
-	//		new_pos = { mousePosition.x, SCREEN_HEIGHT };
-	//	}
-	//	if (mousePosition.y < SCREEN_HEIGHT - window_height)
-	//	{
-	//		new_pos = { mousePosition.x, SCREEN_HEIGHT - window_height };
-	//	}
-	//	ClientToScreen(hWnd, &new_pos);
-	//	SetCursorPos(new_pos.x, new_pos.y);
-	//} while (0);
 }
 
 // ƒQ[ƒ€‚Ì•`‰æ
@@ -141,7 +131,7 @@ void Game::Draw(void)
 	pLoadingScreen->Draw();
 	if (NULL == pActScene) return;
 	pActScene->Draw();
-
+	
 #ifdef _DEBUG
 	D3DFont::Draw(
 		Input::GetMouseX() + 16,
@@ -160,22 +150,14 @@ bool Game::DebugMode(void)
 	return bDebugMode;
 }
 
-void Game::SwitchScene(Game::SceneType type)
+void Game::LoadNextScene(Game::SceneType type)
 {
 	UninitScene();
-
-	eNowScene = type;
-	bLoadingFlag = true;
-
-	// Set loading screen visible
-	pLoadingScreen->Show();
+	eNextScene = type;
 
 	/*** LOADING THREAD ***/
-	//lt = thread(&Game::InitScene, &bLoadingFlag);
-
-	//InitScene(NULL);
-	//bLoadingFlag = false;
-	InitScene();
+	lt = thread(&Game::InitSceneThread, &pActScene, &bLoadingFlag);
+	lt.detach();
 }
 
 void Game::BindWindow(HWND hWnd, int window_width, int window_height)
@@ -185,60 +167,12 @@ void Game::BindWindow(HWND hWnd, int window_width, int window_height)
 	Game::window_height = window_height;
 }
 
-void Game::SetFocus(bool onFocus)
-{
-	Game::onFocus = onFocus;
-}
-
 HWND Game::GetWindow(void)
 {
 	return hWnd;
 }
 
-// LOADING SCREEN
-LoadingScreen::LoadingScreen()
+void Game::SetFocus(bool onFocus)
 {
-	pSprite = new SpriteNormal(TEXTURE_LOADING);
-	pAnimator = new Animator();
-	pSprite->SetPolygonSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-	pSprite->SetCutPos(0, 0);
-	pSprite->SetCutRange(SCREEN_WIDTH, SCREEN_HEIGHT);
-	pAnimator->Init(pSprite);
-	pAnimator->Preset(3, 3, 8);
-
-	isHidden = true;
-}
-
-LoadingScreen::~LoadingScreen()
-{
-	delete pSprite;
-	pSprite = NULL;
-	delete pAnimator;
-	pAnimator = NULL;
-}
-
-void LoadingScreen::Update()
-{
-	if (isHidden) return;
-	pAnimator->Play(pSprite);
-}
-
-void LoadingScreen::Draw()
-{
-	if (isHidden) return;
-	pSprite->Draw();
-}
-
-void LoadingScreen::Hide()
-{
-	if (isHidden) return;
-	pSprite->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
-	isHidden = true;
-}
-
-void LoadingScreen::Show()
-{
-	pSprite->SetColor(D3DCOLOR_RGBA(255, 255, 255, 255));
-	pAnimator->Preset(3, 3, 8);
-	isHidden = false;
+	Game::onFocus = onFocus;
 }

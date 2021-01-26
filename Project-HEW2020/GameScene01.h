@@ -31,9 +31,10 @@ private:
 	void UpdateOverlay(void);
 	void PlayerControl(void);
 
-	bool bIdea[3];
-	bool bIdeaHand[2];
+	bool bIdea;
+	bool bIdeaHand;
 	bool bCodeTaken[2];
+	bool bBodyTaken[3];
 	bool bDoorUnlockded[2];
 	bool bEndScene;
 

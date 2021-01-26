@@ -32,11 +32,14 @@
 #define TEXTURE_BG_OVERLAY				"assets/texture/background_overlay.png"
 #define TEXTURE_OVERLAY_RANGE			"assets/texture/overlay_range.png"
 // Player
-#define TEXTURE_PLAYER					"assets/texture/player.png"
-#define TEXTURE_PLAYER_CLIMBING			"assets/texture/player_climbing.png"
-#define TEXTURE_PLAYER_CLIMBING_PAUSED	"assets/texture/player_climbing_paused.png"
+#define TEXTURE_PLAYER					"assets/texture/player/player.png"
+#define TEXTURE_PLAYER_CLIMBING			"assets/texture/player/climbing.png"
+#define TEXTURE_PLAYER_CLIMBING_PAUSED	"assets/texture/player/climbing_paused.png"
 #define TEXTURE_PLAYER_IDEA				"assets/texture/player/idea.png"
 #define TEXTURE_PLAYER_IDEA_HAND		"assets/texture/player/idea_hand.png"
+#define TEXTURE_PLAYER_LOST_HAND1		"assets/texture/player/lost_hand_1.png"
+#define TEXTURE_PLAYER_LOST_HAND2		"assets/texture/player/lost_hand_2.png"
+#define TEXTURE_PLAYER_LOST_LEG			"assets/texture/player/lost_leg.png"
 // Enemy
 #define TEXTURE_ROBOT					"assets/texture/wurenji01.png"
 // Object

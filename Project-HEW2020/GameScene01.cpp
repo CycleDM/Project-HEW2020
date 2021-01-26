@@ -24,36 +24,40 @@ GameScene01::~GameScene01()
 
 void GameScene01::Init()
 {
+	GameScene::Freeze(false);
 	// Init Screen
 	SetGlobalScaling(2.0f);
 	isDarkness(false);
 
 	fBgScroll = D3DXVECTOR2(0.0f, 0.0f);
-	fBgScrollMax = D3DXVECTOR2(4719.0f, 5279.0f);
+	fBgScrollMax = D3DXVECTOR2(2310.0f, (float)3000 - (720 / 2 + 1));
 	fGroundHeight = 230.0f;
 
-	bIdea[0] = bIdea[1] = bIdea[2] = false;
-	bIdeaHand[0] = bIdeaHand[1] = false;
-	bCodeTaken[0] = bCodeTaken[1] = false;
-	bDoorUnlockded[0] = bDoorUnlockded[1] = false;
+	memset(bCodeTaken, false, sizeof(bCodeTaken));
+	memset(bDoorUnlockded, false, sizeof(bDoorUnlockded));
+	memset(bBodyTaken, false, sizeof(bBodyTaken));
+	bIdea = false;
+	bIdeaHand = false;
 	bEndScene = false;
 
 	// Init Player
 	pPlayer = new GamePlayer;
-	pPlayer->SetGlobalPos(600.0f, (float)SCREEN_HEIGHT - fGroundHeight);
+	pPlayer->SetGlobalPos(1050.0f, (float)SCREEN_HEIGHT - fGroundHeight);
+	pPlayer->SetWalkingSpeed(5.0f);
+	pPlayer->SetStatusFlag(1, 0, 1, 1);
 
 	// Init BG
 	pOverlays[0] = new GameOverlay(TEXTURE_SCENE01_BG);
 	pOverlays[0]->SetScreenPos((float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2);
 	pOverlays[0]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
-	pOverlays[0]->GetSprite()->SetCutPos(0, 5279);
-	pOverlays[0]->GetSprite()->SetCutRange(1280, 720);
+	pOverlays[0]->GetSprite()->SetCutPos(0, 3000 - (720 / 2 + 1));
+	pOverlays[0]->GetSprite()->SetCutRange(1280 / 2, 720 / 2);
 
 	pOverlays[1] = new GameOverlay(TEXTURE_SCENE01_BG_OVERLAY);
 	pOverlays[1]->SetScreenPos((float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2);
 	pOverlays[1]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
-	pOverlays[1]->GetSprite()->SetCutPos(0, 5279);
-	pOverlays[1]->GetSprite()->SetCutRange(1280, 720);
+	pOverlays[1]->GetSprite()->SetCutPos(0, 3000 - (720 / 2 + 1));
+	pOverlays[1]->GetSprite()->SetCutRange(1280 / 2, 720 / 2);
 	pOverlays[1]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 230));
 
 	// IDEA
@@ -70,15 +74,16 @@ void GameScene01::Init()
 
 	// Init OBJ
 	pObjects[0] = new GameObject(GameObject::OBJ_TRASH_STACK);
-	pObjects[0]->SetGlobalPos(900.0f, 310.0f);
+	pObjects[0]->SetGlobalPos(1000.0f, 310.0f);
+	pObjects[0]->GetSprite()->SetColor(D3DCOLOR_RGBA(155, 155, 155, 255));
 	pObjects[1] = new GameObject(GameObject::OBJ_TRASH_LEG);
-	pObjects[1]->SetGlobalPos(900.0f, 310.0f);
+	pObjects[1]->SetGlobalPos(1000.0f, 310.0f);
 	// DOOR1
 	pObjects[2] = new GameObject(GameObject::OBJ_DOOR1);
 	pObjects[2]->SetGlobalPos(3111.0f, 412.0f);
 	// CRASH_ROBOT
 	pObjects[3] = new GameObject(GameObject::OBJ_CRASH_ROBOT);
-	pObjects[3]->SetGlobalPos(2450.0f, 426.0f);
+	pObjects[3]->SetGlobalPos(1800.0f, 426.0f);
 	pObjects[3]->GetSprite()->SetColor(D3DCOLOR_RGBA(155, 155, 155, 255));
 	// DIGITAL_DOOR
 	pObjects[4] = new GameObject(GameObject::OBJ_DIGITAL_DOOR);
@@ -127,7 +132,7 @@ void GameScene01::Uninit()
 void GameScene01::Update()
 {
 	fBgScroll.x = pPlayer->GetGlobalPos().x - (float)SCREEN_WIDTH / 2;
-	//fBgScroll.x /= fGlobalScaling;
+	fBgScroll.x /= fGlobalScaling;
 
 	if (fBgScroll.x > fBgScrollMax.x)
 		fBgScroll.x = fBgScrollMax.x;
@@ -145,7 +150,7 @@ void GameScene01::Update()
 	// UI
 	pGeneratorUI->Update();
 
-	if (bEndScene) Game::SwitchScene(Game::SCENE_TEST);
+	if (bEndScene) Game::LoadNextScene(Game::SCENE_TEST);
 }
 
 void GameScene01::Draw()
@@ -159,8 +164,8 @@ void GameScene01::Draw()
 	}
 	pPlayer->Draw();
 
-	if (bIdea[0] || bIdea[1] || bIdea[2]) pOverlays[2]->Draw();
-	if (bIdeaHand[0] || bIdeaHand[1]) pOverlays[3]->Draw();
+	if (bIdea) pOverlays[2]->Draw();
+	if (bIdeaHand) pOverlays[3]->Draw();
 	if (bCodeTaken[0]) pOverlays[4]->Draw();
 	if (bCodeTaken[1]) pOverlays[5]->Draw();
 	
@@ -175,8 +180,7 @@ void GameScene01::Draw()
 
 void GameScene01::UpdateObject()
 {
-	float fGlobalPosOffset = fBgScroll.x;
-	//fGlobalPosOffset *= fGlobalScaling;
+	float fGlobalPosOffset = fBgScroll.x * fGlobalScaling;
 	for (GameObject* object : pObjects)
 	{
 		if (NULL == object) continue;
@@ -196,6 +200,8 @@ void GameScene01::UpdateObject()
 	// コリジョンにより当たり判定
 	Collision* pPC = pPlayer->GetCollision();
 
+	bIdea = false;
+	bIdeaHand = false;
 	// DOOR1
 	GameObject* obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_DOOR1);
 	Collision* pOC = obj->GetCollision();
@@ -207,18 +213,13 @@ void GameScene01::UpdateObject()
 
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			bIdeaHand[0] = true;
 			// FBI Open the door!
 			if (bCodeTaken[0] && bCodeTaken[1] && GameControl::GetKeyTrigger(GameControl::USE))
 			{
 				bDoorUnlockded[0] = true;
-				bIdeaHand[0] = false;
 				break;
 			}
-		}
-		else
-		{
-			bIdeaHand[0] = false;
+			bIdeaHand = true;
 		}
 
 		if (obj->GetGlobalPos().x - pPC->GetPosition().x < pOC->GetHalfWidth() + pPC->GetHalfWidth())
@@ -243,41 +244,47 @@ void GameScene01::UpdateObject()
 				return;
 			}
 			if (bDoorUnlockded[1]) break;
-			bIdeaHand[1] = true;
 			// FBI Open the door!
 			if (GameControl::GetKeyTrigger(GameControl::USE) && pGeneratorUI->isUnlocked())
 			{
 				bDoorUnlockded[1] = true;
-				bIdeaHand[1] = false;
 				break;
 			}
+			bIdeaHand = true;
 		}
-		else
+	} while (0);
+
+	// LEG
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_TRASH_LEG);
+	do
+	{
+		if (bBodyTaken[0]) break;
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			bIdeaHand[1] = false;
+			if (GameControl::GetKeyTrigger(GameControl::USE))
+			{
+				pPlayer->SetStatusFlag(0, -1, -1, -1);
+				obj->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
+				bBodyTaken[0] = true;
+			}
+			bIdea = true;
 		}
 	} while (0);
 
 	// CODE01
-	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_TRASH_LEG);
 	do
 	{
 		if (bCodeTaken[0]) break;
-		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		if (pPlayer->GetGlobalPos().x >= 700 - 32.0f && pPlayer->GetGlobalPos().x <= 700 + 32.0f)
 		{
-			bIdea[0] = true;
 			if (GameControl::GetKeyTrigger(GameControl::USE))
 			{
 				bCodeTaken[0] = true;
-				bIdea[0] = false;
+				break;
 			}
-		}
-		else
-		{
-			bIdea[0] = false;
+			bIdea = true;
 		}
 	} while (0);
-
 	// CODE02
 	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_CRASH_ROBOT);
 	do
@@ -285,16 +292,12 @@ void GameScene01::UpdateObject()
 		if (bCodeTaken[1]) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			bIdea[1] = true;
 			if (GameControl::GetKeyTrigger(GameControl::USE))
 			{
 				bCodeTaken[1] = true;
-				bIdea[1] = false;
+				break;
 			}
-		}
-		else
-		{
-			bIdea[1] = false;
+			bIdea = true;
 		}
 	} while (0);
 
@@ -304,23 +307,21 @@ void GameScene01::UpdateObject()
 	{
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			bIdea[2] = true;
 			if (GameControl::GetKeyTrigger(GameControl::USE))
 			{
 				pGeneratorUI->OpenUI();
+				break;
 			}
-		}
-		else
-		{
-			bIdea[2] = false;
+			bIdea = true;
 		}
 	} while (0);
 }
 
 void GameScene01::UpdateOverlay()
 {
-	pOverlays[0]->GetSprite()->SetCutPos((int)fBgScroll.x, 5279 - (int)fBgScroll.y);
-	pOverlays[1]->GetSprite()->SetCutPos((int)fBgScroll.x, 5279 - (int)fBgScroll.y);
+	float fGlobalPosOffset = fBgScroll.x * fGlobalScaling;
+	pOverlays[0]->GetSprite()->SetCutPos((int)fBgScroll.x, 3000 - (720 / 2 + 1) - (int)fBgScroll.y);
+	pOverlays[1]->GetSprite()->SetCutPos((int)fBgScroll.x, 3000 - (720 / 2 + 1) - (int)fBgScroll.y);
 
 	// ここからはUIの更新処理
 	do
@@ -339,19 +340,25 @@ void GameScene01::UpdatePlayer()
 	// プレイヤーのコリジョンを取得
 	Collision* pPC = pPlayer->GetCollision();
 	// スクリーン座標とワールド座標の同期
-	float offsetX = fBgScroll.x;
+	float offsetX = fBgScroll.x * fGlobalScaling;
 	float offsetY = fBgScroll.y;
 	// 背景はスクロールしていない状態 -> スクリーン座標は変更できる
 	// 背景はスクロールしている状態	-> スクリーン座標は変更できない
 	// グローバル座標（世界座標）はいつも正常に変わる
 	if (fBgScroll.x <= 0.0f || fBgScroll.x >= fBgScrollMax.x)
+	{
 		pPlayer->SetScreenPos(pPlayer->GetGlobalPos().x - offsetX, pPlayer->GetGlobalPos().y);
+		//pPlayer->SetWalkingSpeed(5.0f);
+	}
 	else
+	{
 		pPlayer->SetScreenPos((float)SCREEN_WIDTH / 2, pPlayer->GetGlobalPos().y);
+		//pPlayer->SetWalkingSpeed(2.5f);
+	}
 
 	// プレイヤーは画面を出ることを防止
 	float minimumX = 400.0f + pPC->GetHalfWidth();
-	float maximumX = (float)SCREEN_WIDTH - pPC->GetHalfWidth() + offsetX - 180.0f;
+	float maximumX = (float)SCREEN_WIDTH - pPC->GetHalfWidth() + offsetX - 80.0f;
 	float minimumY = 0.0f + pPC->GetHalfHeight();
 	float maximumY = (float)SCREEN_HEIGHT - fGroundHeight - pPC->GetHalfHeight();
 	//	プレイヤーが2F以上の場合
@@ -392,11 +399,6 @@ void GameScene01::UpdatePlayer()
 void GameScene01::PlayerControl()
 {
 	GameScene::PlayerControl();
-
-	if (Input::GetKeyTrigger(DIK_SPACE))
-	{
-		SendMessage(Game::GetWindow(), WM_CLOSE, 0, 0);
-	}
 }
 
 void GameScene01::Debug()

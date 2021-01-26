@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include "TestScene.h"
 #include "game.h"
-#include "fade.h"
 
 TestScene::TestScene()
 {
@@ -24,6 +23,7 @@ TestScene::~TestScene()
 
 void TestScene::Init(void)
 {
+	GameScene::Freeze(false);
 	// （スクリーンの幅 / テクスチャの切り取り幅）は拡大・縮小の参照データ
 	SetGlobalScaling((float)SCREEN_WIDTH / 384);
 	isDarkness(false);
@@ -94,8 +94,6 @@ void TestScene::Init(void)
 	// ロック
 	pCodedLockUI = new CodedLockUI;
 	pCodedLockUI->SetPassword(6, 8, 9);
-
-	FadeEffect::Start(FADE_IN, 0.0f, 0.0f, 0.0f, 30);
 }
 
 void TestScene::Uninit(void)
@@ -141,7 +139,7 @@ void TestScene::Update(void)
 	// END
 	if (pPlayer->GetGlobalPos().x > 2000.0f)
 	{
-		Game::SwitchScene(Game::SCENE_TITLE);
+		Game::LoadNextScene(Game::SCENE_TITLE);
 	}
 }
 

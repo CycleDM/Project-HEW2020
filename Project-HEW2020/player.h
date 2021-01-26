@@ -44,12 +44,14 @@ public:
 	void isClimbing(bool bState);
 	bool isOnLadder(void);
 	void isOnLadder(bool bState);
+	void SetStatusFlag(int bLostLeg, int bLostHandL, int bLostHandR, int bLostEye);
 
 	void MoveLeft(void);
 	void MoveRight(void);
 	void MoveUp(void);
 	void MoveDown(void);
 	void Jump(void);
+	void SetWalkingSpeed(float speed);
 
 private:
 	Sprite* pSprite;
@@ -65,6 +67,11 @@ private:
 	bool bClimbingUp;
 	bool bClimbingDown;
 	bool bOnLadder;
+
+	bool bLostLeg;
+	bool bLostEye;
+	bool bLostHandL;
+	bool bLostHandR;
 
 	Collision* pCollision;			// プレイヤーのコリジョン
 	Animator* pAnimator;			// アニメーション制御

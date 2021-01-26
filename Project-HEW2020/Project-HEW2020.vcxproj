@@ -30,6 +30,7 @@
     <ClCompile Include="generator_ui.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="keyboard.cpp" />
+    <ClCompile Include="loadingscreen.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="overlay.cpp" />
@@ -54,6 +55,7 @@
     <ClInclude Include="generator_ui.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="keyboard.h" />
+    <ClInclude Include="loadingscreen.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="overlay.h" />
     <ClInclude Include="player.h" />

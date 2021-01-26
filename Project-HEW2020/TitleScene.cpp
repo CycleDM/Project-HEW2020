@@ -11,8 +11,8 @@
 #include "TitleScene.h"
 #include "controller.h"
 #include "game.h"
-#include "fade.h"
 #include "d3dutility.h"
+#include "fade.h"
 
 static DIMOUSESTATE g_MouseState = { 0 };
 
@@ -28,6 +28,7 @@ TitleScene::~TitleScene()
 
 void TitleScene::Init(void)
 {
+	GameScene::Freeze(false);
 	SetGlobalScaling(1.0f);
 	fBgScroll = D3DXVECTOR2(0.0f, 0.0f);
 	fGroundHeight = 64.0f;
@@ -58,8 +59,6 @@ void TitleScene::Init(void)
 	pOverlays[3]->SetScreenPos((float)SCREEN_WIDTH / 2, 550.0f);
 	pOverlays[3]->SetSize((float)pOverlays[3]->GetSprite()->GetTextureWidth() / 2, (float)pOverlays[3]->GetSprite()->GetTextureHeight() / 2);
 
-	FadeEffect::Start(FADE_IN, 0.0f, 0.0f, 0.0f, 30);
-
 	buttonSelected = -1;
 }
 
@@ -76,16 +75,8 @@ void TitleScene::Update(void)
 {
 	pAnimator->Play(pOverlays[1]->GetSprite());
 
+	if (FadeEffect::IsFading()) return;
 	UpdateTitleButton();
-
-	if (buttonSelected == 0 && Input::GetMouseButtonTrigger(0) || GameControl::GetKeyTrigger(GameControl::JUMP))
-	{
-		Game::SwitchScene(Game::SCENE_01);
-	}
-	if (buttonSelected == 1 && Input::GetMouseButtonTrigger(0))
-	{
-		SendMessage(Game::GetWindow(), WM_CLOSE, 0, 0);
-	}
 }
 
 void TitleScene::Draw(void)
@@ -157,6 +148,7 @@ void TitleScene::UpdateOverlay(void)
 
 void TitleScene::UpdateTitleButton(void)
 {
+	if (bFrozen) return;
 	for (int i = 0; i < 2; i++)
 	{
 		GameOverlay* po = pOverlays[2 + i];
@@ -187,5 +179,14 @@ void TitleScene::UpdateTitleButton(void)
 	case -1:
 	default:
 		break;
+	}
+
+	if (buttonSelected == 0 && Input::GetMouseButtonTrigger(0) || GameControl::GetKeyTrigger(GameControl::JUMP))
+	{
+		Game::LoadNextScene(Game::SCENE_01);
+	}
+	if (buttonSelected == 1 && Input::GetMouseButtonTrigger(0))
+	{
+		SendMessage(Game::GetWindow(), WM_CLOSE, 0, 0);
 	}
 }

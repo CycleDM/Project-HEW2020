@@ -11,25 +11,9 @@
 
 #include <thread>
 #include "scene.h"
+#include "loadingscreen.h"
 
 using namespace std;
-
-class LoadingScreen
-{
-public:
-	LoadingScreen();
-	~LoadingScreen();
-
-	void Update(void);
-	void Draw(void);
-	void Show(void);
-	void Hide(void);
-
-private:
-	Sprite* pSprite;
-	Animator* pAnimator;
-	bool isHidden;
-};
 
 class Game
 {
@@ -45,7 +29,7 @@ public:
 		SCENE_MAX
 	};
 	static void Init(void);
-	static void InitScene(void);
+	static void InitSceneThread(GameScene** pTarget, bool* flag);
 	static void Uninit(void);
 	static void UninitScene(void);
 
@@ -54,7 +38,7 @@ public:
 
 	static bool DebugMode(void);
 
-	static void SwitchScene(Game::SceneType type);
+	static void LoadNextScene(Game::SceneType type);
 
 	static void BindWindow(HWND hWnd, int window_width, int window_height);
 	static void SetFocus(bool onFocus);
@@ -63,6 +47,7 @@ private:
 	static HWND hWnd;
 	static GameScene* pActScene;
 	static SceneType eNowScene;
+	static SceneType eNextScene;
 	static LoadingScreen* pLoadingScreen;
 
 	static bool onFocus;
@@ -71,4 +56,6 @@ private:
 
 	static bool bLoadingFlag;
 	static bool bDebugMode;
+
+	static thread lt;
 };

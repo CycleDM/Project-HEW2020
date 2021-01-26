@@ -53,12 +53,21 @@ void GamePlayer::Init(void)
 	bClimbingUp = false;
 	bOnLadder = false;
 
+	bLostLeg = false;
+	bLostEye = false;
+	bLostHandL = false;
+	bLostHandR = false;
+
 	// プレイヤーのテクスチャ(Sprite)を作成
-	int n = 3;
+	int n = 6;
 	pSprite = new SpriteNormal[n];
 	(pSprite + 0)->LoadTexture(TEXTURE_PLAYER);
 	(pSprite + 1)->LoadTexture(TEXTURE_PLAYER_CLIMBING);
 	(pSprite + 2)->LoadTexture(TEXTURE_PLAYER_CLIMBING_PAUSED);
+	(pSprite + 3)->LoadTexture(TEXTURE_PLAYER_LOST_HAND1);
+	(pSprite + 4)->LoadTexture(TEXTURE_PLAYER_LOST_HAND2);
+	(pSprite + 5)->LoadTexture(TEXTURE_PLAYER_LOST_LEG);
+
 	for (int i = 0; i < n; i++)
 	{
 		(pSprite + i)->SetDrawPos(screenPos.x - PLAYER_DRAW_WIDTH / 2, screenPos.y - PLAYER_DRAW_HEIGHT / 2);
@@ -68,25 +77,6 @@ void GamePlayer::Init(void)
 	}
 
 	pActiveSprite = pSprite;
-
-	/*----------実験コード-------------------------------------------------------------------------*/
-	Sprite* test = NULL;
-	test = new SpriteNormal[2];
-	test->LoadTexture(TEXTURE_PLAYER);
-	test->SetDrawPos(screenPos.x - PLAYER_DRAW_WIDTH / 2, screenPos.y - PLAYER_DRAW_HEIGHT / 2);
-	test->SetCutPos(0, 0);
-	test->SetCutRange(PLAYER_TEXTURE_CUT_WIDTH, PLAYER_TEXTURE_CUT_HEIGHT);
-	test->SetPolygonSize(PLAYER_DRAW_WIDTH, PLAYER_DRAW_HEIGHT);
-	
-	(test+1)->LoadTexture(TEXTURE_PLAYER);
-	(test+1)->SetDrawPos(screenPos.x - PLAYER_DRAW_WIDTH / 2, screenPos.y - PLAYER_DRAW_HEIGHT / 2);
-	(test+1)->SetCutPos(0, 0);
-	(test+1)->SetCutRange(PLAYER_TEXTURE_CUT_WIDTH, PLAYER_TEXTURE_CUT_HEIGHT);
-	(test+1)->SetPolygonSize(PLAYER_DRAW_WIDTH, PLAYER_DRAW_HEIGHT);
-	
-	delete[] test;
-	test = NULL;
-	/*----------実験コード-------------------------------------------------------------------------*/
 
 	// コリジョンを作成
 	pCollision = new Collision;
@@ -115,9 +105,21 @@ void GamePlayer::Uninit(void)
 void GamePlayer::Update(void)
 {
 	/*----------アニメーション-------------------------------------------------------------------------*/
-	if (isWalking())
+	if (isWalking() && !bLostHandR)
 	{
 		pActiveSprite = pSprite;
+		pAnimator->Preset(4, 2, 8);
+		pAnimator->Play(pActiveSprite);
+	}
+	else if (isWalking() && bLostHandR && dirc.x > 0.0f)
+	{
+		pActiveSprite = pSprite + 3;
+		pAnimator->Preset(4, 2, 8);
+		pAnimator->Play(pActiveSprite);
+	}
+	else if (isWalking() && bLostHandR && dirc.x < 0.0f)
+	{
+		pActiveSprite = pSprite + 4;
 		pAnimator->Preset(4, 2, 8);
 		pAnimator->Play(pActiveSprite);
 	}
@@ -137,10 +139,24 @@ void GamePlayer::Update(void)
 	{
 		pAnimator->Pause(pActiveSprite);
 	}
+	else if (bLostLeg)
+	{
+		pActiveSprite = pSprite + 5;
+	}
+	else if (bLostHandR && dirc.x >= 0.0f)
+	{
+		pActiveSprite = pSprite + 3;
+		pAnimator->Reset(pActiveSprite);
+	}
+	else if (bLostHandR && dirc.x <= 0.0f)
+	{
+		pActiveSprite = pSprite + 4;
+		pAnimator->Reset(pActiveSprite);
+	}
 	else
 	{
 		pActiveSprite = pSprite;
-		pAnimator->Reset(pSprite);
+		pAnimator->Reset(pActiveSprite);
 	}
 	/*----------アニメーション-------------------------------------------------------------------------*/
 
@@ -266,11 +282,20 @@ void GamePlayer::isOnLadder(bool bState)
 	bOnLadder = bState;
 }
 
+void GamePlayer::SetStatusFlag(int bLostLeg, int bLostHandL, int bLostHandR, int bLostEye)
+{
+	if (bLostLeg >= 0) this->bLostLeg = (bool)bLostLeg;
+	if (bLostEye >= 0) this->bLostEye = (bool)bLostEye;
+	if (bLostHandL >= 0) this->bLostHandL = (bool)bLostHandL;
+	if (bLostHandR >= 0) this->bLostHandR = (bool)bLostHandR;
+}
+
 //-----------------------------------------------------------------------------
 // プレイヤーの動き処理
 //-----------------------------------------------------------------------------
 void GamePlayer::MoveLeft(void)
 {
+	if (bLostLeg) return;
 	bWalking = true;
 	dirc.x = -1.0f;
 	speed = velocity;
@@ -279,6 +304,7 @@ void GamePlayer::MoveLeft(void)
 
 void GamePlayer::MoveRight(void)
 {
+	if (bLostLeg) return;
 	bWalking = true;
 	dirc.x = 1.0f;
 	speed = velocity;
@@ -287,6 +313,7 @@ void GamePlayer::MoveRight(void)
 
 void GamePlayer::MoveUp(void)
 {
+	if (bLostLeg) return;
 	bWalking = false;
 	bClimbingUp = true;
 	dirc.y = -2.0f;
@@ -294,6 +321,7 @@ void GamePlayer::MoveUp(void)
 
 void GamePlayer::MoveDown(void)
 {
+	if (bLostLeg) return;
 	bWalking = false;
 	bClimbingDown = true;
 	dirc.y = 4.0f;
@@ -308,4 +336,9 @@ void GamePlayer::Jump(void)
 		// ジャンプ中の状態に設定（多重ジャンプ防止）
 		bJumping = true;
 	}
+}
+
+void GamePlayer::SetWalkingSpeed(float speed)
+{
+	velocity = speed;
 }
