@@ -14,7 +14,6 @@
 #include "player.h"
 #include "object.h"
 #include "overlay.h"
-#include "controller.h"
 #include "input.h"
 #include "d3dfont.h"
 

@@ -214,7 +214,7 @@ void GameScene01::UpdateObject()
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
 			// FBI Open the door!
-			if (bCodeTaken[0] && bCodeTaken[1] && GameControl::GetKeyTrigger(GameControl::USE))
+			if (bCodeTaken[0] && bCodeTaken[1] && Input::GetKeyTrigger(DIK_F))
 			{
 				bDoorUnlockded[0] = true;
 				break;
@@ -238,14 +238,14 @@ void GameScene01::UpdateObject()
 		
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			if (GameControl::GetKeyTrigger(GameControl::UP) && bDoorUnlockded[1])
+			if (Input::GetKeyTrigger(DIK_W) && bDoorUnlockded[1])
 			{
 				bEndScene = true;
 				return;
 			}
 			if (bDoorUnlockded[1]) break;
 			// FBI Open the door!
-			if (GameControl::GetKeyTrigger(GameControl::USE) && pGeneratorUI->isUnlocked())
+			if (Input::GetKeyTrigger(DIK_F) && pGeneratorUI->isUnlocked())
 			{
 				bDoorUnlockded[1] = true;
 				break;
@@ -261,7 +261,7 @@ void GameScene01::UpdateObject()
 		if (bBodyTaken[0]) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			if (GameControl::GetKeyTrigger(GameControl::USE))
+			if (Input::GetKeyTrigger(DIK_F))
 			{
 				pPlayer->SetStatusFlag(0, -1, -1, -1);
 				obj->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
@@ -277,7 +277,7 @@ void GameScene01::UpdateObject()
 		if (bCodeTaken[0]) break;
 		if (pPlayer->GetGlobalPos().x >= 700 - 32.0f && pPlayer->GetGlobalPos().x <= 700 + 32.0f)
 		{
-			if (GameControl::GetKeyTrigger(GameControl::USE))
+			if (Input::GetKeyTrigger(DIK_F))
 			{
 				bCodeTaken[0] = true;
 				break;
@@ -292,7 +292,7 @@ void GameScene01::UpdateObject()
 		if (bCodeTaken[1]) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			if (GameControl::GetKeyTrigger(GameControl::USE))
+			if (Input::GetKeyTrigger(DIK_F))
 			{
 				bCodeTaken[1] = true;
 				break;
@@ -307,7 +307,7 @@ void GameScene01::UpdateObject()
 	{
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			if (GameControl::GetKeyTrigger(GameControl::USE))
+			if (Input::GetKeyTrigger(DIK_F))
 			{
 				pGeneratorUI->OpenUI();
 				break;

@@ -306,7 +306,7 @@ void TestScene::PlayerControl(void)
 		if (NULL == lock) break;
 		if (64.0f < abs(lock->GetGlobalPos().x - pPlayer->GetGlobalPos().x)) break;
 
-		if (!pCodedLockUI->isUnlocked() && GameControl::GetKeyPress(GameControl::USE))
+		if (!pCodedLockUI->isUnlocked() && Input::GetKeyPress(DIK_F))
 		{
 			pCodedLockUI->OpenUI();
 		}

@@ -9,7 +9,6 @@
 //----------------------------------------------------------------------------
 #include <stdio.h>
 #include "TitleScene.h"
-#include "controller.h"
 #include "game.h"
 #include "d3dutility.h"
 #include "fade.h"
@@ -184,7 +183,7 @@ void TitleScene::UpdateTitleButton(void)
 		break;
 	}
 
-	if (buttonSelected == 0 && Input::GetMouseButtonTrigger(0) || GameControl::GetKeyTrigger(GameControl::JUMP))
+	if (buttonSelected == 0 && Input::GetMouseButtonTrigger(0))
 	{
 		Game::LoadNextScene(Game::SCENE_01);
 	}

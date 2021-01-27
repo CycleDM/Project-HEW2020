@@ -10,10 +10,8 @@
 #include "generator_ui.h"
 #include "config.h"
 #include "scene.h"
-#include "controller.h"
 #include "d3dutility.h"
 #include "game.h"
-#include "controller.h"
 #include "input.h"
 
 // Correct Rotation
@@ -166,7 +164,7 @@ void GeneratorUI::Update()
 	do
 	{
 		if (!bActive) break;
-		if (GameControl::GetKeyPress(GameControl::QUIT))
+		if (Input::GetKeyPress(DIK_Q))
 		{
 			QuitUI();
 		}

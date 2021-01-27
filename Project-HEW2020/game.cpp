@@ -11,7 +11,6 @@
 #include <thread>
 #include "game.h"
 #include "config.h"
-#include "controller.h"
 #include "sprite.h"
 #include "player.h"
 #include "input.h"
@@ -47,6 +46,7 @@ void Game::Init(void)
 	Uninit();
 
 	eNowScene = SCENE_TITLE;
+	eNextScene = eNowScene;
 	pLoadingScreen = new LoadingScreen;
 	bLoadingFlag = false;
 
@@ -120,7 +120,7 @@ void Game::Update(void)
 	pActScene->Update();
 
 	// Switching Debug Mode
-	if (GameControl::GetKeyTrigger(GameControl::DEBUG))
+	if (Input::GetKeyTrigger(DIK_F3))
 	{
 		bDebugMode = !bDebugMode;
 	}

@@ -15,11 +15,9 @@
 #include <stdio.h>
 #include "config.h"
 #include "system_timer.h"
-#include "keyboard.h"
 #include "d3dutility.h"
 #include "sprite.h"
 #include "game.h"
-#include "controller.h"
 #include "fade.h"
 #include "input.h"
 #include "d3dfont.h"
@@ -150,7 +148,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_SYSKEYDOWN:
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
-		Keyboard_ProcessMessage(uMsg, wParam, lParam);
 		break;
 
 	case WM_CLOSE:
@@ -186,12 +183,10 @@ bool Init(HWND hWnd)
 		D3DFont::Init(hWnd, SHIFTJIS_CHARSET);
 		D3DFont::LoadFontFromFile(FONT_FILE_NAME);
 		// キーボードの初期化
-		Keyboard_Init();
 		// システムタイマーの初期化
 		SystemTimer_Init();
 
 		FadeEffect::Init();
-		GameControl::Init();
 		Game::Init();
 	} while (0);
 	g_ReserveTime = g_BaseTime = SystemTimer_GetTime();
@@ -209,7 +204,6 @@ void Update(void)
 	{
 		Input::Update();
 		Game::Update();
-		GameControl::Update();
 		FadeEffect::Update();
 	} while (0);
 
