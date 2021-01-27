@@ -50,7 +50,8 @@ void Game::Init(void)
 	pLoadingScreen = new LoadingScreen;
 	bLoadingFlag = false;
 
-	LoadNextScene(eNowScene);
+	//LoadNextScene(eNowScene);
+	InitSceneThread(&pActScene);
 }
 
 // ÉQÅ[ÉÄÇÃèIóπèàóù
@@ -65,7 +66,7 @@ void Game::Uninit(void)
 
 void Game::InitSceneThread(GameScene** pTarget, bool* flag)
 {
-	*flag = true;
+	if (NULL != flag) *flag = true;
 	GameScene* pScene = NULL;
 
 	switch (eNextScene)
@@ -91,8 +92,8 @@ void Game::InitSceneThread(GameScene** pTarget, bool* flag)
 
 	if (NULL == pScene) return;
 
-	*pTarget = pScene;
-	*flag = false;
+	if (NULL != pTarget) *pTarget = pScene;
+	if (NULL != flag) *flag = false;
 
 	FadeEffect::Start(FADE_IN, 0.0f, 0.0f, 0.0f, 30);
 }

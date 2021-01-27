@@ -55,6 +55,12 @@
 #define TEXTURE_CLUI_SHADOW				"assets/texture/lock/lock_shadow.png"
 #define TEXTURE_CLUI_LIGHT				"assets/texture/lock/lock_light.png"
 
+// TitleScene
+#define TEXTURE_TITLE_BG				"assets/texture/title/title_bg.png"
+#define TEXTURE_TITLE_LOGO				"assets/texture/title/logo.png"
+#define TEXTURE_TITLE_BUTTON01			"assets/texture/title/button_start.png"
+#define TEXTURE_TITLE_BUTTON02			"assets/texture/title/button_quit.png"
+
 // GameScene01
 #define TEXTURE_SCENE01_BG				"assets/texture/scene01/background.png"
 #define TEXTURE_SCENE01_BG_OVERLAY		"assets/texture/scene01/background_overlay.png"

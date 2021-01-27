@@ -62,6 +62,14 @@ void Object::SetSize(float width, float height)
 		pSprite->SetPolygonSize(width, height);
 }
 
+void Object::SetScale(float scaling)
+{
+	width *= scaling;
+	height *= scaling;
+	if (pSprite)
+		pSprite->SetPolygonSize(width, height);
+}
+
 float Object::GetWidth(void)
 {
 	return width;

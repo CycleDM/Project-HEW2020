@@ -29,6 +29,7 @@ public:
 
 	// オブジェクトのサイズを指定
 	virtual void SetSize(float, float);
+	virtual void SetScale(float);
 	// オブジェクトの中心座標を指定
 	void SetScreenPos(float, float);
 	void SetGlobalPos(float, float);
