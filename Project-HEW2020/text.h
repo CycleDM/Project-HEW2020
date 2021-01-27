@@ -9,6 +9,7 @@
 //----------------------------------------------------------------------------
 #pragma once
 #include <string>
+#include "d3dfont.h"
 using namespace std;
 
 class GameText
@@ -22,14 +23,15 @@ public:
 	void Update();
 	void Draw();
 
-	void CreateText(int posx, int posy, const char* text, int nSize = 12, int nDuration = 0);
+	void CreateText(int posx, int posy, int nSize, const char* text, int nAwaiting = 0, int nDuration = 0, D3DCOLOR color = 0xffffffff);
 	bool isActive();
 
 private:
-	int posx, posy;
-	char ch[1024];
+	D3DCOLOR color;
 	string str;
+	int posx, posy;
 	int nDuration;
+	int nAwaiting;
 	unsigned int nFrame;
 	unsigned int nIndex;
 	unsigned int nSize;

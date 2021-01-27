@@ -138,6 +138,7 @@ void GameScene01::Init()
 
 	// TEXT
 	pText = new GameText;
+	pTextNotice = new GameText;
 }
 
 void GameScene01::Uninit()
@@ -179,7 +180,10 @@ void GameScene01::Update()
 
 	// UI
 	pGeneratorUI->Update();
+
+	// TEXT
 	pText->Update();
+	pTextNotice->Update();
 
 	if (bEndScene) Game::LoadNextScene(Game::SCENE_TEST);
 }
@@ -197,8 +201,9 @@ void GameScene01::Draw()
 	
 	pOverlays[1]->Draw();
 
-	// TALKING
+	// TEXT
 	pText->Draw();
+	pTextNotice->Draw();
 
 	if (isDarkness())
 	{
@@ -365,8 +370,11 @@ void GameScene01::UpdateObject()
 			if (bTalking) break;
 			if (Input::GetKeyTrigger(DIK_F))
 			{
-				//pRobotTalking->SetText("%#/!?'*@[$?#*($))@!", 20, 180);
 				bTalking = true;
+				if (bLCToken)
+				{
+					pOverlays[6]->GetSprite()->SetCutPos(224, 0);
+				}
 				break;
 			}
 			bIdea = true;
@@ -376,7 +384,7 @@ void GameScene01::UpdateObject()
 		}
 	} while (0);
 
-	// Robot Talking
+	// Language chip
 	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_LANGUAGE_CHIP);
 	do
 	{
@@ -387,10 +395,12 @@ void GameScene01::UpdateObject()
 			{
 				bLCToken = true;
 				pObjects[8]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
-				pText->CreateText(0, 0, "LANGUAGE CHIP TOKEN", 20, 60);
+				pText->CreateText(0, SCREEN_HEIGHT - 32, 30, "+ Œ¾Œê”FŽ¯", -1, 60, D3DCOLOR_RGBA(100, 255, 155, 255));
+				pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
+					30, "+ Œ¾Œê”FŽ¯", 60, 30, D3DCOLOR_RGBA(100, 255, 155, 255));
 				break;
 			}
-			bIdea = true;
+			bIdeaHand = true;
 		}
 	} while (0);
 }

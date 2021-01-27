@@ -43,4 +43,5 @@ private:
 
 	GeneratorUI* pGeneratorUI;
 	GameText* pText;
+	GameText* pTextNotice;
 };
