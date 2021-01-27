@@ -9,7 +9,6 @@
 //----------------------------------------------------------------------------
 #include <stdio.h>
 #include "TitleScene.h"
-#include "controller.h"
 #include "game.h"
 #include "d3dutility.h"
 #include "fade.h"
@@ -34,30 +33,33 @@ void TitleScene::Init(void)
 	fGroundHeight = 64.0f;
 
 	// BG
-	pOverlays[0] = new GameOverlay("assets/texture/title_testbg.jpg");
+	pOverlays[0] = new GameOverlay(TEXTURE_TITLE_BG);
 	pOverlays[0]->SetScreenPos((float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2);
 	pOverlays[0]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
-	pOverlays[0]->GetSprite()->SetColor(D3DCOLOR_RGBA(150, 150, 150, 255));
-
-	// ICON
-	pOverlays[1] = new GameOverlay("assets/texture/title_icon.png");
-	pOverlays[1]->SetScreenPos((float)SCREEN_WIDTH / 2, 300.0f);
-	pOverlays[1]->GetSprite()->SetCutPos(0, 0);
-	pOverlays[1]->GetSprite()->SetCutRange(1280, 720);
-	pOverlays[1]->SetSize(1280.0f, 720.0f);
+	pOverlays[0]->GetSprite()->SetCutPos(0, 0);
+	pOverlays[0]->GetSprite()->SetCutRange(640, 360);
 	pAnimator = new Animator;
-	pAnimator->Init(pOverlays[1]->GetSprite());
-	pAnimator->Preset(7, 1, 8);
+	pAnimator->Init(pOverlays[0]->GetSprite());
+	pAnimator->Preset(2, 1, 24);
+
+	// LOGO
+	pOverlays[1] = new GameOverlay(TEXTURE_TITLE_LOGO);
+	pOverlays[1]->SetScreenPos((float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2);
+	pOverlays[1]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
 
 	// BUTTON1
-	pOverlays[2] = new GameOverlay("assets/texture/title_button1.png");
-	pOverlays[2]->SetScreenPos((float)SCREEN_WIDTH / 2, 450.0f);
-	pOverlays[2]->SetSize((float)pOverlays[2]->GetSprite()->GetTextureWidth() / 2, (float)pOverlays[2]->GetSprite()->GetTextureHeight() / 2);
+	pOverlays[2] = new GameOverlay(TEXTURE_TITLE_BUTTON01);
+	pOverlays[2]->SetScreenPos((float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2);
+	pOverlays[2]->SetScale(1.5f);
+	pOverlays[2]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 155));
+	//pOverlays[2]->SetSize((float)pOverlays[2]->GetSprite()->GetTextureWidth() / 2, (float)pOverlays[2]->GetSprite()->GetTextureHeight() / 2);
 
 	// BUTTON2
-	pOverlays[3] = new GameOverlay("assets/texture/title_button2.png");
-	pOverlays[3]->SetScreenPos((float)SCREEN_WIDTH / 2, 550.0f);
-	pOverlays[3]->SetSize((float)pOverlays[3]->GetSprite()->GetTextureWidth() / 2, (float)pOverlays[3]->GetSprite()->GetTextureHeight() / 2);
+	pOverlays[3] = new GameOverlay(TEXTURE_TITLE_BUTTON02);
+	pOverlays[3]->SetScreenPos((float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2 + 100);
+	pOverlays[3]->SetScale(1.5f);
+	pOverlays[3]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 155));
+	//pOverlays[3]->SetSize((float)pOverlays[3]->GetSprite()->GetTextureWidth() / 2, (float)pOverlays[3]->GetSprite()->GetTextureHeight() / 2);
 
 	buttonSelected = -1;
 }
@@ -73,7 +75,7 @@ void TitleScene::Uninit(void)
 
 void TitleScene::Update(void)
 {
-	pAnimator->Play(pOverlays[1]->GetSprite());
+	pAnimator->Play(pOverlays[0]->GetSprite());
 
 	if (FadeEffect::IsFading()) return;
 	UpdateTitleButton();
@@ -166,22 +168,22 @@ void TitleScene::UpdateTitleButton(void)
 		}
 	}
 
-	pOverlays[2]->SetSize((float)pOverlays[2]->GetSprite()->GetTextureWidth() / 2, (float)pOverlays[2]->GetSprite()->GetTextureHeight() / 2);
-	pOverlays[3]->SetSize((float)pOverlays[3]->GetSprite()->GetTextureWidth() / 2, (float)pOverlays[3]->GetSprite()->GetTextureHeight() / 2);
+	pOverlays[2]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 155));
+	pOverlays[3]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 155));
 	switch (buttonSelected)
 	{
 	case 0:
-		pOverlays[2]->SetSize((float)pOverlays[2]->GetSprite()->GetTextureWidth() / 2 * 1.2f, (float)pOverlays[2]->GetSprite()->GetTextureHeight() / 2 * 1.2f);
+		pOverlays[2]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 255));
 		break;
 	case 1:
-		pOverlays[3]->SetSize((float)pOverlays[3]->GetSprite()->GetTextureWidth() / 2 * 1.2f, (float)pOverlays[3]->GetSprite()->GetTextureHeight() / 2 * 1.2f);
+		pOverlays[3]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 255));
 		break;
 	case -1:
 	default:
 		break;
 	}
 
-	if (buttonSelected == 0 && Input::GetMouseButtonTrigger(0) || GameControl::GetKeyTrigger(GameControl::JUMP))
+	if (buttonSelected == 0 && Input::GetMouseButtonTrigger(0))
 	{
 		Game::LoadNextScene(Game::SCENE_01);
 	}

@@ -103,11 +103,11 @@ void GameScene::PlayerControl(void)
 	// 移動に関する処理
 	do
 	{
-		if (!player->isOnLadder() && GameControl::GetKeyPress(GameControl::LEFT))
+		if (!player->isOnLadder() && Input::GetKeyPress(DIK_A))
 		{
 			player->MoveLeft();
 		}
-		if (!player->isOnLadder() && GameControl::GetKeyPress(GameControl::RIGHT))
+		if (!player->isOnLadder() && Input::GetKeyPress(DIK_D))
 		{
 			player->MoveRight();
 		}
@@ -123,7 +123,7 @@ void GameScene::PlayerControl(void)
 		// はしごを登れる範囲を限定する
 		if (32.0f < abs(ladder->GetGlobalPos().x - player->GetGlobalPos().x)) break;
 		// 登る
-		if (GameControl::GetKeyPress(GameControl::UP))
+		if (Input::GetKeyPress(DIK_W))
 		{
 			// はしごの中心座標y　< プレイヤーの足y（一番下の座標）
 			// はしごを登れることを判断する
@@ -147,7 +147,7 @@ void GameScene::PlayerControl(void)
 			}
 		}
 		// 降りる
-		if (GameControl::GetKeyPress(GameControl::DOWN))
+		if (Input::GetKeyPress(DIK_S))
 		{
 			// はしごの中心座標y　> プレイヤーの頭y（一番上の座標）
 			// はしごを登れることを判断する
@@ -176,7 +176,7 @@ void GameScene::PlayerControl(void)
 		}
 		// キーを離した時
 		if (!player->isOnLadder()) break;
-		if (GameControl::GetKeyRelease(GameControl::UP) || GameControl::GetKeyRelease(GameControl::DOWN))
+		if (Input::GetKeyRelease(DIK_W) || Input::GetKeyRelease(DIK_S))
 		{
 			player->isClimbing(false);
 		}

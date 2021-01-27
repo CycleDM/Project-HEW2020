@@ -29,6 +29,7 @@ public:
 
 	// オブジェクトのサイズを指定
 	virtual void SetSize(float, float);
+	virtual void SetScale(float);
 	// オブジェクトの中心座標を指定
 	void SetScreenPos(float, float);
 	void SetGlobalPos(float, float);
@@ -67,7 +68,10 @@ public:
 		OBJ_TRASH_STACK,
 		OBJ_TRASH_LEG,
 		OBJ_CRASH_ROBOT,
+		OBJ_CRASH_ROBOT2,
 		OBJ_GENERATOR,
+		OBJ_SCREEN,
+		OBJ_LANGUAGE_CHIP,
 		OBJ_INTERACTABLE,
 		OBJ_UNINTERACTABLE,
 		OBJ_MAX

@@ -11,7 +11,6 @@
 #include <thread>
 #include "game.h"
 #include "config.h"
-#include "controller.h"
 #include "sprite.h"
 #include "player.h"
 #include "input.h"
@@ -47,10 +46,12 @@ void Game::Init(void)
 	Uninit();
 
 	eNowScene = SCENE_TITLE;
+	eNextScene = eNowScene;
 	pLoadingScreen = new LoadingScreen;
 	bLoadingFlag = false;
 
-	LoadNextScene(eNowScene);
+	//LoadNextScene(eNowScene);
+	InitSceneThread(&pActScene);
 }
 
 // ƒQ[ƒ€‚ÌI—¹ˆ—
@@ -65,7 +66,7 @@ void Game::Uninit(void)
 
 void Game::InitSceneThread(GameScene** pTarget, bool* flag)
 {
-	*flag = true;
+	if (NULL != flag) *flag = true;
 	GameScene* pScene = NULL;
 
 	switch (eNextScene)
@@ -91,8 +92,8 @@ void Game::InitSceneThread(GameScene** pTarget, bool* flag)
 
 	if (NULL == pScene) return;
 
-	*pTarget = pScene;
-	*flag = false;
+	if (NULL != pTarget) *pTarget = pScene;
+	if (NULL != flag) *flag = false;
 
 	FadeEffect::Start(FADE_IN, 0.0f, 0.0f, 0.0f, 30);
 }
@@ -119,7 +120,7 @@ void Game::Update(void)
 	pActScene->Update();
 
 	// Switching Debug Mode
-	if (GameControl::GetKeyTrigger(GameControl::DEBUG))
+	if (Input::GetKeyTrigger(DIK_F3))
 	{
 		bDebugMode = !bDebugMode;
 	}

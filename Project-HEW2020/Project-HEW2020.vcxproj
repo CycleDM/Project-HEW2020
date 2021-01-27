@@ -26,10 +26,8 @@
     <ClCompile Include="d3dutility.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="controller.cpp" />
     <ClCompile Include="generator_ui.cpp" />
     <ClCompile Include="input.cpp" />
-    <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="loadingscreen.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="object.cpp" />
@@ -40,6 +38,7 @@
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="system_timer.cpp" />
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="text.cpp" />
     <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -51,10 +50,8 @@
     <ClInclude Include="fade.h" />
     <ClInclude Include="d3dfont.h" />
     <ClInclude Include="game.h" />
-    <ClInclude Include="controller.h" />
     <ClInclude Include="generator_ui.h" />
     <ClInclude Include="input.h" />
-    <ClInclude Include="keyboard.h" />
     <ClInclude Include="loadingscreen.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="overlay.h" />
@@ -64,6 +61,7 @@
     <ClInclude Include="sprite.h" />
     <ClInclude Include="system_timer.h" />
     <ClInclude Include="TestScene.h" />
+    <ClInclude Include="text.h" />
     <ClInclude Include="TitleScene.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

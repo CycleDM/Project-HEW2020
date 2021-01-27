@@ -1,7 +1,6 @@
 #include "coded_lock_ui.h"
 #include "config.h"
 #include "scene.h"
-#include "controller.h"
 
 CodedLockUI::CodedLockUI()
 {
@@ -130,12 +129,12 @@ void CodedLockUI::Update(void)
 	do
 	{
 		if (!bActive || bOpening || bQuiting || bTrying) break;
-		if (!bSwitching && GameControl::GetKeyTrigger(GameControl::LEFT))
+		if (!bSwitching && Input::GetKeyTrigger(DIK_A))
 		{
 			nHSelected--;
 			if (nHSelected < 0) nHSelected = 0;
 		}
-		if (!bSwitching && GameControl::GetKeyTrigger(GameControl::RIGHT))
+		if (!bSwitching && Input::GetKeyTrigger(DIK_D))
 		{
 			nHSelected++;
 			if (nHSelected > 2) nHSelected = 2;
@@ -143,14 +142,14 @@ void CodedLockUI::Update(void)
 
 		// -69 ~ 552
 		int index = CLUI_KEY_H * nInput[nHSelected] - CLUI_KEY_H;;
-		if (!bSwitching && GameControl::GetKeyPress(GameControl::UP))
+		if (!bSwitching && Input::GetKeyPress(DIK_W))
 		{
 			nInput[nHSelected]--;
 			if (nInput[nHSelected] < 0) nInput[nHSelected] = 9;
 			index = CLUI_KEY_H * nInput[nHSelected] - CLUI_KEY_H;
 			if (index == 8 * CLUI_KEY_H) nKeyCut[nHSelected] = index + CLUI_KEY_H;
 		}
-		if (!bSwitching && GameControl::GetKeyPress(GameControl::DOWN))
+		if (!bSwitching && Input::GetKeyPress(DIK_S))
 		{
 			nInput[nHSelected]++;
 			if (nInput[nHSelected] > 9) nInput[nHSelected] = 0;
@@ -182,7 +181,7 @@ void CodedLockUI::Update(void)
 	do
 	{
 		if (bOpening || bQuiting) break;
-		if (!bTrying && GameControl::GetKeyTrigger(GameControl::USE))
+		if (!bTrying && Input::GetKeyTrigger(DIK_F))
 		{
 			nFrame = 0;
 			bTrying = true;	
@@ -194,7 +193,7 @@ void CodedLockUI::Update(void)
 	do
 	{
 		if (bOpening || bQuiting || bTrying || bSwitching) break;
-		if (GameControl::GetKeyPress(GameControl::QUIT))
+		if (Input::GetKeyPress(DIK_Q))
 		{
 			QuitUI();
 		}

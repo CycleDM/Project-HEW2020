@@ -29,7 +29,7 @@ public:
 		SCENE_MAX
 	};
 	static void Init(void);
-	static void InitSceneThread(GameScene** pTarget, bool* flag);
+	static void InitSceneThread(GameScene** pTarget = NULL, bool* flag = NULL);
 	static void Uninit(void);
 	static void UninitScene(void);
 
