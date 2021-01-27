@@ -190,8 +190,21 @@ void GameObject::Register(ObjectType type)
 	case GameObject::OBJ_CRASH_ROBOT:
 		pSprite->LoadTexture(TEXTURE_OBJ_CRASH_ROBOT);
 		break;
+	case GameObject::OBJ_CRASH_ROBOT2:
+		pSprite->LoadTexture(TEXTURE_OBJ_CRASH_ROBOT2);
+		break;
 	case GameObject::OBJ_GENERATOR:
 		pSprite->LoadTexture(TEXTURE_OBJ_GENERATOR);
+		break;
+	case GameObject::OBJ_SCREEN:
+		pSprite->LoadTexture(TEXTURE_OBJ_SCREEN);
+		pSprite->SetCutRange(64, 64);
+		width = pSprite->GetCutWidth();
+		height = pSprite->GetCutHeight();
+		bCustomized = true;
+		break;
+	case GameObject::OBJ_LANGUAGE_CHIP:
+		pSprite->LoadTexture(TEXTURE_OBJ_LANGUAGE);
 		break;
 	default:
 		break;

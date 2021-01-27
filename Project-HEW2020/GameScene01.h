@@ -12,6 +12,7 @@
 #include <d3dx9.h>
 #include "scene.h"
 #include "generator_ui.h"
+#include "text.h"
 
 class GameScene01 : public GameScene
 {
@@ -36,7 +37,10 @@ private:
 	bool bCodeTaken[2];
 	bool bBodyTaken[3];
 	bool bDoorUnlockded[2];
+	bool bTalking;
+	bool bLCToken;	// Language chip
 	bool bEndScene;
 
 	GeneratorUI* pGeneratorUI;
+	GameText* pText;
 };

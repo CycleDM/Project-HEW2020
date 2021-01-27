@@ -38,6 +38,8 @@ void GameScene01::Init()
 	memset(bBodyTaken, false, sizeof(bBodyTaken));
 	bIdea = false;
 	bIdeaHand = false;
+	bTalking = false;
+	bLCToken = false;
 	bEndScene = false;
 
 	// Init Player
@@ -71,6 +73,11 @@ void GameScene01::Init()
 	pOverlays[5] = new GameOverlay(TEXTURE_ITEM_CODE_CUT2);
 	pOverlays[5]->SetScreenPos(64.0f, (float)SCREEN_HEIGHT - 30.0f);
 	pOverlays[5]->SetSize(pOverlays[5]->GetWidth() * 0.3f, pOverlays[5]->GetHeight() * 0.3f);
+	// TALKING TEXT
+	pOverlays[6] = new GameOverlay(TEXTURE_TALKING_TEXT);
+	pOverlays[6]->SetSize(224, 58);
+	pOverlays[6]->GetSprite()->SetCutPos(0, 0);
+	pOverlays[6]->GetSprite()->SetCutRange(224, 58);
 
 	// Init OBJ
 	pObjects[0] = new GameObject(GameObject::OBJ_TRASH_STACK);
@@ -85,13 +92,33 @@ void GameScene01::Init()
 	pObjects[3] = new GameObject(GameObject::OBJ_CRASH_ROBOT);
 	pObjects[3]->SetGlobalPos(1800.0f, 426.0f);
 	pObjects[3]->GetSprite()->SetColor(D3DCOLOR_RGBA(155, 155, 155, 255));
+	pText = new GameText;
 	// DIGITAL_DOOR
 	pObjects[4] = new GameObject(GameObject::OBJ_DIGITAL_DOOR);
-	pObjects[4]->SetGlobalPos(5345.0f, 420.0f);
+	pObjects[4]->SetGlobalPos(4000.0f, 420.0f);
 	pObjects[4]->SetSize(64.0f, 64.0f);
 	// GENERATOR
 	pObjects[5] = new GameObject(GameObject::OBJ_GENERATOR);
-	pObjects[5]->SetGlobalPos(5615.0f, 440.0f);
+	pObjects[5]->SetGlobalPos(5600.0f, 440.0f);
+	// CRASH_ROBOT2
+	pObjects[6] = new GameObject(GameObject::OBJ_CRASH_ROBOT2);
+	pObjects[6]->SetGlobalPos(2500.0f, 470.0f);
+	pObjects[6]->GetSprite()->SetColor(D3DCOLOR_RGBA(155, 155, 155, 255));
+	// 1F SCREEN
+	pObjects[7] = new GameObject(GameObject::OBJ_SCREEN);
+	pObjects[7]->SetGlobalPos(5260.0f, 430.0f);
+	// LANGUAGE CHIP
+	pObjects[8] = new GameObject(GameObject::OBJ_LANGUAGE_CHIP);
+	pObjects[8]->SetGlobalPos(5430.0f, 460.0f);
+	pObjects[8]->SetSize(32.0f, 32.0f);
+
+	// Œ©‚¦‚é”ÍˆÍ Overlay
+	pOverlays[63] = new GameOverlay(TEXTURE_OVERLAY_RANGE);
+	pOverlays[63]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y + pPlayer->GetCollision()->GetHalfHeight());
+	pOverlays[63]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
+	pOverlays[63]->GetSprite()->SetCutPos(640, 360);
+	pOverlays[63]->GetSprite()->SetCutRange(SCREEN_WIDTH, SCREEN_HEIGHT);
+	pOverlays[63]->SetSize(pOverlays[63]->GetWidth() * fGlobalScaling * 4.0f, pOverlays[63]->GetHeight() * fGlobalScaling * 4.0f);
 
 	// OBJ Size
 	for (GameObject* obj : pObjects)
@@ -108,6 +135,9 @@ void GameScene01::Init()
 
 	// Create UI
 	pGeneratorUI = new GeneratorUI;
+
+	// TEXT
+	pText = new GameText;
 }
 
 void GameScene01::Uninit()
@@ -149,6 +179,7 @@ void GameScene01::Update()
 
 	// UI
 	pGeneratorUI->Update();
+	pText->Update();
 
 	if (bEndScene) Game::LoadNextScene(Game::SCENE_TEST);
 }
@@ -163,13 +194,21 @@ void GameScene01::Draw()
 		object->Draw();
 	}
 	pPlayer->Draw();
+	
+	pOverlays[1]->Draw();
 
+	// TALKING
+	pText->Draw();
+
+	if (isDarkness())
+	{
+		pOverlays[63]->Draw();
+	}
 	if (bIdea) pOverlays[2]->Draw();
 	if (bIdeaHand) pOverlays[3]->Draw();
 	if (bCodeTaken[0]) pOverlays[4]->Draw();
 	if (bCodeTaken[1]) pOverlays[5]->Draw();
-	
-	pOverlays[1]->Draw();
+	if (bTalking) pOverlays[6]->Draw();
 
 	// UI
 	pGeneratorUI->Draw();
@@ -217,6 +256,7 @@ void GameScene01::UpdateObject()
 			if (bCodeTaken[0] && bCodeTaken[1] && Input::GetKeyTrigger(DIK_F))
 			{
 				bDoorUnlockded[0] = true;
+				bCodeTaken[0] = bCodeTaken[1] = false;
 				break;
 			}
 			bIdeaHand = true;
@@ -230,7 +270,7 @@ void GameScene01::UpdateObject()
 
 	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_DIGITAL_DOOR);
 	pOC = obj->GetCollision();
-	// DIGITAL_DOOR
+	// DIGITAL DOOR
 	do
 	{
 		if (NULL == obj) break;
@@ -274,7 +314,7 @@ void GameScene01::UpdateObject()
 	// CODE01
 	do
 	{
-		if (bCodeTaken[0]) break;
+		if (bDoorUnlockded[0] || bCodeTaken[0]) break;
 		if (pPlayer->GetGlobalPos().x >= 700 - 32.0f && pPlayer->GetGlobalPos().x <= 700 + 32.0f)
 		{
 			if (Input::GetKeyTrigger(DIK_F))
@@ -286,10 +326,10 @@ void GameScene01::UpdateObject()
 		}
 	} while (0);
 	// CODE02
-	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_CRASH_ROBOT);
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_CRASH_ROBOT2);
 	do
 	{
-		if (bCodeTaken[1]) break;
+		if (bDoorUnlockded[0] || bCodeTaken[1]) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
 			if (Input::GetKeyTrigger(DIK_F))
@@ -315,6 +355,44 @@ void GameScene01::UpdateObject()
 			bIdea = true;
 		}
 	} while (0);
+
+	// Robot Talking
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_CRASH_ROBOT);
+	do
+	{
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			if (bTalking) break;
+			if (Input::GetKeyTrigger(DIK_F))
+			{
+				//pRobotTalking->SetText("%#/!?'*@[$?#*($))@!", 20, 180);
+				bTalking = true;
+				break;
+			}
+			bIdea = true;
+		}
+		else {
+			bTalking = false;
+		}
+	} while (0);
+
+	// Robot Talking
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_LANGUAGE_CHIP);
+	do
+	{
+		if (bLCToken) break;
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			if (Input::GetKeyTrigger(DIK_F))
+			{
+				bLCToken = true;
+				pObjects[8]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
+				pText->CreateText(0, 0, "LANGUAGE CHIP TOKEN", 20, 60);
+				break;
+			}
+			bIdea = true;
+		}
+	} while (0);
 }
 
 void GameScene01::UpdateOverlay()
@@ -322,6 +400,8 @@ void GameScene01::UpdateOverlay()
 	float fGlobalPosOffset = fBgScroll.x * fGlobalScaling;
 	pOverlays[0]->GetSprite()->SetCutPos((int)fBgScroll.x, 3000 - (720 / 2 + 1) - (int)fBgScroll.y);
 	pOverlays[1]->GetSprite()->SetCutPos((int)fBgScroll.x, 3000 - (720 / 2 + 1) - (int)fBgScroll.y);
+	pOverlays[6]->SetScreenPos(pObjects[3]->GetScreenPos().x + 200.0f, pObjects[3]->GetScreenPos().y - 80.0f);
+	pOverlays[63]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y + pPlayer->GetCollision()->GetHalfHeight() + 32.0f);
 
 	// ‚±‚±‚©‚ç‚ÍUI‚ÌXVˆ—
 	do

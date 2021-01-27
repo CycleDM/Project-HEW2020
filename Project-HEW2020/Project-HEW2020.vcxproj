@@ -38,6 +38,7 @@
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="system_timer.cpp" />
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="text.cpp" />
     <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -60,6 +61,7 @@
     <ClInclude Include="sprite.h" />
     <ClInclude Include="system_timer.h" />
     <ClInclude Include="TestScene.h" />
+    <ClInclude Include="text.h" />
     <ClInclude Include="TitleScene.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
