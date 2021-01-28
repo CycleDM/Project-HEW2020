@@ -40,6 +40,7 @@ void GameScene01::Init()
 	bIdeaHand = false;
 	bTalking = false;
 	bLCToken = false;
+	bCCToken = false;
 	bEndScene = false;
 
 	// Init Player
@@ -47,6 +48,11 @@ void GameScene01::Init()
 	pPlayer->SetGlobalPos(1050.0f, (float)SCREEN_HEIGHT - fGroundHeight);
 	pPlayer->SetWalkingSpeed(5.0f);
 	pPlayer->SetStatusFlag(1, 0, 1, 1);
+
+#ifdef _DEBUG
+	pPlayer->SetWalkingSpeed(15.0f);
+#endif // _DEBUG
+
 
 	// Init BG
 	pOverlays[0] = new GameOverlay(TEXTURE_SCENE01_BG);
@@ -154,6 +160,8 @@ void GameScene01::Init()
 
 	// Create UI
 	pGeneratorUI = new GeneratorUI;
+	pScreenUI = new ScreenUI;
+	pPanelUI = new PanelUI;
 
 	// TEXT
 	pText = new GameText;
@@ -177,10 +185,17 @@ void GameScene01::Uninit()
 
 	delete pGeneratorUI;
 	pGeneratorUI = NULL;
+	delete pScreenUI;
+	pScreenUI = NULL;
 }
 
 void GameScene01::Update()
 {
+	// UI
+	pGeneratorUI->Update();
+	pScreenUI->Update(pGeneratorUI->isUnlocked(), bCCToken);
+	pPanelUI->Update();
+
 	fBgScroll.x = pPlayer->GetGlobalPos().x - (float)SCREEN_WIDTH / 2;
 	fBgScroll.y = (float)SCREEN_HEIGHT / 2 - pPlayer->GetGlobalPos().y;
 	fBgScroll.x /= fGlobalScaling;
@@ -198,9 +213,6 @@ void GameScene01::Update()
 	UpdatePlayer();
 	UpdateObject();
 	UpdateOverlay();
-
-	// UI
-	pGeneratorUI->Update();
 
 	// TEXT
 	pText->Update();
@@ -240,6 +252,8 @@ void GameScene01::Draw()
 
 	// UI
 	pGeneratorUI->Draw();
+	pScreenUI->Draw();
+	pPanelUI->Draw();
 
 	// デバッグ文字の表示
 	if (Game::DebugMode()) this->Debug();
@@ -286,7 +300,7 @@ void GameScene01::UpdateObject()
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
 			// FBI Open the door!
-			if (bCodeTaken[0] && bCodeTaken[1] && Input::GetKeyTrigger(DIK_F))
+			if (bCodeTaken[0] && bCodeTaken[1] && Input::GetKeyTrigger(DIK_E))
 			{
 				bDoorUnlockded[0] = true;
 				bCodeTaken[0] = bCodeTaken[1] = false;
@@ -318,7 +332,7 @@ void GameScene01::UpdateObject()
 			}
 			if (bDoorUnlockded[1]) break;
 			// FBI Open the door!
-			if (Input::GetKeyTrigger(DIK_F) && pGeneratorUI->isUnlocked())
+			if (Input::GetKeyTrigger(DIK_E) && pGeneratorUI->isUnlocked())
 			{
 				bDoorUnlockded[1] = true;
 				break;
@@ -334,7 +348,7 @@ void GameScene01::UpdateObject()
 		if (bBodyTaken[0]) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			if (Input::GetKeyTrigger(DIK_F))
+			if (Input::GetKeyTrigger(DIK_E))
 			{
 				pPlayer->SetStatusFlag(0, -1, -1, -1);
 				obj->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
@@ -350,7 +364,7 @@ void GameScene01::UpdateObject()
 		if (bDoorUnlockded[0] || bCodeTaken[0]) break;
 		if (pPlayer->GetGlobalPos().x >= 700 - 32.0f && pPlayer->GetGlobalPos().x <= 700 + 32.0f)
 		{
-			if (Input::GetKeyTrigger(DIK_F))
+			if (Input::GetKeyTrigger(DIK_E))
 			{
 				bCodeTaken[0] = true;
 				break;
@@ -365,7 +379,7 @@ void GameScene01::UpdateObject()
 		if (bDoorUnlockded[0] || bCodeTaken[1]) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			if (Input::GetKeyTrigger(DIK_F))
+			if (Input::GetKeyTrigger(DIK_E))
 			{
 				bCodeTaken[1] = true;
 				break;
@@ -378,9 +392,10 @@ void GameScene01::UpdateObject()
 	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_GENERATOR);
 	do
 	{
+		if (pGeneratorUI->isUnlocked()) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			if (Input::GetKeyTrigger(DIK_F))
+			if (Input::GetKeyTrigger(DIK_E))
 			{
 				pGeneratorUI->OpenUI();
 				break;
@@ -396,7 +411,7 @@ void GameScene01::UpdateObject()
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
 			if (bTalking) break;
-			if (Input::GetKeyTrigger(DIK_F))
+			if (Input::GetKeyTrigger(DIK_E))
 			{
 				bTalking = true;
 				if (bLCToken)
@@ -419,13 +434,45 @@ void GameScene01::UpdateObject()
 		if (bLCToken) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			if (Input::GetKeyTrigger(DIK_F))
+			if (Input::GetKeyTrigger(DIK_E))
 			{
 				bLCToken = true;
 				pObjects[8]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
 				pText->CreateText(0, SCREEN_HEIGHT - 32, 30, "+ 言語認識", -1, 60, D3DCOLOR_RGBA(100, 255, 155, 255));
 				pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
 					30, "+ 言語認識", 60, 30, D3DCOLOR_RGBA(100, 255, 155, 255));
+				break;
+			}
+			bIdeaHand = true;
+		}
+	} while (0);
+
+	// SCREEN UI
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_SCREEN);
+	do
+	{
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			if (Input::GetKeyTrigger(DIK_E))
+			{
+				pScreenUI->OpenUI();
+				break;
+			}
+			bIdea = true;
+		}
+	} while (0);
+
+	// PANEL UI
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_LIFT_PANEL);
+	do
+	{
+		if (!pGeneratorUI->isUnlocked()) break;
+		if (pPanelUI->isUnlocked()) break;
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			if (Input::GetKeyTrigger(DIK_E))
+			{
+				pPanelUI->OpenUI();
 				break;
 			}
 			bIdeaHand = true;

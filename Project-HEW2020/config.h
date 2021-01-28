@@ -83,3 +83,5 @@
 #define TEXTURE_LIFT_FRAME				"assets/texture/scene01/lift_frame.png"
 #define TEXTURE_LIFT_DOOR				"assets/texture/scene01/lift_door.png"
 #define TEXTURE_OBJ_LIFT_PANEL			"assets/texture/scene01/lift_panel.png"
+#define TEXTURE_PANEL_BUTTON_BLUE		"assets/texture/scene01/lift_panel_button1.png"
+#define TEXTURE_PANEL_BUTTON_GREEN		"assets/texture/scene01/lift_panel_button2.png"

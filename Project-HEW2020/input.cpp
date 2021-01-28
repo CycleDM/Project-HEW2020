@@ -169,12 +169,12 @@ bool Input::GetKeyRelease(char key)
 }
 
 // Mouse
-bool Input::GetMouseButtonPress(char button)
+bool Input::GetMouseButtonPress(int button)
 {
 	return (m_mouseState.rgbButtons[button] & 0x80);
 }
 
-bool Input::GetMouseButtonTrigger(char button)
+bool Input::GetMouseButtonTrigger(int button)
 {
 	if (!GetMouseButtonPress(button)) return false;
 
@@ -190,7 +190,7 @@ bool Input::GetMouseButtonTrigger(char button)
 	return flag;
 }
 
-bool Input::GetMouseButtonRelease(char button)
+bool Input::GetMouseButtonRelease(int button)
 {
 	if (GetMouseButtonPress(button)) return false;
 	

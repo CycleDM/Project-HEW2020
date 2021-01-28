@@ -124,6 +124,7 @@ void GeneratorUI::Uninit()
 
 void GeneratorUI::Update()
 {
+	if (!bActive) return;
 	// Control
 	do
 	{
@@ -163,8 +164,7 @@ void GeneratorUI::Update()
 	// Quit
 	do
 	{
-		if (!bActive) break;
-		if (Input::GetKeyPress(DIK_Q))
+		if (Input::GetKeyPress(DIK_Q) || Input::GetKeyTrigger(DIK_E))
 		{
 			QuitUI();
 		}

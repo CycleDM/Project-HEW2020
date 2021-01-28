@@ -181,7 +181,7 @@ void CodedLockUI::Update(void)
 	do
 	{
 		if (bOpening || bQuiting) break;
-		if (!bTrying && Input::GetKeyTrigger(DIK_F))
+		if (!bTrying && Input::GetKeyTrigger(DIK_E))
 		{
 			nFrame = 0;
 			bTrying = true;	

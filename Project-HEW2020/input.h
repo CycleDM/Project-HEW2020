@@ -36,15 +36,15 @@ public:
 	// Return whether specific mouse button was pressed or not
 	//	Parameters:
 	//	button ... 0: left. 1: right. 2: middle
-	static bool GetMouseButtonPress(char button);
+	static bool GetMouseButtonPress(int button);
 	// Return whether specific mouse button was triggered or not
 	//	Parameters:
 	//	button ... 0: left. 1: right. 2: middle
-	static bool GetMouseButtonTrigger(char button);
+	static bool GetMouseButtonTrigger(int button);
 	// Return whether specific mouse button was released or not
 	//	Parameters:
 	//	button ... 0: left. 1: right. 2: middle
-	static bool GetMouseButtonRelease(char button);
+	static bool GetMouseButtonRelease(int button);
 	// Return the mouse position
 	static long GetMouseX();
 	// Return the mouse position

@@ -12,6 +12,8 @@
 #include <d3dx9.h>
 #include "scene.h"
 #include "generator_ui.h"
+#include "screen_ui.h"
+#include "panel_ui.h"
 #include "text.h"
 
 class GameScene01 : public GameScene
@@ -39,9 +41,13 @@ private:
 	bool bDoorUnlockded[2];
 	bool bTalking;
 	bool bLCToken;	// Language chip
+	bool bCCToken;	// Color chip
 	bool bEndScene;
 
 	GeneratorUI* pGeneratorUI;
+	ScreenUI* pScreenUI;
+	PanelUI* pPanelUI;
+	
 	GameText* pText;
 	GameText* pTextNotice;
 };

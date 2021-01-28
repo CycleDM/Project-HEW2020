@@ -31,4 +31,12 @@ void GameOverlay::LoadTexture(const char* pFileName)
 
 	width = (float)pSprite->GetTextureWidth();
 	height = (float)pSprite->GetTextureHeight();
+	if (pSprite->GetCutWidth() != 0)
+	{
+		width = (float)pSprite->GetCutWidth();
+	}
+	if (pSprite->GetCutHeight() != 0)
+	{
+		height = (float)pSprite->GetCutHeight();
+	}
 }
