@@ -44,6 +44,9 @@ private:
 	bool bCCToken;	// Color chip
 	bool bEndScene;
 
+	bool bLifting;
+	bool bSecondFloor;
+
 	GeneratorUI* pGeneratorUI;
 	ScreenUI* pScreenUI;
 	PanelUI* pPanelUI;

@@ -18,7 +18,7 @@
 #define FONT_NAME						"LanaPixel"
 
 // 重力システム
-#define GAME_GRAVITY	(9.8f)
+#define GAME_GRAVITY	(20.0f)
 
 // ゲームオブジェクトの最大数
 #define SINGLE_SCENE_OBJECT_MAX		(128)
@@ -85,3 +85,10 @@
 #define TEXTURE_OBJ_LIFT_PANEL			"assets/texture/scene01/lift_panel.png"
 #define TEXTURE_PANEL_BUTTON_BLUE		"assets/texture/scene01/lift_panel_button1.png"
 #define TEXTURE_PANEL_BUTTON_GREEN		"assets/texture/scene01/lift_panel_button2.png"
+#define TEXTURE_OBJ_COMPUTER			"assets/texture/scene01/2f/computer.png"
+#define TEXTURE_COMPUTER_UI_BASE		"assets/texture/scene01/2f/computer_ui.png"
+#define TEXTURE_COMPUTER_UI_KEYS		"assets/texture/scene01/2f/computer_keys.png"
+#define TEXTURE_COMPUTER_UI_KEYS_OVER	"assets/texture/scene01/2f/computer_keys_overlay.png"
+#define TEXTURE_OBJ_MAKER				"assets/texture/scene01/2f/maker.png"
+#define TEXTURE_OBJ_NEW_ROBOT			"assets/texture/scene01/2f/new_robot.png"
+#define TEXTURE_OBJ_VISUAL				"assets/texture/scene01/2f/visual_chip.png"

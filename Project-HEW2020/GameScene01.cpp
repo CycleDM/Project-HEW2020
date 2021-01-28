@@ -41,6 +41,8 @@ void GameScene01::Init()
 	bTalking = false;
 	bLCToken = false;
 	bCCToken = false;
+	bLifting = false;
+	bSecondFloor = false;
 	bEndScene = false;
 
 	// Init Player
@@ -52,7 +54,6 @@ void GameScene01::Init()
 #ifdef _DEBUG
 	pPlayer->SetWalkingSpeed(15.0f);
 #endif // _DEBUG
-
 
 	// Init BG
 	pOverlays[0] = new GameOverlay(TEXTURE_SCENE01_BG);
@@ -111,9 +112,9 @@ void GameScene01::Init()
 	pObjects[3]->SetGlobalPos(1800.0f, 426.0f);
 	pObjects[3]->GetSprite()->SetColor(D3DCOLOR_RGBA(155, 155, 155, 255));
 	pText = new GameText;
-	// DIGITAL_DOOR
+	// ANYWHERE_DOOR
 	pObjects[4] = new GameObject(GameObject::OBJ_DIGITAL_DOOR);
-	pObjects[4]->SetGlobalPos(4000.0f, 420.0f);
+	pObjects[4]->SetGlobalPos(2735.0f, -1160.0f);
 	pObjects[4]->SetSize(64.0f, 64.0f);
 	// GENERATOR
 	pObjects[5] = new GameObject(GameObject::OBJ_GENERATOR);
@@ -131,7 +132,7 @@ void GameScene01::Init()
 	pObjects[8]->SetSize(32.0f, 32.0f);
 	// LIFT
 	pObjects[9] = new GameObject(GameObject::OBJ_LIFT);
-	pObjects[9]->SetGlobalPos(3330.0f, 350.0f);
+	pObjects[9]->SetGlobalPos(3330.0f, 342.0f);
 	// LIFT PANEL
 	pObjects[10] = new GameObject(GameObject::OBJ_LIFT_PANEL);
 	pObjects[10]->SetGlobalPos(3618.0f, 330.0f);
@@ -187,6 +188,12 @@ void GameScene01::Uninit()
 	pGeneratorUI = NULL;
 	delete pScreenUI;
 	pScreenUI = NULL;
+	delete pPanelUI;
+	pPanelUI = NULL;
+	delete pText;
+	pText = NULL;
+	delete pTextNotice;
+	pTextNotice = NULL;
 }
 
 void GameScene01::Update()
@@ -230,9 +237,13 @@ void GameScene01::Draw()
 		if (NULL == object) continue;
 		object->Draw();
 	}
-	pOverlays[7]->Draw();
+	if (bLifting || !pPanelUI->isUnlocked())
+	{
+		pOverlays[7]->Draw();
+	}
 	pOverlays[8]->Draw();
-	pPlayer->Draw();
+
+	if (!bLifting) pPlayer->Draw();
 	
 	pOverlays[1]->Draw();
 
@@ -296,7 +307,6 @@ void GameScene01::UpdateObject()
 		if (NULL == obj) break;
 		if (NULL == pOC) break;
 		if (bDoorUnlockded[0]) break;
-
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
 			// FBI Open the door!
@@ -393,6 +403,7 @@ void GameScene01::UpdateObject()
 	do
 	{
 		if (pGeneratorUI->isUnlocked()) break;
+		if (bSecondFloor) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
 			if (Input::GetKeyTrigger(DIK_E))
@@ -408,6 +419,7 @@ void GameScene01::UpdateObject()
 	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_CRASH_ROBOT);
 	do
 	{
+		if (bSecondFloor) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
 			if (bTalking) break;
@@ -427,11 +439,12 @@ void GameScene01::UpdateObject()
 		}
 	} while (0);
 
-	// Language chip
+	// LANGUAGE CHIP
 	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_LANGUAGE_CHIP);
 	do
 	{
 		if (bLCToken) break;
+		if (bSecondFloor) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
 			if (Input::GetKeyTrigger(DIK_E))
@@ -451,6 +464,7 @@ void GameScene01::UpdateObject()
 	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_SCREEN);
 	do
 	{
+		if (bSecondFloor) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
 			if (Input::GetKeyTrigger(DIK_E))
@@ -476,6 +490,54 @@ void GameScene01::UpdateObject()
 				break;
 			}
 			bIdeaHand = true;
+		}
+	} while (0);
+
+	// LIFT
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_LIFT);
+	do
+	{
+		if (!pPanelUI->isUnlocked()) break;
+		if (bLifting) break;
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			if (Input::GetKeyTrigger(DIK_E))
+			{
+				bLifting = true;
+				break;
+			}
+			bIdeaHand = true;
+		}
+	} while (0);
+	// *** LIFTING ***
+	do
+	{
+		if (!bLifting) break;
+
+		float fSpeed = 10.0f;
+		if (!bSecondFloor)
+		{
+			obj->SetGlobalPos(obj->GetGlobalPos().x, obj->GetGlobalPos().y - fSpeed);
+			fGroundHeight += fSpeed;
+		}
+		else
+		{
+			obj->SetGlobalPos(obj->GetGlobalPos().x, obj->GetGlobalPos().y + fSpeed);
+			fGroundHeight -= fSpeed;
+		}
+
+		// limitation
+		if (obj->GetGlobalPos().y <= -1238.0f)
+		{
+			obj->SetGlobalPos(obj->GetGlobalPos().x, -1238.0f);
+			bLifting = false;
+			bSecondFloor = true;
+		}
+		if (obj->GetGlobalPos().y >= 342.0f)
+		{
+			obj->SetGlobalPos(obj->GetGlobalPos().x, 342.0f);
+			bLifting = false;
+			bSecondFloor = false;
 		}
 	} while (0);
 }
@@ -527,34 +589,20 @@ void GameScene01::UpdatePlayer()
 	}
 	else
 	{
-		pPlayer->SetScreenPos(pPlayer->GetGlobalPos().x, (float)SCREEN_HEIGHT / 2);
+		pPlayer->SetScreenPos(pPlayer->GetGlobalPos().x - offsetX, (float)SCREEN_HEIGHT / 2);
 	}
 
 	// プレイヤーは画面を出ることを防止
 	float minimumX = 400.0f + pPC->GetHalfWidth();
 	float maximumX = (float)SCREEN_WIDTH - pPC->GetHalfWidth() + offsetX - 80.0f;
-	float minimumY = 0.0f + pPC->GetHalfHeight();
+	float minimumY = 0.0f + pPC->GetHalfHeight() - offsetY;
 	float maximumY = (float)SCREEN_HEIGHT - fGroundHeight - pPC->GetHalfHeight();
-	//	プレイヤーが2F以上の場合
-	do
+	// 2F
+	if (bSecondFloor)
 	{
-		// 一番近いFLOORを取得
-		GameObject* floor = GetNearestObject(pPlayer->GetGlobalPos(), GameObject::OBJ_FLOOR);
-		// 取得出来なかった場合、break;
-		if (NULL == floor) break;
-
-		// プレイヤーが下に移動する場合、break;
-		if (pPlayer->isClimbing() && pPlayer->GetDirection().y > 0.0f) break;
-
-		// floorの上境界(Collision)
-		float fTop = floor->GetCollision()->GetPosition().y - floor->GetCollision()->GetHalfHeight();
-		// プレイヤーの中心座標y > floorの中心座標y ... break
-		if (pPlayer->GetGlobalPos().y > floor->GetCollision()->GetPosition().y) break;
-
-		maximumY = fTop - pPC->GetHalfHeight();
-		minimumX = floor->GetGlobalPos().x - floor->GetCollision()->GetHalfWidth() + pPC->GetHalfWidth();
-		maximumX = floor->GetGlobalPos().x + floor->GetCollision()->GetHalfWidth() - pPC->GetHalfWidth();
-	} while (0);
+		minimumX = 2530.0f;
+		maximumX = 5630.0f;
+	}
 	// プレイヤーは画面を出ることを防止
 	// 左壁
 	if (pPC->GetPosition().x < minimumX)
@@ -572,6 +620,7 @@ void GameScene01::UpdatePlayer()
 
 void GameScene01::PlayerControl()
 {
+	if (bLifting) return;
 	GameScene::PlayerControl();
 }
 
@@ -581,6 +630,9 @@ void GameScene01::Debug()
 	int y = 32;
 
 	sprintf_s(buf, "BgScroll(%.2f, %.2f)", fBgScroll.x, fBgScroll.y);
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, "GroundHeight = %.2f", fGroundHeight);
 	y += 32;
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	y += 32;
@@ -600,6 +652,12 @@ void GameScene01::Debug()
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	y += 32;
 	sprintf_s(buf, ">CollisionSize(%.2f, %.2f)", pPlayer->GetCollision()->GetWidth(), pPlayer->GetCollision()->GetHeight());
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	y += 32;
+	sprintf_s(buf, "[ObjectInfo] LIFT");
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32, D3DCOLOR_RGBA(255, 155, 100, 255));
+	y += 32;
+	sprintf_s(buf, ">GlobalPos(%.2f, %.2f)", pObjects[9]->GetGlobalPos().x, pObjects[9]->GetGlobalPos().y);
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 
 	sprintf_s(buf, "[Mouse States]");

@@ -193,7 +193,7 @@ void CodedLockUI::Update(void)
 	do
 	{
 		if (bOpening || bQuiting || bTrying || bSwitching) break;
-		if (Input::GetKeyPress(DIK_Q))
+		if (Input::GetKeyPress(DIK_Q) || Input::GetKeyTrigger(DIK_ESCAPE))
 		{
 			QuitUI();
 		}

@@ -108,7 +108,7 @@ void PanelUI::Update()
 			if (nIndex == -1) break;
 
 			// BACKSPACE
-			if (nIndex == 9)
+			if (nIndex == 11)
 			{
 				for (int i = 3; i >= 0; i--)
 				{
@@ -118,7 +118,7 @@ void PanelUI::Update()
 				}
 			}
 			// CLEAR
-			else if (nIndex == 11)
+			else if (nIndex == 9)
 			{
 				for (int i = 0; i < 4; i++)
 				{

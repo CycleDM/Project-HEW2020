@@ -45,7 +45,7 @@ void Game::Init(void)
 {
 	Uninit();
 
-	eNowScene = SCENE_TITLE;
+	eNowScene = SCENE_01;
 	eNextScene = eNowScene;
 	pLoadingScreen = new LoadingScreen;
 	bLoadingFlag = false;
