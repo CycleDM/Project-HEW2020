@@ -1,32 +1,32 @@
 //----------------------------------------------------------------------------
 // 
-// Project-HEW2020 [panel_ui.cpp]
-// シーン01一階目の謎
+// Project-HEW2020 [computer_ui.cpp]
+// シーン01二階目の謎
 // 
 // Date:   2021/01/28
 // Author: AT12D187_17_周進
 // 
 //----------------------------------------------------------------------------
-#include "panel_ui.h"
+#include "computer_ui.h"
 #include "scene.h"
 #include "config.h"
 #include "input.h"
 
-const float PanelUI::INIT_POS_X = 545.0f;
-const float PanelUI::INIT_POS_Y = 288.0f;
-const int PanelUI::CORRECT_PASS[4] = { 6, 7, 4, 3 };
+const float ComputerUI::INIT_POS_X = 854.0f;
+const float ComputerUI::INIT_POS_Y = 403.0f;
+const int ComputerUI::CORRECT_PASS[4] = { 8, 3, 2, 6 };
 
-PanelUI::PanelUI()
+ComputerUI::ComputerUI()
 {
 	Init();
 }
 
-PanelUI::~PanelUI()
+ComputerUI::~ComputerUI()
 {
 	Uninit();
 }
 
-void PanelUI::Init(void)
+void ComputerUI::Init(void)
 {
 	bActive = false;
 	bUnlocked = false;
@@ -38,28 +38,26 @@ void PanelUI::Init(void)
 	pBgOverlay->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
 	pBgOverlay->GetSprite()->SetColor(D3DCOLOR_RGBA(0, 0, 0, 200));
 
-	pBaseUI = new GameOverlay(TEXTURE_OBJ_LIFT_PANEL);
+	pBaseUI = new GameOverlay(TEXTURE_COMPUTER_UI_BASE);
 	pBaseUI->SetScreenPos((float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2);
-	pBaseUI->SetScale(1.5f);
+	pBaseUI->SetScale(4.0f);
 
-	// NORMAL
-	pButtonBlue = new GameOverlay(TEXTURE_PANEL_BUTTON_BLUE);
-	pButtonBlue->SetScreenPos(INIT_POS_X, INIT_POS_Y);
-	pButtonBlue->GetSprite()->SetCutPos(0, 0);
-	pButtonBlue->GetSprite()->SetCutRange(48, 48);
-	pButtonBlue->SetScale(0.4f);
-	// SPECIAL
-	pButtonGreen = new GameOverlay(TEXTURE_PANEL_BUTTON_GREEN);
-	pButtonGreen->SetScreenPos(INIT_POS_X, INIT_POS_Y);
-	pButtonGreen->GetSprite()->SetCutPos(0, 0);
-	pButtonGreen->GetSprite()->SetCutRange(48, 48);
-	pButtonGreen->SetScale(0.4f);
+	pButtonBase = new GameOverlay(TEXTURE_COMPUTER_UI_KEYS_OVER);
+	pButtonBase->SetScreenPos(927.0f, 510.0f);
+	pButtonBase->SetScale(1.5f);
+	pButtonBase->GetSprite()->SetColor(D3DCOLOR_RGBA(155, 155, 155, 255));
+
+	pButton = new GameOverlay(TEXTURE_COMPUTER_UI_KEYS);
+	pButton->SetScreenPos(INIT_POS_X, INIT_POS_Y);
+	pButton->GetSprite()->SetCutPos(0, 0);
+	pButton->GetSprite()->SetCutRange(48, 48);
+	pButton->SetScale(0.5f);
 
 	// TEXT
 	pText = new GameText;
 }
 
-void PanelUI::Uninit(void)
+void ComputerUI::Uninit(void)
 {
 	delete pText;
 	pText = NULL;
@@ -67,13 +65,13 @@ void PanelUI::Uninit(void)
 	pBgOverlay = NULL;
 	delete pBaseUI;
 	pBaseUI = NULL;
-	delete pButtonBlue;
-	pButtonBlue = NULL;
-	delete pButtonGreen;
-	pButtonGreen = NULL;
+	delete pButtonBase;
+	pButtonBase = NULL;
+	delete pButton;
+	pButton = NULL;
 }
 
-void PanelUI::Update()
+void ComputerUI::Update()
 {
 	if (!bActive) return;
 
@@ -82,16 +80,15 @@ void PanelUI::Update()
 	// BUTTONS
 	long mPosX = Input::GetMouseX();
 	long mPosY = Input::GetMouseY();
-	long offsetX = 5;
 
 	memset(bSelected, false, sizeof(bSelected));
 	int nIndex = -1;
 	for (int i = 0; i < 12; i++)
 	{
-		if (mPosX >= (long)(INIT_POS_X + 95.0f * (i % 3) - pButtonBlue->GetWidth() / 2 - offsetX) &&
-			mPosX <= (long)(INIT_POS_X + 95.0f * (i % 3) + pButtonBlue->GetWidth() / 2 + offsetX) &&
-			mPosY >= (long)(INIT_POS_Y + 85.0f * (i / 3) - pButtonBlue->GetHeight() / 2) &&
-			mPosY <= (long)(INIT_POS_Y + 85.0f * (i / 3) + pButtonBlue->GetHeight() / 2))
+		if (mPosX >= (long)(INIT_POS_X + 72.0f * (i % 3) - pButton->GetWidth() / 2) &&
+			mPosX <= (long)(INIT_POS_X + 72.0f * (i % 3) + pButton->GetWidth() / 2) &&
+			mPosY >= (long)(INIT_POS_Y + 71.0f * (i / 3) - pButton->GetHeight() / 2) &&
+			mPosY <= (long)(INIT_POS_Y + 71.0f * (i / 3) + pButton->GetHeight() / 2))
 		{
 			bSelected[i] = true;
 			nIndex = i;
@@ -146,21 +143,27 @@ void PanelUI::Update()
 	}
 }
 
-void PanelUI::Draw(void)
+void ComputerUI::Draw(void)
 {
 	if (!bActive) return;
 	pBgOverlay->Draw();
 	pBaseUI->Draw();
+	pButtonBase->Draw();
 	pText->Draw();
 
 	for (int i = 0; i < 12; i++)
 	{
-		GameOverlay* pTarget = pButtonBlue;
-		if (bSelected[i] || bUnlocked) pTarget = pButtonGreen;
-
-		pTarget->GetSprite()->SetCutPos(48 * (i % 3), 48 * (i / 3));
-		pTarget->SetScreenPos(INIT_POS_X + 95.0f * (i % 3), INIT_POS_Y + 85.0f * (i / 3));
-		pTarget->Draw();
+		if (bSelected[i])
+		{
+			pButton->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 255));
+		}
+		else
+		{
+			pButton->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
+		}
+		pButton->GetSprite()->SetCutPos(48 * (i % 3), 48 * (i / 3));
+		pButton->SetScreenPos(INIT_POS_X + 72.0f * (i % 3), INIT_POS_Y + 71.0f * (i / 3));
+		pButton->Draw();
 	}
 
 	// SHOW INPUT NUMBERS
@@ -170,31 +173,32 @@ void PanelUI::Draw(void)
 		{
 			if (nInput[i] == -1) continue;
 
-			pButtonGreen->GetSprite()->SetCutPos(48 * (nInput[i] % 3), 48 * (nInput[i] / 3));
-			pButtonGreen->SetScreenPos(INIT_POS_X - 16.0f + 73.0f * (i % 4), INIT_POS_Y - 135.0f);
-			pButtonGreen->Draw();
+			pButton->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 255));
+			pButton->GetSprite()->SetCutPos(48 * (nInput[i] % 3), 48 * (nInput[i] / 3));
+			pButton->SetScreenPos(453.0f + 123.0f * (i % 4), 220.0f);
+			pButton->Draw();
 		}
 	} while (0);
 }
 
-void PanelUI::OpenUI(void)
+void ComputerUI::OpenUI(void)
 {
 	bActive = true;
 	GameScene::Freeze(true);
 }
 
-void PanelUI::QuitUI(void)
+void ComputerUI::QuitUI(void)
 {
 	bActive = false;
 	GameScene::Freeze(false);
 }
 
-bool PanelUI::isUnlocked(void)
+bool ComputerUI::isUnlocked(void)
 {
 	return bUnlocked;
 }
 
-void PanelUI::TryToUnlock(void)
+void ComputerUI::TryToUnlock(void)
 {
 	// CHECK PASSWORD
 	do
@@ -210,7 +214,7 @@ void PanelUI::TryToUnlock(void)
 		}
 		if (bCorrect)
 		{
-			pText->CreateText(SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2 - 300,
+			pText->CreateText(SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2 - 250,
 				64, "UNLOCKED!", -1, 1, D3DCOLOR_RGBA(0, 255, 155, 255));
 			bUnlocked = true;
 			break;
@@ -220,7 +224,7 @@ void PanelUI::TryToUnlock(void)
 			pText->Init();
 			break;
 		}
-		pText->CreateText(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 300,
+		pText->CreateText(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 250,
 			64, "WRONG!", -1, 1, D3DCOLOR_RGBA(255, 0, 0, 255));
 	} while (0);
 }

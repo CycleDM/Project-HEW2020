@@ -92,3 +92,4 @@
 #define TEXTURE_OBJ_MAKER				"assets/texture/scene01/2f/maker.png"
 #define TEXTURE_OBJ_NEW_ROBOT			"assets/texture/scene01/2f/new_robot.png"
 #define TEXTURE_OBJ_VISUAL				"assets/texture/scene01/2f/visual_chip.png"
+#define TEXTURE_ITEM_HAND				"assets/texture/scene01/2f/item_hand.png"

@@ -212,6 +212,21 @@ void GameObject::Register(ObjectType type)
 	case GameObject::OBJ_LIFT_PANEL:
 		pSprite->LoadTexture(TEXTURE_OBJ_LIFT_PANEL);
 		break;
+	case GameObject::OBJ_MAKER:
+		pSprite->LoadTexture(TEXTURE_OBJ_MAKER);
+		break;
+	case GameObject::OBJ_NEW_ROBOT:
+		pSprite->LoadTexture(TEXTURE_OBJ_NEW_ROBOT);
+		break;
+	case GameObject::OBJ_COMPUTER:
+		pSprite->LoadTexture(TEXTURE_OBJ_COMPUTER);
+		break;
+	case GameObject::OBJ_ITEM_HAND:
+		pSprite->LoadTexture(TEXTURE_ITEM_HAND);
+		break;
+	case GameObject::OBJ_VISUAL_CHIP:
+		pSprite->LoadTexture(TEXTURE_OBJ_VISUAL);
+		break;
 	default:
 		break;
 	}

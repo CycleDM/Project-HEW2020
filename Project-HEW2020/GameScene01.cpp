@@ -27,7 +27,7 @@ void GameScene01::Init()
 	GameScene::Freeze(false);
 	// Init Screen
 	SetGlobalScaling(2.0f);
-	isDarkness(false);
+	isDarkness(true);
 
 	fBgScroll = D3DXVECTOR2(0.0f, 0.0f);
 	fBgScrollMax = D3DXVECTOR2(2310.0f, (float)3000 - (720 / 2 + 1));
@@ -39,8 +39,8 @@ void GameScene01::Init()
 	bIdea = false;
 	bIdeaHand = false;
 	bTalking = false;
-	bLCToken = false;
-	bCCToken = false;
+	bLCTaken = false;
+	bVCTaken = false;
 	bLifting = false;
 	bSecondFloor = false;
 	bEndScene = false;
@@ -98,6 +98,14 @@ void GameScene01::Init()
 	pOverlays[8]->GetSprite()->SetCutPos(0, 3000 - (720 / 2 + 1));
 	pOverlays[8]->GetSprite()->SetCutRange(1280 / 2, 720 / 2);
 
+	// 見える範囲 Overlay
+	pOverlays[63] = new GameOverlay(TEXTURE_OVERLAY_RANGE);
+	pOverlays[63]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y + pPlayer->GetCollision()->GetHalfHeight());
+	pOverlays[63]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
+	pOverlays[63]->GetSprite()->SetCutPos(640, 360);
+	pOverlays[63]->GetSprite()->SetCutRange(SCREEN_WIDTH, SCREEN_HEIGHT);
+	pOverlays[63]->SetSize(pOverlays[63]->GetWidth() * fGlobalScaling * 5.5f, pOverlays[63]->GetHeight() * fGlobalScaling * 5.5f);
+
 	// Init OBJ
 	pObjects[0] = new GameObject(GameObject::OBJ_TRASH_STACK);
 	pObjects[0]->SetGlobalPos(1000.0f, 310.0f);
@@ -111,7 +119,6 @@ void GameScene01::Init()
 	pObjects[3] = new GameObject(GameObject::OBJ_CRASH_ROBOT);
 	pObjects[3]->SetGlobalPos(1800.0f, 426.0f);
 	pObjects[3]->GetSprite()->SetColor(D3DCOLOR_RGBA(155, 155, 155, 255));
-	pText = new GameText;
 	// ANYWHERE_DOOR
 	pObjects[4] = new GameObject(GameObject::OBJ_DIGITAL_DOOR);
 	pObjects[4]->SetGlobalPos(2735.0f, -1160.0f);
@@ -137,14 +144,29 @@ void GameScene01::Init()
 	pObjects[10] = new GameObject(GameObject::OBJ_LIFT_PANEL);
 	pObjects[10]->SetGlobalPos(3618.0f, 330.0f);
 	pObjects[10]->SetScale(0.1f);
-
-	// 見える範囲 Overlay
-	pOverlays[63] = new GameOverlay(TEXTURE_OVERLAY_RANGE);
-	pOverlays[63]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y + pPlayer->GetCollision()->GetHalfHeight());
-	pOverlays[63]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
-	pOverlays[63]->GetSprite()->SetCutPos(640, 360);
-	pOverlays[63]->GetSprite()->SetCutRange(SCREEN_WIDTH, SCREEN_HEIGHT);
-	pOverlays[63]->SetSize(pOverlays[63]->GetWidth() * fGlobalScaling * 4.0f, pOverlays[63]->GetHeight() * fGlobalScaling * 4.0f);
+	// MAKER
+	pObjects[11] = new GameObject(GameObject::OBJ_MAKER);
+	pObjects[11]->SetGlobalPos(5310.0f, -1270.0f);
+	// NEW_ROBOT1
+	pObjects[12] = new GameObject(GameObject::OBJ_NEW_ROBOT);
+	pObjects[12]->SetGlobalPos(5100.0f, -1210.0f);
+	// NEW_ROBOT2
+	pObjects[13] = new GameObject(GameObject::OBJ_NEW_ROBOT);
+	pObjects[13]->SetGlobalPos(5350.0f, -1210.0f);
+	// NEW_ROBOT3
+	pObjects[14] = new GameObject(GameObject::OBJ_NEW_ROBOT);
+	pObjects[14]->SetGlobalPos(5600.0f, -1210.0f);
+	// COMPUTER
+	pObjects[15] = new GameObject(GameObject::OBJ_COMPUTER);
+	pObjects[15]->SetGlobalPos(4700.0f, -1180.0f);
+	// VISUAL CHIP
+	pObjects[16] = new GameObject(GameObject::OBJ_VISUAL_CHIP);
+	pObjects[16]->SetGlobalPos(4500.0f, -1130.0f);
+	pObjects[16]->SetSize(32.0f, 32.0f);
+	// ITEM HAND
+	pObjects[17] = new GameObject(GameObject::OBJ_ITEM_HAND);
+	pObjects[17]->SetGlobalPos(5230.0f, -1170.0f);
+	pObjects[17]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
 
 	// OBJ Size
 	for (GameObject* obj : pObjects)
@@ -163,9 +185,10 @@ void GameScene01::Init()
 	pGeneratorUI = new GeneratorUI;
 	pScreenUI = new ScreenUI;
 	pPanelUI = new PanelUI;
+	pComputerUI = new ComputerUI;
 
 	// TEXT
-	pText = new GameText;
+	pText = new GameText[3];
 	pTextNotice = new GameText;
 }
 
@@ -190,7 +213,9 @@ void GameScene01::Uninit()
 	pScreenUI = NULL;
 	delete pPanelUI;
 	pPanelUI = NULL;
-	delete pText;
+	delete pComputerUI;
+	pComputerUI = NULL;
+	delete[] pText;
 	pText = NULL;
 	delete pTextNotice;
 	pTextNotice = NULL;
@@ -200,8 +225,9 @@ void GameScene01::Update()
 {
 	// UI
 	pGeneratorUI->Update();
-	pScreenUI->Update(pGeneratorUI->isUnlocked(), bCCToken);
+	pScreenUI->Update(pGeneratorUI->isUnlocked(), bVCTaken);
 	pPanelUI->Update();
+	pComputerUI->Update();
 
 	fBgScroll.x = pPlayer->GetGlobalPos().x - (float)SCREEN_WIDTH / 2;
 	fBgScroll.y = (float)SCREEN_HEIGHT / 2 - pPlayer->GetGlobalPos().y;
@@ -217,12 +243,19 @@ void GameScene01::Update()
 	if (fBgScroll.y < 0.0f)
 		fBgScroll.y = 0.0f;
 
-	UpdatePlayer();
-	UpdateObject();
-	UpdateOverlay();
+	do
+	{
+		if (bFrozen) break;
+		UpdatePlayer();
+		UpdateObject();
+		UpdateOverlay();
+	} while (0);
 
 	// TEXT
-	pText->Update();
+	for (int i = 0; i < 3; i++)
+	{
+		(pText + i)->Update();
+	}
 	pTextNotice->Update();
 
 	if (bEndScene) Game::LoadNextScene(Game::SCENE_TEST);
@@ -237,18 +270,37 @@ void GameScene01::Draw()
 		if (NULL == object) continue;
 		object->Draw();
 	}
-	if (bLifting || !pPanelUI->isUnlocked())
-	{
-		pOverlays[7]->Draw();
-	}
-	pOverlays[8]->Draw();
 
-	if (!bLifting) pPlayer->Draw();
+	// エレベーター特別処理
+	bool bShowTheDoor = false;
+	do
+	{
+		if (bLifting || !pPanelUI->isUnlocked())
+		{
+			bShowTheDoor = true;
+		}
+		if (bLifting && bShowTheDoor)
+		{
+			pPlayer->Draw();
+			pOverlays[7]->Draw();
+			pOverlays[8]->Draw();
+			break;
+		}
+		if (bShowTheDoor)
+		{
+			pOverlays[7]->Draw();
+		}
+		pOverlays[8]->Draw();
+		pPlayer->Draw();
+	} while (0);
 	
 	pOverlays[1]->Draw();
 
 	// TEXT
-	pText->Draw();
+	for (int i = 0; i < 3; i++)
+	{
+		(pText + i)->Draw();
+	}
 	pTextNotice->Draw();
 
 	if (isDarkness())
@@ -265,6 +317,7 @@ void GameScene01::Draw()
 	pGeneratorUI->Draw();
 	pScreenUI->Draw();
 	pPanelUI->Draw();
+	pComputerUI->Draw();
 
 	// デバッグ文字の表示
 	if (Game::DebugMode()) this->Debug();
@@ -322,32 +375,6 @@ void GameScene01::UpdateObject()
 		if (obj->GetGlobalPos().x - pPC->GetPosition().x < pOC->GetHalfWidth() + pPC->GetHalfWidth())
 		{
 			pPlayer->SetGlobalPos(obj->GetGlobalPos().x - pOC->GetHalfWidth() - pPC->GetHalfWidth(), pPlayer->GetGlobalPos().y);
-		}
-	} while (0);
-
-	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_DIGITAL_DOOR);
-	pOC = obj->GetCollision();
-	// DIGITAL DOOR
-	do
-	{
-		if (NULL == obj) break;
-		if (NULL == pOC) break;
-		
-		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
-		{
-			if (Input::GetKeyTrigger(DIK_W) && bDoorUnlockded[1])
-			{
-				bEndScene = true;
-				return;
-			}
-			if (bDoorUnlockded[1]) break;
-			// FBI Open the door!
-			if (Input::GetKeyTrigger(DIK_E) && pGeneratorUI->isUnlocked())
-			{
-				bDoorUnlockded[1] = true;
-				break;
-			}
-			bIdeaHand = true;
 		}
 	} while (0);
 
@@ -415,7 +442,7 @@ void GameScene01::UpdateObject()
 		}
 	} while (0);
 
-	// Robot Talking
+	// TALKING
 	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_CRASH_ROBOT);
 	do
 	{
@@ -426,7 +453,7 @@ void GameScene01::UpdateObject()
 			if (Input::GetKeyTrigger(DIK_E))
 			{
 				bTalking = true;
-				if (bLCToken)
+				if (bLCTaken)
 				{
 					pOverlays[6]->GetSprite()->SetCutPos(224, 0);
 				}
@@ -443,17 +470,44 @@ void GameScene01::UpdateObject()
 	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_LANGUAGE_CHIP);
 	do
 	{
-		if (bLCToken) break;
+		if (bLCTaken) break;
 		if (bSecondFloor) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
 			if (Input::GetKeyTrigger(DIK_E))
 			{
-				bLCToken = true;
-				pObjects[8]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
-				pText->CreateText(0, SCREEN_HEIGHT - 32, 30, "+ 言語認識", -1, 60, D3DCOLOR_RGBA(100, 255, 155, 255));
+				bLCTaken = true;
+				obj->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
+				int offset = 32;
+				if (bVCTaken) offset += 32;
+				if (bBodyTaken[1]) offset += 32;
+				pText->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 言語認識", -1, 60, D3DCOLOR_RGBA(100, 255, 155, 255));
 				pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
 					30, "+ 言語認識", 60, 30, D3DCOLOR_RGBA(100, 255, 155, 255));
+				break;
+			}
+			bIdeaHand = true;
+		}
+	} while (0);
+	// VISUAL CHIP
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_VISUAL_CHIP);
+	do
+	{
+		if (bVCTaken) break;
+		if (!bSecondFloor) break;
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			if (Input::GetKeyTrigger(DIK_E))
+			{
+				bVCTaken = true;
+				isDarkness(false);
+				obj->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
+				int offset = 32;
+				if (bLCTaken) offset += 32;
+				if (bBodyTaken[1]) offset += 32;
+				(pText + 1)->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 視覚的強化", -1, 60, D3DCOLOR_RGBA(255, 200, 50, 255));
+				pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
+					30, "+ 視覚的強化", 60, 30, D3DCOLOR_RGBA(255, 200, 50, 255));
 				break;
 			}
 			bIdeaHand = true;
@@ -540,6 +594,80 @@ void GameScene01::UpdateObject()
 			bSecondFloor = false;
 		}
 	} while (0);
+
+	// COMPUTER
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_COMPUTER);
+	do
+	{
+		if (!bSecondFloor) break;
+		if (pComputerUI->isUnlocked()) break;
+		if (!bVCTaken) break;
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			if (Input::GetKeyTrigger(DIK_E))
+			{
+				pComputerUI->OpenUI();
+				break;
+			}
+			bIdeaHand = true;
+		}
+	} while (0);
+	// ITEM HAND
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_ITEM_HAND);
+	do
+	{
+		if (!bSecondFloor) break;
+		if (bBodyTaken[1]) break;
+		if (!pComputerUI->isUnlocked()) break;
+		obj->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 255));
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			if (Input::GetKeyTrigger(DIK_E))
+			{
+				bBodyTaken[1] = true;
+				pPlayer->SetStatusFlag(-1, -1, 0, -1);
+				obj->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
+				int offset = 32;
+				if (bLCTaken) offset += 32;
+				if (bVCTaken) offset += 32;
+				(pText + 2)->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 部品完備", -1, 60, D3DCOLOR_RGBA(0, 200, 255, 255));
+				pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
+					30, "+ 部品完備", 60, 30, D3DCOLOR_RGBA(0, 200, 255, 255));
+				break;
+			}
+			bIdeaHand = true;
+		}
+	} while (0);
+
+	// ANYWHERE DOOR
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_DIGITAL_DOOR);
+	do
+	{
+		if (!bSecondFloor) break;
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			// GO TO NEXT SCENE
+			if (Input::GetKeyTrigger(DIK_W) && bDoorUnlockded[1])
+			{
+				bEndScene = true;
+				return;
+			}
+			if (bDoorUnlockded[1]) break;
+			// FBI Open the door!
+			if (Input::GetKeyTrigger(DIK_E))
+			{
+				if (!bBodyTaken[1])
+				{
+					pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
+						30, "×体の部品が失われた", 60, 30, D3DCOLOR_RGBA(255, 0, 0, 255));
+					break;
+				}
+				bDoorUnlockded[1] = true;
+				break;
+			}
+			bIdeaHand = true;
+		}
+	} while (0);
 }
 
 void GameScene01::UpdateOverlay()
@@ -597,8 +725,24 @@ void GameScene01::UpdatePlayer()
 	float maximumX = (float)SCREEN_WIDTH - pPC->GetHalfWidth() + offsetX - 80.0f;
 	float minimumY = 0.0f + pPC->GetHalfHeight() - offsetY;
 	float maximumY = (float)SCREEN_HEIGHT - fGroundHeight - pPC->GetHalfHeight();
+	// *** LIFTING ***
+	do
+	{
+		if (!bLifting) break;
+		GameObject* obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_LIFT);
+		minimumX = obj->GetGlobalPos().x - 55.0f;
+		maximumX = obj->GetGlobalPos().x + 55.0f;
+		if (!bSecondFloor)
+		{
+			maximumY = obj->GetGlobalPos().y + 55.0f;
+		}
+		if (bSecondFloor)
+		{
+			maximumY = obj->GetGlobalPos().y + 70.0f;
+		}
+	} while (0);
 	// 2F
-	if (bSecondFloor)
+	if (bSecondFloor && !bLifting)
 	{
 		minimumX = 2530.0f;
 		maximumX = 5630.0f;
@@ -616,11 +760,11 @@ void GameScene01::UpdatePlayer()
 	// 下境界
 	if (pPC->GetPosition().y > maximumY)
 		pPlayer->SetGlobalPos(pPlayer->GetGlobalPos().x, maximumY);
+	
 }
 
 void GameScene01::PlayerControl()
 {
-	if (bLifting) return;
 	GameScene::PlayerControl();
 }
 
