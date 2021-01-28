@@ -33,5 +33,7 @@ private:
 	void UpdateOverlay(void);
 	void PlayerControl(void);
 
+	bool bIdea;
+
 	CodedLockUI* pCodedLockUI;
 };

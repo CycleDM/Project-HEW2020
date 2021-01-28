@@ -155,12 +155,12 @@ void GameObject::Register(ObjectType type)
 		pSprite->LoadTexture(TEXTURE_OBJ_DOOR1);
 		pCollision = new Collision;
 		pSprite->SetCutPos(0, 0);
-		pSprite->SetCutRange(17, 91);
+		pSprite->SetCutRange(11, 97);
 		width = pSprite->GetCutWidth();
 		height = pSprite->GetCutHeight();
 		pAnimator = new Animator();
 		pAnimator->Init(pSprite);
-		pAnimator->Preset(6, 1, 8);
+		pAnimator->Preset(7, 1, 5);
 		bCustomized = true;
 		break;
 	case GameObject::OBJ_DIGITAL_DOOR:

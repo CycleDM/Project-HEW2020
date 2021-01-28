@@ -31,6 +31,7 @@ void TestScene::Init(void)
 	fBgScroll = D3DXVECTOR2(0.0f, 0.0f);
 	fBgScrollMax = D3DXVECTOR2(264.0f, 0.0f);
 	fGroundHeight = 64.0f;
+	bIdea = false;
 
 	// プレイヤーインスタンスを作成
 	pPlayer = new GamePlayer;
@@ -50,26 +51,32 @@ void TestScene::Init(void)
 	pOverlays[1]->GetSprite()->SetCutPos(0, 0);
 	pOverlays[1]->GetSprite()->SetCutRange(384, 216);
 	pOverlays[1]->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 230));
+	// FLOOR Overlay
+	pOverlays[2] = new GameOverlay(TEXTURE_OBJ_FLOOR_OVERLAY);
+	pOverlays[2]->SetScreenPos((float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2);
+	pOverlays[2]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
+	pOverlays[2]->GetSprite()->SetCutPos(0, 0);
+	pOverlays[2]->GetSprite()->SetCutRange(384, 216);
+	// IDEA
+	pOverlays[3] = new GameOverlay(TEXTURE_PLAYER_IDEA);
+	pOverlays[3]->SetScale(1.3f);
 	// ゲームオブジェクト・インスタンス(s)
-	// BED
-	pObjects[0] = new GameObject(GameObject::OBJ_BED);
-	pObjects[0]->SetGlobalPos(120.0f, 435.0f);
 	// FLOOR
-	pObjects[1] = new GameObject(GameObject::OBJ_FLOOR);
-	pObjects[1]->SetGlobalPos(940.0f, 310.0f);
+	pObjects[0] = new GameObject(GameObject::OBJ_FLOOR);
+	pObjects[0]->SetGlobalPos(950.0f, 300.0f);
 	// LADDER 1
-	pObjects[2] = new GameObject(GameObject::OBJ_LADDER);
-	pObjects[2]->SetGlobalPos(455.0f, 490.0f);
+	pObjects[1] = new GameObject(GameObject::OBJ_LADDER);
+	pObjects[1]->SetGlobalPos(455.0f, 490.0f);
 	// LADDER 2
-	pObjects[3] = new GameObject(GameObject::OBJ_LADDER);
-	pObjects[3]->SetGlobalPos(1255.0f, 490.0f);
+	pObjects[2] = new GameObject(GameObject::OBJ_LADDER);
+	pObjects[2]->SetGlobalPos(1345.0f, 490.0f);
 	// LOCK
-	pObjects[4] = new GameObject(GameObject::OBJ_CODED_LOCK);
-	pObjects[4]->SetGlobalPos(1020.5f, 170.0f);
-	pObjects[4]->SetSize(pObjects[4]->GetWidth() * 0.3f, pObjects[4]->GetHeight() * 0.3f);
+	pObjects[3] = new GameObject(GameObject::OBJ_CODED_LOCK);
+	pObjects[3]->SetGlobalPos(1198.5f, 210.0f);
+	pObjects[3]->SetScale(0.2f);
 	// DOOR1
-	pObjects[5] = new GameObject(GameObject::OBJ_DOOR1);
-	pObjects[5]->SetGlobalPos(1557.0f, 538.0f);
+	pObjects[4] = new GameObject(GameObject::OBJ_DOOR1);
+	pObjects[4]->SetGlobalPos(1557.0f, 520.0f);
 
 	// オブジェクトのサイズ一気に初期化
 	for (GameObject* obj : pObjects)
@@ -79,17 +86,13 @@ void TestScene::Init(void)
 		obj->SetSize(obj->GetWidth() * fGlobalScaling, obj->GetHeight() * fGlobalScaling);
 	}
 
-	// FLOOR Overlay
-	pOverlays[2] = new GameOverlay(TEXTURE_OBJ_FLOOR_OVERLAY);
-	pOverlays[2]->SetSize(pOverlays[2]->GetWidth() * fGlobalScaling, pOverlays[2]->GetHeight() * fGlobalScaling);
-
 	// 見える範囲 Overlay
-	pOverlays[3] = new GameOverlay(TEXTURE_OVERLAY_RANGE);
-	pOverlays[3]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y + pPlayer->GetCollision()->GetHalfHeight());
-	pOverlays[3]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
-	pOverlays[3]->GetSprite()->SetCutPos(640, 360);
-	pOverlays[3]->GetSprite()->SetCutRange(SCREEN_WIDTH, SCREEN_HEIGHT);
-	pOverlays[3]->SetSize(pOverlays[3]->GetWidth() * fGlobalScaling * 4.0f, pOverlays[3]->GetHeight() * fGlobalScaling * 4.0f);
+	pOverlays[63] = new GameOverlay(TEXTURE_OVERLAY_RANGE);
+	pOverlays[63]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y + pPlayer->GetCollision()->GetHalfHeight());
+	pOverlays[63]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
+	pOverlays[63]->GetSprite()->SetCutPos(640, 360);
+	pOverlays[63]->GetSprite()->SetCutRange(SCREEN_WIDTH, SCREEN_HEIGHT);
+	pOverlays[63]->SetScale(fGlobalScaling * 4.0f);
 
 	// ロック
 	pCodedLockUI = new CodedLockUI;
@@ -157,8 +160,8 @@ void TestScene::Draw(void)
 	pPlayer->Draw();
 	pOverlays[1]->Draw();
 	pOverlays[2]->Draw();
-	if (isDarkness())
-		pOverlays[3]->Draw();
+	if (isDarkness()) pOverlays[63]->Draw();
+	if (bIdea) pOverlays[3]->Draw();
 
 	pCodedLockUI->Draw();
 
@@ -273,6 +276,23 @@ void TestScene::UpdateObject(void)
 			pPlayer->SetGlobalPos(obj->GetGlobalPos().x - pOC->GetHalfWidth() - pPC->GetHalfWidth(), pPlayer->GetGlobalPos().y);
 		}
 	} while (0);
+
+	// IDEA & CODE LOCK
+	if (GameScene::bFrozen) return;
+	bIdea = false;
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_CODED_LOCK);
+	do
+	{
+		if (pCodedLockUI->isUnlocked()) break;
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			if (Input::GetKeyTrigger(DIK_E))
+			{
+				pCodedLockUI->OpenUI();
+			}
+			bIdea = true;
+		}
+	} while (0);
 }
 
 // オーバーレイの更新処理
@@ -280,39 +300,23 @@ void TestScene::UpdateOverlay(void)
 {
 	pOverlays[0]->GetSprite()->SetCutPos((int)fBgScroll.x, (int)fBgScroll.y);
 	pOverlays[1]->GetSprite()->SetCutPos((int)fBgScroll.x, (int)fBgScroll.y);
+	pOverlays[2]->GetSprite()->SetCutPos((int)fBgScroll.x, (int)fBgScroll.y);
 
 	float fGlobalPosOffset = fBgScroll.x * fGlobalScaling;
-	pOverlays[2]->SetScreenPos(pObjects[1]->GetScreenPos().x + 120.0f, pObjects[1]->GetScreenPos().y - 24.0f);
-	pOverlays[3]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y + pPlayer->GetCollision()->GetHalfHeight() + 32.0f);
+	pOverlays[63]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y + pPlayer->GetCollision()->GetHalfHeight() + 32.0f);
 
 
 	// ここからはUIの更新処理
 	do
 	{
 		pCodedLockUI->Update();
-		// ...
-		// ...
-		// ...
+		pOverlays[3]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y - 140.0f);
 	} while (0);
 }
 
 void TestScene::PlayerControl(void)
 {
 	GameScene::PlayerControl();
-
-	if (GameScene::bFrozen) return;
-	// ロックに関する処理
-	do
-	{
-		GameObject* lock = GetNearestObject(pPlayer->GetGlobalPos(), GameObject::OBJ_CODED_LOCK);
-		if (NULL == lock) break;
-		if (64.0f < abs(lock->GetGlobalPos().x - pPlayer->GetGlobalPos().x)) break;
-
-		if (!pCodedLockUI->isUnlocked() && Input::GetKeyPress(DIK_E))
-		{
-			pCodedLockUI->OpenUI();
-		}
-	} while (0);
 }
 
 #ifdef _DEBUG
@@ -356,21 +360,21 @@ void TestScene::Debug(void)
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32, D3DCOLOR_RGBA(100, 220, 255, 255));
 	y += 32;
 	sprintf_s(buf, ">FLOOR S(%.2f, %.2f) G(%.2f, %.2f) CollisionSize(%.2f, %.2f)",
-		pObjects[1]->GetScreenPos().x, pObjects[1]->GetScreenPos().y,
-		pObjects[1]->GetGlobalPos().x, pObjects[1]->GetGlobalPos().y,
-		pObjects[1]->GetCollision()->GetWidth(), pObjects[1]->GetCollision()->GetHeight());
+		pObjects[0]->GetScreenPos().x, pObjects[0]->GetScreenPos().y,
+		pObjects[0]->GetGlobalPos().x, pObjects[0]->GetGlobalPos().y,
+		pObjects[0]->GetCollision()->GetWidth(), pObjects[0]->GetCollision()->GetHeight());
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	y += 32;
 	sprintf_s(buf, ">LADDER1 S(%.2f, %.2f) G(%.2f, %.2f) CollisionPos(%.2f, %.2f)",
-		pObjects[2]->GetScreenPos().x, pObjects[2]->GetScreenPos().y, 
-		pObjects[2]->GetGlobalPos().x, pObjects[2]->GetGlobalPos().y,
-		pObjects[2]->GetCollision()->GetPosition().x, pObjects[2]->GetCollision()->GetPosition().y);
+		pObjects[1]->GetScreenPos().x, pObjects[1]->GetScreenPos().y, 
+		pObjects[1]->GetGlobalPos().x, pObjects[1]->GetGlobalPos().y,
+		pObjects[1]->GetCollision()->GetPosition().x, pObjects[1]->GetCollision()->GetPosition().y);
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	y += 32;
 	sprintf_s(buf, ">LADDER2 S(%.2f, %.2f) G(%.2f, %.2f) CollisionSize(%.2f, %.2f)",
-		pObjects[3]->GetScreenPos().x, pObjects[3]->GetScreenPos().y,
-		pObjects[3]->GetGlobalPos().x, pObjects[3]->GetGlobalPos().y,
-		pObjects[3]->GetCollision()->GetWidth(), pObjects[2]->GetCollision()->GetHeight());
+		pObjects[2]->GetScreenPos().x, pObjects[2]->GetScreenPos().y,
+		pObjects[2]->GetGlobalPos().x, pObjects[2]->GetGlobalPos().y,
+		pObjects[2]->GetCollision()->GetWidth(), pObjects[2]->GetCollision()->GetHeight());
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 }
 #endif // _DEBUG

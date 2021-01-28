@@ -114,7 +114,7 @@ void GameScene01::Init()
 	pObjects[1]->SetGlobalPos(1000.0f, 310.0f);
 	// DOOR1
 	pObjects[2] = new GameObject(GameObject::OBJ_DOOR1);
-	pObjects[2]->SetGlobalPos(3111.0f, 412.0f);
+	pObjects[2]->SetGlobalPos(3113.0f, 410.0f);
 	// CRASH_ROBOT
 	pObjects[3] = new GameObject(GameObject::OBJ_CRASH_ROBOT);
 	pObjects[3]->SetGlobalPos(1800.0f, 426.0f);
@@ -179,7 +179,6 @@ void GameScene01::Init()
 		}
 		obj->SetSize(obj->GetWidth() * fGlobalScaling, obj->GetHeight() * fGlobalScaling);
 	}
-	pObjects[2]->SetSize(pObjects[2]->GetWidth(), pObjects[2]->GetHeight() * 1.1f);
 
 	// Create UI
 	pGeneratorUI = new GeneratorUI;
