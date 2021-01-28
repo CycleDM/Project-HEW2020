@@ -50,8 +50,7 @@ void Game::Init(void)
 	pLoadingScreen = new LoadingScreen;
 	bLoadingFlag = false;
 
-	//LoadNextScene(eNowScene);
-	InitSceneThread(&pActScene);
+	LoadNextScene(eNowScene);
 }
 
 // ÉQÅ[ÉÄÇÃèIóπèàóù
@@ -157,8 +156,9 @@ void Game::LoadNextScene(Game::SceneType type)
 	eNextScene = type;
 
 	/*** LOADING THREAD ***/
-	lt = thread(&Game::InitSceneThread, &pActScene, &bLoadingFlag);
-	lt.detach();
+	//lt = thread(&Game::InitSceneThread, &pActScene, &bLoadingFlag);
+	//lt.detach();
+	InitSceneThread(&pActScene);
 }
 
 void Game::BindWindow(HWND hWnd, int window_width, int window_height)

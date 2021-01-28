@@ -162,8 +162,10 @@ void TestScene::Draw(void)
 
 	pCodedLockUI->Draw();
 
+#ifdef _DEBUG
 	// デバッグ文字の表示
 	if (Game::DebugMode()) this->Debug();
+#endif // _DEBUG
 }
 
 // プレイヤーの更新処理
@@ -313,6 +315,7 @@ void TestScene::PlayerControl(void)
 	} while (0);
 }
 
+#ifdef _DEBUG
 // デバッグ文字の表示
 void TestScene::Debug(void)
 {
@@ -370,3 +373,4 @@ void TestScene::Debug(void)
 		pObjects[3]->GetCollision()->GetWidth(), pObjects[2]->GetCollision()->GetHeight());
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 }
+#endif // _DEBUG

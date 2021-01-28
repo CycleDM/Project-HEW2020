@@ -88,11 +88,13 @@ void TitleScene::Draw(void)
 		if (NULL == p) continue;
 		p->Draw();
 	}
-
+#ifdef _DEBUG
 	// デバッグ文字の表示
 	if (Game::DebugMode()) this->Debug();
+#endif // _DEBUG
 }
 
+#ifdef _DEBUG
 void TitleScene::Debug(void)
 {
 	char buf[1024];
@@ -132,6 +134,7 @@ void TitleScene::Debug(void)
 	y += 32;
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 }
+#endif // _DEBUG
 
 void TitleScene::UpdatePlayer(void)
 {

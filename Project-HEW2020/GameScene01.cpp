@@ -319,8 +319,10 @@ void GameScene01::Draw()
 	pPanelUI->Draw();
 	pComputerUI->Draw();
 
+#ifdef _DEBUG
 	// デバッグ文字の表示
 	if (Game::DebugMode()) this->Debug();
+#endif // _DEBUG
 }
 
 void GameScene01::UpdateObject()
@@ -768,6 +770,7 @@ void GameScene01::PlayerControl()
 	GameScene::PlayerControl();
 }
 
+#ifdef _DEBUG
 void GameScene01::Debug()
 {
 	char buf[1024];
@@ -832,3 +835,4 @@ void GameScene01::Debug()
 	y += 32;
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 }
+#endif // _DEBUG

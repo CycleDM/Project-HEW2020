@@ -30,7 +30,10 @@ public:
 	virtual void Uninit(void) = 0;
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;
+#ifdef _DEBUG
 	virtual void Debug(void) = 0;
+#endif // _DEBUG
+
 
 	// プレイヤーのインスタンスを取得（ポインター）
 	GamePlayer* GetPlayer(void);

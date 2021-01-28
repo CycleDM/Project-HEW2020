@@ -27,7 +27,9 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+#ifdef _DEBUG
 	void Debug(void);
+#endif // _DEBUG
 
 private:
 	void UpdatePlayer(void);
