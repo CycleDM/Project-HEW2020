@@ -78,3 +78,8 @@
 #define TEXTURE_TALKING_TEXT			"assets/texture/scene01/talking_text.png"
 #define TEXTURE_OBJ_SCREEN				"assets/texture/scene01/screen.png"
 #define TEXTURE_OBJ_LANGUAGE			"assets/texture/scene01/language_chip.png"
+#define TEXTURE_SCREEN_UI				"assets/texture/scene01/screen_ui.png"
+#define TEXTURE_OBJ_LIFT_BOX			"assets/texture/scene01/lift_box.png"
+#define TEXTURE_LIFT_FRAME				"assets/texture/scene01/lift_frame.png"
+#define TEXTURE_LIFT_DOOR				"assets/texture/scene01/lift_door.png"
+#define TEXTURE_OBJ_LIFT_PANEL			"assets/texture/scene01/lift_panel.png"

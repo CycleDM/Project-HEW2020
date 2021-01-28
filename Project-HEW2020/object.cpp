@@ -206,6 +206,12 @@ void GameObject::Register(ObjectType type)
 	case GameObject::OBJ_LANGUAGE_CHIP:
 		pSprite->LoadTexture(TEXTURE_OBJ_LANGUAGE);
 		break;
+	case GameObject::OBJ_LIFT:
+		pSprite->LoadTexture(TEXTURE_OBJ_LIFT_BOX);
+		break;
+	case GameObject::OBJ_LIFT_PANEL:
+		pSprite->LoadTexture(TEXTURE_OBJ_LIFT_PANEL);
+		break;
 	default:
 		break;
 	}

@@ -137,7 +137,7 @@ void GamePlayer::Update(void)
 	}
 	else if (!isClimbing() && isOnLadder())
 	{
-		pAnimator->Pause(pActiveSprite);
+		//pAnimator->Pause(pActiveSprite);
 	}
 	else if (bLostLeg)
 	{

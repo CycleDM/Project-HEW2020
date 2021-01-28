@@ -78,6 +78,18 @@ void GameScene01::Init()
 	pOverlays[6]->SetSize(224, 58);
 	pOverlays[6]->GetSprite()->SetCutPos(0, 0);
 	pOverlays[6]->GetSprite()->SetCutRange(224, 58);
+	// LIFT OVERLAY DOOR
+	pOverlays[7] = new GameOverlay(TEXTURE_LIFT_DOOR);
+	pOverlays[7]->SetScreenPos((float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2);
+	pOverlays[7]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
+	pOverlays[7]->GetSprite()->SetCutPos(0, 3000 - (720 / 2 + 1));
+	pOverlays[7]->GetSprite()->SetCutRange(1280 / 2, 720 / 2);
+	// LIFT OVERLAY FRAME
+	pOverlays[8] = new GameOverlay(TEXTURE_LIFT_FRAME);
+	pOverlays[8]->SetScreenPos((float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2);
+	pOverlays[8]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
+	pOverlays[8]->GetSprite()->SetCutPos(0, 3000 - (720 / 2 + 1));
+	pOverlays[8]->GetSprite()->SetCutRange(1280 / 2, 720 / 2);
 
 	// Init OBJ
 	pObjects[0] = new GameObject(GameObject::OBJ_TRASH_STACK);
@@ -111,6 +123,13 @@ void GameScene01::Init()
 	pObjects[8] = new GameObject(GameObject::OBJ_LANGUAGE_CHIP);
 	pObjects[8]->SetGlobalPos(5430.0f, 460.0f);
 	pObjects[8]->SetSize(32.0f, 32.0f);
+	// LIFT
+	pObjects[9] = new GameObject(GameObject::OBJ_LIFT);
+	pObjects[9]->SetGlobalPos(3330.0f, 350.0f);
+	// LIFT PANEL
+	pObjects[10] = new GameObject(GameObject::OBJ_LIFT_PANEL);
+	pObjects[10]->SetGlobalPos(3618.0f, 330.0f);
+	pObjects[10]->SetScale(0.1f);
 
 	// 見える範囲 Overlay
 	pOverlays[63] = new GameOverlay(TEXTURE_OVERLAY_RANGE);
@@ -163,7 +182,9 @@ void GameScene01::Uninit()
 void GameScene01::Update()
 {
 	fBgScroll.x = pPlayer->GetGlobalPos().x - (float)SCREEN_WIDTH / 2;
+	fBgScroll.y = (float)SCREEN_HEIGHT / 2 - pPlayer->GetGlobalPos().y;
 	fBgScroll.x /= fGlobalScaling;
+	fBgScroll.y /= fGlobalScaling;
 
 	if (fBgScroll.x > fBgScrollMax.x)
 		fBgScroll.x = fBgScrollMax.x;
@@ -197,6 +218,8 @@ void GameScene01::Draw()
 		if (NULL == object) continue;
 		object->Draw();
 	}
+	pOverlays[7]->Draw();
+	pOverlays[8]->Draw();
 	pPlayer->Draw();
 	
 	pOverlays[1]->Draw();
@@ -224,11 +247,12 @@ void GameScene01::Draw()
 
 void GameScene01::UpdateObject()
 {
-	float fGlobalPosOffset = fBgScroll.x * fGlobalScaling;
+	float fGlobalPosOffsetX = fBgScroll.x * fGlobalScaling;
+	float fGlobalPosOffsetY = fBgScroll.y * fGlobalScaling;
 	for (GameObject* object : pObjects)
 	{
 		if (NULL == object) continue;
-		object->SetScreenPos(object->GetGlobalPos().x - fGlobalPosOffset, object->GetGlobalPos().y);
+		object->SetScreenPos(object->GetGlobalPos().x - fGlobalPosOffsetX, object->GetGlobalPos().y + fGlobalPosOffsetY);
 		object->Update();
 	}
 
@@ -239,6 +263,10 @@ void GameScene01::UpdateObject()
 	if (bDoorUnlockded[1])
 	{
 		pObjects[4]->GetAnimator()->PlayOnce(pObjects[4]->GetSprite());
+	}
+	if (pGeneratorUI->isUnlocked())
+	{
+		pObjects[7]->GetSprite()->SetCutPos(64, 0);
 	}
 
 	// コリジョンにより当たり判定
@@ -407,9 +435,12 @@ void GameScene01::UpdateObject()
 
 void GameScene01::UpdateOverlay()
 {
-	float fGlobalPosOffset = fBgScroll.x * fGlobalScaling;
+	float fGlobalPosOffsetX = fBgScroll.x * fGlobalScaling;
+	float fGlobalPosOffsetY = fBgScroll.y * fGlobalScaling;
 	pOverlays[0]->GetSprite()->SetCutPos((int)fBgScroll.x, 3000 - (720 / 2 + 1) - (int)fBgScroll.y);
 	pOverlays[1]->GetSprite()->SetCutPos((int)fBgScroll.x, 3000 - (720 / 2 + 1) - (int)fBgScroll.y);
+	pOverlays[7]->GetSprite()->SetCutPos((int)fBgScroll.x, 3000 - (720 / 2 + 1) - (int)fBgScroll.y);
+	pOverlays[8]->GetSprite()->SetCutPos((int)fBgScroll.x, 3000 - (720 / 2 + 1) - (int)fBgScroll.y);
 	pOverlays[6]->SetScreenPos(pObjects[3]->GetScreenPos().x + 200.0f, pObjects[3]->GetScreenPos().y - 80.0f);
 	pOverlays[63]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y + pPlayer->GetCollision()->GetHalfHeight() + 32.0f);
 
@@ -431,19 +462,25 @@ void GameScene01::UpdatePlayer()
 	Collision* pPC = pPlayer->GetCollision();
 	// スクリーン座標とワールド座標の同期
 	float offsetX = fBgScroll.x * fGlobalScaling;
-	float offsetY = fBgScroll.y;
+	float offsetY = fBgScroll.y * fGlobalScaling;
 	// 背景はスクロールしていない状態 -> スクリーン座標は変更できる
 	// 背景はスクロールしている状態	-> スクリーン座標は変更できない
 	// グローバル座標（世界座標）はいつも正常に変わる
 	if (fBgScroll.x <= 0.0f || fBgScroll.x >= fBgScrollMax.x)
 	{
-		pPlayer->SetScreenPos(pPlayer->GetGlobalPos().x - offsetX, pPlayer->GetGlobalPos().y);
-		//pPlayer->SetWalkingSpeed(5.0f);
+		pPlayer->SetScreenPos(pPlayer->GetGlobalPos().x - offsetX, pPlayer->GetGlobalPos().y + offsetY);
 	}
 	else
 	{
 		pPlayer->SetScreenPos((float)SCREEN_WIDTH / 2, pPlayer->GetGlobalPos().y);
-		//pPlayer->SetWalkingSpeed(2.5f);
+	}
+	if (fBgScroll.y <= 0.0f || fBgScroll.y >= fBgScrollMax.y)
+	{
+		pPlayer->SetScreenPos(pPlayer->GetGlobalPos().x - offsetX, pPlayer->GetGlobalPos().y + offsetY);
+	}
+	else
+	{
+		pPlayer->SetScreenPos(pPlayer->GetGlobalPos().x, (float)SCREEN_HEIGHT / 2);
 	}
 
 	// プレイヤーは画面を出ることを防止
