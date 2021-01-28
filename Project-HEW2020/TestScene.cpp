@@ -32,6 +32,7 @@ void TestScene::Init(void)
 	fBgScrollMax = D3DXVECTOR2(264.0f, 0.0f);
 	fGroundHeight = 64.0f;
 	bIdea = false;
+	bDoorOpened = false;
 
 	// プレイヤーインスタンスを作成
 	pPlayer = new GamePlayer;
@@ -255,6 +256,8 @@ void TestScene::UpdateObject(void)
 
 		if (pCodedLockUI->isUnlocked())
 		{
+			if(!bDoorOpened) PlaySound(SOUND_LABEL_SE_DOOR_OPEN1);
+			bDoorOpened = true;
 			obj->GetAnimator()->PlayOnce(obj->GetSprite());
 			// DOOR1 コリジョンの調整
 			pOC->SetPosition(pOC->GetPosition().x, pOC->GetPosition().y - pOC->GetHalfHeight());

@@ -105,6 +105,7 @@ void PanelUI::Update()
 		if (bUnlocked) break;
 		if (Input::GetMouseButtonTrigger(0))
 		{
+			PlaySound(SOUND_LABEL_SE_BUTTON);
 			if (nIndex == -1) break;
 
 			// BACKSPACE
@@ -213,6 +214,8 @@ void PanelUI::TryToUnlock(void)
 			pText->CreateText(SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2 - 300,
 				64, "UNLOCKED!", -1, 1, D3DCOLOR_RGBA(0, 255, 155, 255));
 			bUnlocked = true;
+			PlaySound(SOUND_LABEL_SE_CORRECT);
+			PlaySound(SOUND_LABEL_SE_LIFT_OPEN);
 			break;
 		}
 		if (nInput[3] == -1)
@@ -222,5 +225,6 @@ void PanelUI::TryToUnlock(void)
 		}
 		pText->CreateText(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 300,
 			64, "WRONG!", -1, 1, D3DCOLOR_RGBA(255, 0, 0, 255));
+		PlaySound(SOUND_LABEL_SE_WRONG);
 	} while (0);
 }

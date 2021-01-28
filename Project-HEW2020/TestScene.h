@@ -34,6 +34,7 @@ private:
 	void PlayerControl(void);
 
 	bool bIdea;
+	bool bDoorOpened;
 
 	CodedLockUI* pCodedLockUI;
 };

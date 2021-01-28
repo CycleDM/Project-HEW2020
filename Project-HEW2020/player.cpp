@@ -12,6 +12,7 @@
 #include "player.h"
 #include "game.h"
 #include "scene.h"
+#include "sound.h"
 
 //-----------------------------------------------------------------------------
 // ’è”

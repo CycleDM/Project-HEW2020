@@ -103,6 +103,7 @@ void ComputerUI::Update()
 		if (Input::GetMouseButtonTrigger(0))
 		{
 			if (nIndex == -1) break;
+			PlaySound(SOUND_LABEL_SE_BUTTON);
 
 			// BACKSPACE
 			if (nIndex == 11)
@@ -217,6 +218,8 @@ void ComputerUI::TryToUnlock(void)
 			pText->CreateText(SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2 - 250,
 				64, "UNLOCKED!", -1, 1, D3DCOLOR_RGBA(0, 255, 155, 255));
 			bUnlocked = true;
+			PlaySound(SOUND_LABEL_SE_SCREEN_OPEN);
+			PlaySound(SOUND_LABEL_SE_ITEM_DROP);
 			break;
 		}
 		if (nInput[3] == -1)
@@ -226,5 +229,6 @@ void ComputerUI::TryToUnlock(void)
 		}
 		pText->CreateText(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 250,
 			64, "WRONG!", -1, 1, D3DCOLOR_RGBA(255, 0, 0, 255));
+		PlaySound(SOUND_LABEL_SE_WRONG);
 	} while (0);
 }

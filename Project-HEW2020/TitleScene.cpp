@@ -188,10 +188,12 @@ void TitleScene::UpdateTitleButton(void)
 
 	if (buttonSelected == 0 && Input::GetMouseButtonTrigger(0))
 	{
+		PlaySound(SOUND_LABEL_SE_TITLE_BUTTON);
 		Game::LoadNextScene(Game::SCENE_01);
 	}
 	if (buttonSelected == 1 && Input::GetMouseButtonTrigger(0))
 	{
+		PlaySound(SOUND_LABEL_SE_TITLE_BUTTON);
 		SendMessage(Game::GetWindow(), WM_CLOSE, 0, 0);
 	}
 }

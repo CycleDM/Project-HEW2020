@@ -368,6 +368,7 @@ void GameScene01::UpdateObject()
 			{
 				bDoorUnlockded[0] = true;
 				bCodeTaken[0] = bCodeTaken[1] = false;
+				PlaySound(SOUND_LABEL_SE_DOOR_OPEN1);
 				break;
 			}
 			bIdeaHand = true;
@@ -391,6 +392,7 @@ void GameScene01::UpdateObject()
 				pPlayer->SetStatusFlag(0, -1, -1, -1);
 				obj->GetSprite()->SetColor(D3DCOLOR_RGBA(255, 255, 255, 0));
 				bBodyTaken[0] = true;
+				PlaySound(SOUND_LABEL_SE_PICKUP_LEG);
 			}
 			bIdea = true;
 		}
@@ -405,6 +407,7 @@ void GameScene01::UpdateObject()
 			if (Input::GetKeyTrigger(DIK_E))
 			{
 				bCodeTaken[0] = true;
+				PlaySound(SOUND_LABEL_SE_PICKUP);
 				break;
 			}
 			bIdea = true;
@@ -420,6 +423,7 @@ void GameScene01::UpdateObject()
 			if (Input::GetKeyTrigger(DIK_E))
 			{
 				bCodeTaken[1] = true;
+				PlaySound(SOUND_LABEL_SE_PICKUP);
 				break;
 			}
 			bIdea = true;
@@ -437,6 +441,7 @@ void GameScene01::UpdateObject()
 			if (Input::GetKeyTrigger(DIK_E))
 			{
 				pGeneratorUI->OpenUI();
+				PlaySound(SOUND_LABEL_SE_GENERATOR_UI);
 				break;
 			}
 			bIdea = true;
@@ -454,6 +459,7 @@ void GameScene01::UpdateObject()
 			if (Input::GetKeyTrigger(DIK_E))
 			{
 				bTalking = true;
+				PlaySound(SOUND_LABEL_SE_KEYBOARD);
 				if (bLCTaken)
 				{
 					pOverlays[6]->GetSprite()->SetCutPos(224, 0);
@@ -485,6 +491,7 @@ void GameScene01::UpdateObject()
 				pText->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 言語認識", -1, 60, D3DCOLOR_RGBA(100, 255, 155, 255));
 				pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
 					30, "+ 言語認識", 60, 30, D3DCOLOR_RGBA(100, 255, 155, 255));
+				PlaySound(SOUND_LABEL_SE_LANGUAGE);
 				break;
 			}
 			bIdeaHand = true;
@@ -509,6 +516,7 @@ void GameScene01::UpdateObject()
 				(pText + 1)->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 視覚的強化", -1, 60, D3DCOLOR_RGBA(255, 200, 50, 255));
 				pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
 					30, "+ 視覚的強化", 60, 30, D3DCOLOR_RGBA(255, 200, 50, 255));
+				PlaySound(SOUND_LABEL_SE_VISUAL);
 				break;
 			}
 			bIdeaHand = true;
@@ -525,6 +533,10 @@ void GameScene01::UpdateObject()
 			if (Input::GetKeyTrigger(DIK_E))
 			{
 				pScreenUI->OpenUI();
+				if (pGeneratorUI->isUnlocked())
+				{
+					PlaySound(SOUND_LABEL_SE_SCREEN_OPEN);
+				}
 				break;
 			}
 			bIdea = true;
@@ -542,6 +554,7 @@ void GameScene01::UpdateObject()
 			if (Input::GetKeyTrigger(DIK_E))
 			{
 				pPanelUI->OpenUI();
+				PlaySound(SOUND_LABEL_SE_BUTTON);
 				break;
 			}
 			bIdeaHand = true;
@@ -559,6 +572,7 @@ void GameScene01::UpdateObject()
 			if (Input::GetKeyTrigger(DIK_E))
 			{
 				bLifting = true;
+				PlaySound(SOUND_LABEL_SE_LIFT_LIFTING);
 				break;
 			}
 			bIdeaHand = true;
@@ -587,12 +601,16 @@ void GameScene01::UpdateObject()
 			obj->SetGlobalPos(obj->GetGlobalPos().x, -1238.0f);
 			bLifting = false;
 			bSecondFloor = true;
+			StopSound(SOUND_LABEL_SE_LIFT_LIFTING);
+			PlaySound(SOUND_LABEL_SE_LIFT_OPEN);
 		}
 		if (obj->GetGlobalPos().y >= 342.0f)
 		{
 			obj->SetGlobalPos(obj->GetGlobalPos().x, 342.0f);
 			bLifting = false;
 			bSecondFloor = false;
+			StopSound(SOUND_LABEL_SE_LIFT_LIFTING);
+			PlaySound(SOUND_LABEL_SE_LIFT_OPEN);
 		}
 	} while (0);
 
@@ -608,6 +626,7 @@ void GameScene01::UpdateObject()
 			if (Input::GetKeyTrigger(DIK_E))
 			{
 				pComputerUI->OpenUI();
+				PlaySound(SOUND_LABEL_SE_KEYBOARD);
 				break;
 			}
 			bIdeaHand = true;
@@ -634,6 +653,7 @@ void GameScene01::UpdateObject()
 				(pText + 2)->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 部品完備", -1, 60, D3DCOLOR_RGBA(0, 200, 255, 255));
 				pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
 					30, "+ 部品完備", 60, 30, D3DCOLOR_RGBA(0, 200, 255, 255));
+				PlaySound(SOUND_LABEL_SE_PICKUP_LEG);
 				break;
 			}
 			bIdeaHand = true;
@@ -664,6 +684,7 @@ void GameScene01::UpdateObject()
 					break;
 				}
 				bDoorUnlockded[1] = true;
+				PlaySound(SOUND_LABEL_SE_DOOR_OPEN2);
 				break;
 			}
 			bIdeaHand = true;

@@ -38,6 +38,7 @@
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="GameScene01.cpp" />
     <ClCompile Include="screen_ui.cpp" />
+    <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="system_timer.cpp" />
     <ClCompile Include="TestScene.cpp" />
@@ -64,6 +65,7 @@
     <ClInclude Include="scene.h" />
     <ClInclude Include="GameScene01.h" />
     <ClInclude Include="screen_ui.h" />
+    <ClInclude Include="sound.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="system_timer.h" />
     <ClInclude Include="TestScene.h" />

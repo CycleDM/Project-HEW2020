@@ -238,6 +238,10 @@ void GeneratorUI::TryToUnlock(void)
 			break;
 		}
 	}
+	if (bUnlocked)
+	{
+		PlaySound(SOUND_LABEL_SE_GENERATOR_POWER);
+	}
 
 	if (!bUnlocked) return;
 	for (int i = 0; i < GENERATOR_UI_SLOT_MAX; i++)
