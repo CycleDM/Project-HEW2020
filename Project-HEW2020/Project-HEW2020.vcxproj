@@ -22,6 +22,7 @@
     <ClCompile Include="animator.cpp" />
     <ClCompile Include="coded_lock_ui.cpp" />
     <ClCompile Include="collision.cpp" />
+    <ClCompile Include="computer_ui.cpp" />
     <ClCompile Include="d3dfont.cpp" />
     <ClCompile Include="d3dutility.cpp" />
     <ClCompile Include="fade.cpp" />
@@ -32,9 +33,12 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="overlay.cpp" />
+    <ClCompile Include="panel_ui.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="GameScene01.cpp" />
+    <ClCompile Include="screen_ui.cpp" />
+    <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="system_timer.cpp" />
     <ClCompile Include="TestScene.cpp" />
@@ -45,6 +49,7 @@
     <ClInclude Include="animator.h" />
     <ClInclude Include="coded_lock_ui.h" />
     <ClInclude Include="collision.h" />
+    <ClInclude Include="computer_ui.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="d3dutility.h" />
     <ClInclude Include="fade.h" />
@@ -55,9 +60,12 @@
     <ClInclude Include="loadingscreen.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="overlay.h" />
+    <ClInclude Include="panel_ui.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="GameScene01.h" />
+    <ClInclude Include="screen_ui.h" />
+    <ClInclude Include="sound.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="system_timer.h" />
     <ClInclude Include="TestScene.h" />

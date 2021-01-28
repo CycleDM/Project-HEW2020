@@ -155,12 +155,12 @@ void GameObject::Register(ObjectType type)
 		pSprite->LoadTexture(TEXTURE_OBJ_DOOR1);
 		pCollision = new Collision;
 		pSprite->SetCutPos(0, 0);
-		pSprite->SetCutRange(17, 91);
+		pSprite->SetCutRange(11, 97);
 		width = pSprite->GetCutWidth();
 		height = pSprite->GetCutHeight();
 		pAnimator = new Animator();
 		pAnimator->Init(pSprite);
-		pAnimator->Preset(6, 1, 8);
+		pAnimator->Preset(7, 1, 5);
 		bCustomized = true;
 		break;
 	case GameObject::OBJ_DIGITAL_DOOR:
@@ -205,6 +205,27 @@ void GameObject::Register(ObjectType type)
 		break;
 	case GameObject::OBJ_LANGUAGE_CHIP:
 		pSprite->LoadTexture(TEXTURE_OBJ_LANGUAGE);
+		break;
+	case GameObject::OBJ_LIFT:
+		pSprite->LoadTexture(TEXTURE_OBJ_LIFT_BOX);
+		break;
+	case GameObject::OBJ_LIFT_PANEL:
+		pSprite->LoadTexture(TEXTURE_OBJ_LIFT_PANEL);
+		break;
+	case GameObject::OBJ_MAKER:
+		pSprite->LoadTexture(TEXTURE_OBJ_MAKER);
+		break;
+	case GameObject::OBJ_NEW_ROBOT:
+		pSprite->LoadTexture(TEXTURE_OBJ_NEW_ROBOT);
+		break;
+	case GameObject::OBJ_COMPUTER:
+		pSprite->LoadTexture(TEXTURE_OBJ_COMPUTER);
+		break;
+	case GameObject::OBJ_ITEM_HAND:
+		pSprite->LoadTexture(TEXTURE_ITEM_HAND);
+		break;
+	case GameObject::OBJ_VISUAL_CHIP:
+		pSprite->LoadTexture(TEXTURE_OBJ_VISUAL);
 		break;
 	default:
 		break;

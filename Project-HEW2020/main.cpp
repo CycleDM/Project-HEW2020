@@ -21,6 +21,7 @@
 #include "fade.h"
 #include "input.h"
 #include "d3dfont.h"
+#include "sound.h"
 
 #define CLASS_NAME "GameWindow"
 #define WINDOW_CAPTION "Origin v1.0.0"
@@ -177,6 +178,8 @@ bool Init(HWND hWnd)
 	// ‚±‚±‚ÉŠeí‚Ì‰Šú‰»ˆ—‚ğ“ü‚ê‚é
 	do
 	{
+		// SOUND
+		InitSound(hWnd);
 		// DINPUT
 		Input::Init(hWnd);
 		// D3DFONT
@@ -257,4 +260,5 @@ void Uninit(void)
 	D3DFont::Uninit();
 	Input::Uninit();
 	D3DUtility::Uninit();
+	UninitSound();
 }

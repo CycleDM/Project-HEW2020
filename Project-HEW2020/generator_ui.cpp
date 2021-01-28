@@ -124,6 +124,7 @@ void GeneratorUI::Uninit()
 
 void GeneratorUI::Update()
 {
+	if (!bActive) return;
 	// Control
 	do
 	{
@@ -163,8 +164,7 @@ void GeneratorUI::Update()
 	// Quit
 	do
 	{
-		if (!bActive) break;
-		if (Input::GetKeyPress(DIK_Q))
+		if (Input::GetKeyPress(DIK_Q) || Input::GetKeyTrigger(DIK_E))
 		{
 			QuitUI();
 		}
@@ -237,6 +237,10 @@ void GeneratorUI::TryToUnlock(void)
 			bUnlocked = false;
 			break;
 		}
+	}
+	if (bUnlocked)
+	{
+		PlaySound(SOUND_LABEL_SE_GENERATOR_POWER);
 	}
 
 	if (!bUnlocked) return;

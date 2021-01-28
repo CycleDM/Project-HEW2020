@@ -16,6 +16,7 @@
 #include "overlay.h"
 #include "input.h"
 #include "d3dfont.h"
+#include "sound.h"
 
 //-----------------------------------------------------------------------------
 // ゲームシーン・基本クラス - 必ず派生を作ってください
@@ -30,7 +31,10 @@ public:
 	virtual void Uninit(void) = 0;
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;
+#ifdef _DEBUG
 	virtual void Debug(void) = 0;
+#endif // _DEBUG
+
 
 	// プレイヤーのインスタンスを取得（ポインター）
 	GamePlayer* GetPlayer(void);

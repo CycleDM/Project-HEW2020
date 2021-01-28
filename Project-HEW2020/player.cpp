@@ -12,6 +12,7 @@
 #include "player.h"
 #include "game.h"
 #include "scene.h"
+#include "sound.h"
 
 //-----------------------------------------------------------------------------
 // ’è”
@@ -137,7 +138,7 @@ void GamePlayer::Update(void)
 	}
 	else if (!isClimbing() && isOnLadder())
 	{
-		pAnimator->Pause(pActiveSprite);
+		//pAnimator->Pause(pActiveSprite);
 	}
 	else if (bLostLeg)
 	{

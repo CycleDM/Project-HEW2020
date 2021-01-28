@@ -19,6 +19,7 @@
 #include "TitleScene.h"
 #include "TestScene.h"
 #include "GameScene01.h"
+#include "sound.h"
 
 using namespace std;
 
@@ -50,8 +51,27 @@ void Game::Init(void)
 	pLoadingScreen = new LoadingScreen;
 	bLoadingFlag = false;
 
-	//LoadNextScene(eNowScene);
-	InitSceneThread(&pActScene);
+	LoadNextScene(eNowScene);
+	PlaySound(SOUND_LABEL_BGM000);
+	SetVolume(SOUND_LABEL_BGM000, 0.1f);
+
+	// VOLUMES
+	SetVolume(SOUND_LABEL_SE_GENERATOR_POWER, 0.5f);
+	SetVolume(SOUND_LABEL_SE_GENERATOR_UI, 0.5f);
+	SetVolume(SOUND_LABEL_SE_PICKUP_LEG, 0.5f);
+	SetVolume(SOUND_LABEL_SE_DOOR_OPEN1, 0.3f);
+	SetVolume(SOUND_LABEL_SE_DOOR_OPEN2, 1.0f);
+	SetVolume(SOUND_LABEL_SE_SCREEN_OPEN, 1.0f);
+	SetVolume(SOUND_LABEL_SE_LANGUAGE, 1.0f);
+	SetVolume(SOUND_LABEL_SE_VISUAL, 1.0f);
+	SetVolume(SOUND_LABEL_SE_LIFT_OPEN, 1.0f);
+	SetVolume(SOUND_LABEL_SE_LIFT_LIFTING, 1.0f);
+	SetVolume(SOUND_LABEL_SE_BUTTON, 1.0f);
+	SetVolume(SOUND_LABEL_SE_CORRECT, 1.0f);
+	SetVolume(SOUND_LABEL_SE_WRONG, 1.0f);
+	SetVolume(SOUND_LABEL_SE_ITEM_DROP, 0.8f);
+	SetVolume(SOUND_LABEL_SE_KEYBOARD, 1.0f);
+
 }
 
 // ÉQÅ[ÉÄÇÃèIóπèàóù
@@ -157,8 +177,9 @@ void Game::LoadNextScene(Game::SceneType type)
 	eNextScene = type;
 
 	/*** LOADING THREAD ***/
-	lt = thread(&Game::InitSceneThread, &pActScene, &bLoadingFlag);
-	lt.detach();
+	//lt = thread(&Game::InitSceneThread, &pActScene, &bLoadingFlag);
+	//lt.detach();
+	InitSceneThread(&pActScene);
 }
 
 void Game::BindWindow(HWND hWnd, int window_width, int window_height)

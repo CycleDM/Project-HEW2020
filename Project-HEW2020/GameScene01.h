@@ -12,6 +12,9 @@
 #include <d3dx9.h>
 #include "scene.h"
 #include "generator_ui.h"
+#include "screen_ui.h"
+#include "panel_ui.h"
+#include "computer_ui.h"
 #include "text.h"
 
 class GameScene01 : public GameScene
@@ -24,7 +27,9 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+#ifdef _DEBUG
 	void Debug(void);
+#endif // _DEBUG
 
 private:
 	void UpdatePlayer(void);
@@ -35,13 +40,21 @@ private:
 	bool bIdea;
 	bool bIdeaHand;
 	bool bCodeTaken[2];
-	bool bBodyTaken[3];
+	bool bBodyTaken[2];
 	bool bDoorUnlockded[2];
 	bool bTalking;
-	bool bLCToken;	// Language chip
+	bool bLCTaken;	// Language chip
+	bool bVCTaken;	// Visual chip
 	bool bEndScene;
 
+	bool bLifting;
+	bool bSecondFloor;
+
 	GeneratorUI* pGeneratorUI;
+	ScreenUI* pScreenUI;
+	PanelUI* pPanelUI;
+	ComputerUI* pComputerUI;
+	
 	GameText* pText;
 	GameText* pTextNotice;
 };

@@ -148,6 +148,7 @@ void CodedLockUI::Update(void)
 			if (nInput[nHSelected] < 0) nInput[nHSelected] = 9;
 			index = CLUI_KEY_H * nInput[nHSelected] - CLUI_KEY_H;
 			if (index == 8 * CLUI_KEY_H) nKeyCut[nHSelected] = index + CLUI_KEY_H;
+			PlaySound(SOUND_LABEL_SE_PICKUP);
 		}
 		if (!bSwitching && Input::GetKeyPress(DIK_S))
 		{
@@ -155,6 +156,7 @@ void CodedLockUI::Update(void)
 			if (nInput[nHSelected] > 9) nInput[nHSelected] = 0;
 			index = CLUI_KEY_H * nInput[nHSelected] - CLUI_KEY_H;
 			if (index == -CLUI_KEY_H) nKeyCut[nHSelected] = index - CLUI_KEY_H;
+			PlaySound(SOUND_LABEL_SE_PICKUP);
 		}
 		if (nKeyCut[nHSelected] >= 9 * CLUI_KEY_H) nKeyCut[nHSelected] - CLUI_KEY_H;
 		if (nKeyCut[nHSelected] < index) nKeyCut[nHSelected] += 3;
@@ -181,7 +183,7 @@ void CodedLockUI::Update(void)
 	do
 	{
 		if (bOpening || bQuiting) break;
-		if (!bTrying && Input::GetKeyTrigger(DIK_F))
+		if (!bTrying && Input::GetKeyTrigger(DIK_E))
 		{
 			nFrame = 0;
 			bTrying = true;	
@@ -193,7 +195,7 @@ void CodedLockUI::Update(void)
 	do
 	{
 		if (bOpening || bQuiting || bTrying || bSwitching) break;
-		if (Input::GetKeyPress(DIK_Q))
+		if (Input::GetKeyPress(DIK_Q) || Input::GetKeyTrigger(DIK_ESCAPE))
 		{
 			QuitUI();
 		}

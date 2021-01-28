@@ -23,13 +23,18 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+#ifdef _DEBUG
 	void Debug(void);
+#endif // _DEBUG
 
 private:
 	void UpdatePlayer(void);
 	void UpdateObject(void);
 	void UpdateOverlay(void);
 	void PlayerControl(void);
+
+	bool bIdea;
+	bool bDoorOpened;
 
 	CodedLockUI* pCodedLockUI;
 };

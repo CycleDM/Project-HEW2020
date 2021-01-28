@@ -88,11 +88,13 @@ void TitleScene::Draw(void)
 		if (NULL == p) continue;
 		p->Draw();
 	}
-
+#ifdef _DEBUG
 	// デバッグ文字の表示
 	if (Game::DebugMode()) this->Debug();
+#endif // _DEBUG
 }
 
+#ifdef _DEBUG
 void TitleScene::Debug(void)
 {
 	char buf[1024];
@@ -132,6 +134,7 @@ void TitleScene::Debug(void)
 	y += 32;
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 }
+#endif // _DEBUG
 
 void TitleScene::UpdatePlayer(void)
 {
@@ -185,10 +188,12 @@ void TitleScene::UpdateTitleButton(void)
 
 	if (buttonSelected == 0 && Input::GetMouseButtonTrigger(0))
 	{
+		PlaySound(SOUND_LABEL_SE_TITLE_BUTTON);
 		Game::LoadNextScene(Game::SCENE_01);
 	}
 	if (buttonSelected == 1 && Input::GetMouseButtonTrigger(0))
 	{
+		PlaySound(SOUND_LABEL_SE_TITLE_BUTTON);
 		SendMessage(Game::GetWindow(), WM_CLOSE, 0, 0);
 	}
 }
