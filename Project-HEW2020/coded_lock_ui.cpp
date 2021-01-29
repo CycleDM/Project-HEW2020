@@ -129,6 +129,7 @@ void CodedLockUI::Update(void)
 	do
 	{
 		if (!bActive || bOpening || bQuiting || bTrying) break;
+		// KEYBOARD
 		if (!bSwitching && Input::GetKeyTrigger(DIK_A))
 		{
 			nHSelected--;
@@ -139,10 +140,30 @@ void CodedLockUI::Update(void)
 			nHSelected++;
 			if (nHSelected > 2) nHSelected = 2;
 		}
+		// MOUSE
+		long mPosX = Input::GetMouseX();
+		long mPosY = Input::GetMouseY();
+		long mWheel = Input::GetMouseDeltaWheel();
+		do
+		{
+			if (mPosY < 206 || mPosY > 517) break;
+			if (mPosX >= 510 && mPosX <= 584)
+			{
+				nHSelected = 0;
+			}
+			if (mPosX >= 602 && mPosX <= 676)
+			{
+				nHSelected = 1;
+			}
+			if (mPosX >= 693 && mPosX <= 767)
+			{
+				nHSelected = 2;
+			}
+		} while (0);
 
 		// -69 ~ 552
 		int index = CLUI_KEY_H * nInput[nHSelected] - CLUI_KEY_H;;
-		if (!bSwitching && Input::GetKeyPress(DIK_W))
+		if (!bSwitching && (Input::GetKeyPress(DIK_W) || mWheel < 0))
 		{
 			nInput[nHSelected]--;
 			if (nInput[nHSelected] < 0) nInput[nHSelected] = 9;
@@ -150,7 +171,7 @@ void CodedLockUI::Update(void)
 			if (index == 8 * CLUI_KEY_H) nKeyCut[nHSelected] = index + CLUI_KEY_H;
 			PlaySound(SOUND_LABEL_SE_PICKUP);
 		}
-		if (!bSwitching && Input::GetKeyPress(DIK_S))
+		if (!bSwitching && (Input::GetKeyPress(DIK_S) || mWheel > 0))
 		{
 			nInput[nHSelected]++;
 			if (nInput[nHSelected] > 9) nInput[nHSelected] = 0;
@@ -183,7 +204,7 @@ void CodedLockUI::Update(void)
 	do
 	{
 		if (bOpening || bQuiting) break;
-		if (!bTrying && Input::GetKeyTrigger(DIK_E))
+		if (!bTrying && (Input::GetKeyTrigger(DIK_E) || Input::GetMouseButtonTrigger(0)))
 		{
 			nFrame = 0;
 			bTrying = true;	

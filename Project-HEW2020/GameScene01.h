@@ -50,6 +50,10 @@ private:
 	bool bLifting;
 	bool bSecondFloor;
 
+	float fLiftingSpeed;
+
+	Animator* pAnimator;
+
 	GeneratorUI* pGeneratorUI;
 	ScreenUI* pScreenUI;
 	PanelUI* pPanelUI;

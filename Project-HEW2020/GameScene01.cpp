@@ -12,6 +12,8 @@
 #include "game.h"
 #include "d3dutility.h"
 
+#define LIFTING_SPEED_INIT 0.1f
+
 GameScene01::GameScene01()
 {
 	this->Init();
@@ -44,6 +46,8 @@ void GameScene01::Init()
 	bLifting = false;
 	bSecondFloor = false;
 	bEndScene = false;
+
+	fLiftingSpeed = LIFTING_SPEED_INIT;
 
 	// Init Player
 	pPlayer = new GamePlayer;
@@ -179,6 +183,9 @@ void GameScene01::Init()
 		}
 		obj->SetSize(obj->GetWidth() * fGlobalScaling, obj->GetHeight() * fGlobalScaling);
 	}
+	
+	// Animator
+	pAnimator = new Animator;
 
 	// Create UI
 	pGeneratorUI = new GeneratorUI;
@@ -193,6 +200,8 @@ void GameScene01::Init()
 
 void GameScene01::Uninit()
 {
+	delete pAnimator;
+	pAnimator = NULL;
 	delete pPlayer;
 	pPlayer = NULL;
 	for (GameObject* p : pObjects)
@@ -489,7 +498,7 @@ void GameScene01::UpdateObject()
 				if (bVCTaken) offset += 32;
 				if (bBodyTaken[1]) offset += 32;
 				pText->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 言語認識", -1, 60, D3DCOLOR_RGBA(100, 255, 155, 255));
-				pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
+				pTextNotice->CreateText((int)pPlayer->GetScreenPos().x - 33, (int)pPlayer->GetScreenPos().y - 128,
 					30, "+ 言語認識", 60, 30, D3DCOLOR_RGBA(100, 255, 155, 255));
 				PlaySound(SOUND_LABEL_SE_LANGUAGE);
 				break;
@@ -513,8 +522,8 @@ void GameScene01::UpdateObject()
 				int offset = 32;
 				if (bLCTaken) offset += 32;
 				if (bBodyTaken[1]) offset += 32;
-				(pText + 1)->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 視覚的強化", -1, 60, D3DCOLOR_RGBA(255, 200, 50, 255));
-				pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
+				(pText + 1)->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 視覚的強化（色認識）", -1, 60, D3DCOLOR_RGBA(255, 200, 50, 255));
+				pTextNotice->CreateText((int)pPlayer->GetScreenPos().x - 98, (int)pPlayer->GetScreenPos().y - 128,
 					30, "+ 視覚的強化", 60, 30, D3DCOLOR_RGBA(255, 200, 50, 255));
 				PlaySound(SOUND_LABEL_SE_VISUAL);
 				break;
@@ -583,19 +592,21 @@ void GameScene01::UpdateObject()
 	{
 		if (!bLifting) break;
 
-		float fSpeed = 10.0f;
+		static const float fSpeedMax = 10.0f;
 		if (!bSecondFloor)
 		{
-			obj->SetGlobalPos(obj->GetGlobalPos().x, obj->GetGlobalPos().y - fSpeed);
-			fGroundHeight += fSpeed;
+			obj->SetGlobalPos(obj->GetGlobalPos().x, obj->GetGlobalPos().y - fLiftingSpeed);
+			fGroundHeight += fLiftingSpeed;
 		}
 		else
 		{
-			obj->SetGlobalPos(obj->GetGlobalPos().x, obj->GetGlobalPos().y + fSpeed);
-			fGroundHeight -= fSpeed;
+			obj->SetGlobalPos(obj->GetGlobalPos().x, obj->GetGlobalPos().y + fLiftingSpeed);
+			fGroundHeight -= fLiftingSpeed;
 		}
 
 		// limitation
+		fLiftingSpeed += 0.1f;
+		if (fLiftingSpeed > fSpeedMax) fLiftingSpeed = fSpeedMax;
 		if (obj->GetGlobalPos().y <= -1238.0f)
 		{
 			obj->SetGlobalPos(obj->GetGlobalPos().x, -1238.0f);
@@ -603,6 +614,7 @@ void GameScene01::UpdateObject()
 			bSecondFloor = true;
 			StopSound(SOUND_LABEL_SE_LIFT_LIFTING);
 			PlaySound(SOUND_LABEL_SE_LIFT_OPEN);
+			fLiftingSpeed = LIFTING_SPEED_INIT;
 		}
 		if (obj->GetGlobalPos().y >= 342.0f)
 		{
@@ -611,6 +623,7 @@ void GameScene01::UpdateObject()
 			bSecondFloor = false;
 			StopSound(SOUND_LABEL_SE_LIFT_LIFTING);
 			PlaySound(SOUND_LABEL_SE_LIFT_OPEN);
+			fLiftingSpeed = LIFTING_SPEED_INIT;
 		}
 	} while (0);
 
@@ -650,9 +663,9 @@ void GameScene01::UpdateObject()
 				int offset = 32;
 				if (bLCTaken) offset += 32;
 				if (bVCTaken) offset += 32;
-				(pText + 2)->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 部品完備", -1, 60, D3DCOLOR_RGBA(0, 200, 255, 255));
-				pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
-					30, "+ 部品完備", 60, 30, D3DCOLOR_RGBA(0, 200, 255, 255));
+				(pText + 2)->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 紛失した部品", -1, 60, D3DCOLOR_RGBA(0, 200, 255, 255));
+				pTextNotice->CreateText((int)pPlayer->GetScreenPos().x - 113, (int)pPlayer->GetScreenPos().y - 128,
+					30, "+ 紛失した部品", 60, 30, D3DCOLOR_RGBA(0, 200, 255, 255));
 				PlaySound(SOUND_LABEL_SE_PICKUP_LEG);
 				break;
 			}
@@ -665,22 +678,16 @@ void GameScene01::UpdateObject()
 	do
 	{
 		if (!bSecondFloor) break;
+		if (bDoorUnlockded[1]) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			// GO TO NEXT SCENE
-			if (Input::GetKeyTrigger(DIK_W) && bDoorUnlockded[1])
-			{
-				bEndScene = true;
-				return;
-			}
-			if (bDoorUnlockded[1]) break;
 			// FBI Open the door!
 			if (Input::GetKeyTrigger(DIK_E))
 			{
 				if (!bBodyTaken[1])
 				{
-					pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
-						30, "×体の部品が失われた", 60, 30, D3DCOLOR_RGBA(255, 0, 0, 255));
+					pTextNotice->CreateText((int)pPlayer->GetScreenPos().x - 225, (int)pPlayer->GetScreenPos().y - 128,
+						30, "×体の部品が一部紛失されました", 60, 30, D3DCOLOR_RGBA(255, 0, 0, 255));
 					break;
 				}
 				bDoorUnlockded[1] = true;
@@ -688,6 +695,23 @@ void GameScene01::UpdateObject()
 				break;
 			}
 			bIdeaHand = true;
+		}
+	} while (0);
+	// ANYWHERE DOOR
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_DIGITAL_DOOR);
+	do
+	{
+		if (!bSecondFloor) break;
+		if (!bDoorUnlockded[1]) break;
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			// GO TO NEXT SCENE
+			if ((Input::GetKeyTrigger(DIK_E) || Input::GetKeyTrigger(DIK_W)) && bDoorUnlockded[1])
+			{
+				bEndScene = true;
+				return;
+			}
+			if (bDoorUnlockded[1]) break;
 		}
 	} while (0);
 }
