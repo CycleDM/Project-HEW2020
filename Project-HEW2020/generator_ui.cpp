@@ -164,7 +164,7 @@ void GeneratorUI::Update()
 	// Quit
 	do
 	{
-		if (Input::GetKeyPress(DIK_Q) || Input::GetKeyTrigger(DIK_E))
+		if (Input::GetKeyPress(DIK_Q) || Input::GetKeyTrigger(DIK_ESCAPE))
 		{
 			QuitUI();
 		}
