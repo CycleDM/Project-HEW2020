@@ -143,7 +143,7 @@ void TestScene::Update(void)
 	// END
 	if (pPlayer->GetGlobalPos().x > 2000.0f)
 	{
-		Game::LoadNextScene(Game::SCENE_TITLE);
+		Game::LoadNextScene(Game::SCENE_FINAL);
 	}
 }
 
@@ -286,6 +286,7 @@ void TestScene::UpdateObject(void)
 	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_CODED_LOCK);
 	do
 	{
+		if (pPlayer->GetGlobalPos().y >= (float)SCREEN_HEIGHT / 2) break;
 		if (pCodedLockUI->isUnlocked()) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
@@ -337,9 +338,6 @@ void TestScene::Debug(void)
 	sprintf_s(buf, "[PlayerInfo]");
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32, D3DCOLOR_RGBA(100, 220, 255, 255));
 	y += 32;
-	sprintf_s(buf, ">MoveSpeed = %.2f", pPlayer->GetSpeed());
-	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
-	y += 32;
 	sprintf_s(buf, ">ScreenPos(%.2f, %.2f)", pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y);
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	y += 32;
@@ -349,35 +347,38 @@ void TestScene::Debug(void)
 	sprintf_s(buf, ">CollisionCenter(%.2f, %.2f)", pPlayer->GetCollision()->GetPosition().x, pPlayer->GetCollision()->GetPosition().y);
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	y += 32;
-	sprintf_s(buf, ">CollisionSize(%.2f, %.2f)", pPlayer->GetCollision()->GetWidth(), pPlayer->GetCollision()->GetHeight());
-	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
-	y += 32;
 	sprintf_s(buf, ">isOnLadder = %d", pPlayer->isOnLadder());
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 	y += 32;
 	sprintf_s(buf, ">isClimbing = %d", pPlayer->isClimbing());
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 
+	sprintf_s(buf, "[Mouse States]");
 	y += 32;
-	sprintf_s(buf, "[ObjectInfo]");
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32, D3DCOLOR_RGBA(100, 220, 255, 255));
+	sprintf_s(buf, ">LB = %d", Input::GetMouseButtonPress(0));
 	y += 32;
-	sprintf_s(buf, ">FLOOR S(%.2f, %.2f) G(%.2f, %.2f) CollisionSize(%.2f, %.2f)",
-		pObjects[0]->GetScreenPos().x, pObjects[0]->GetScreenPos().y,
-		pObjects[0]->GetGlobalPos().x, pObjects[0]->GetGlobalPos().y,
-		pObjects[0]->GetCollision()->GetWidth(), pObjects[0]->GetCollision()->GetHeight());
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, ">RB = %d", Input::GetMouseButtonPress(1));
 	y += 32;
-	sprintf_s(buf, ">LADDER1 S(%.2f, %.2f) G(%.2f, %.2f) CollisionPos(%.2f, %.2f)",
-		pObjects[1]->GetScreenPos().x, pObjects[1]->GetScreenPos().y, 
-		pObjects[1]->GetGlobalPos().x, pObjects[1]->GetGlobalPos().y,
-		pObjects[1]->GetCollision()->GetPosition().x, pObjects[1]->GetCollision()->GetPosition().y);
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, ">MB = %d", Input::GetMouseButtonPress(2));
 	y += 32;
-	sprintf_s(buf, ">LADDER2 S(%.2f, %.2f) G(%.2f, %.2f) CollisionSize(%.2f, %.2f)",
-		pObjects[2]->GetScreenPos().x, pObjects[2]->GetScreenPos().y,
-		pObjects[2]->GetGlobalPos().x, pObjects[2]->GetGlobalPos().y,
-		pObjects[2]->GetCollision()->GetWidth(), pObjects[2]->GetCollision()->GetHeight());
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, ">deltaX = %d", Input::GetMouseDeltaX());
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, ">deltaY = %d", Input::GetMouseDeltaY());
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, ">deltaZ = %d", Input::GetMouseDeltaWheel());
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, ">PosX = %d", Input::GetMouseX());
+	y += 32;
+	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
+	sprintf_s(buf, ">PosY = %d", Input::GetMouseY());
+	y += 32;
 	D3DFont::Draw(0, y, buf, FONT_NAME, 32);
 }
 #endif // _DEBUG

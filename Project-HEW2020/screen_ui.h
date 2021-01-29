@@ -9,6 +9,7 @@
 //----------------------------------------------------------------------------
 #pragma once
 #include "overlay.h"
+#include "text.h"
 
 class ScreenUI
 {
@@ -26,6 +27,9 @@ public:
 
 private:
 	bool bActive;
+	bool bPower;
+	bool bColor;
 	GameOverlay* pBgOverlay;
 	GameOverlay* pBaseUI;
+	GameText* pText;
 };

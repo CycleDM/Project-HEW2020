@@ -25,6 +25,8 @@ ScreenUI::~ScreenUI()
 void ScreenUI::Init(void)
 {
 	bActive = false;
+	bPower = false;
+	bColor = false;
 	pBgOverlay = new GameOverlay(TEXTURE_FADE);
 	pBgOverlay->SetScreenPos((float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2);
 	pBgOverlay->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
@@ -36,10 +38,14 @@ void ScreenUI::Init(void)
 	pBaseUI->GetSprite()->SetCutRange(544, 416);
 	pBaseUI->SetSize(544.0f, 416.0f);
 	pBaseUI->SetScale(1.5f);
+
+	pText = new GameText;
 }
 
 void ScreenUI::Uninit(void)
 {
+	delete pText;
+	pText = NULL;
 	delete pBgOverlay;
 	pBgOverlay = NULL;
 	delete pBaseUI;
@@ -48,8 +54,9 @@ void ScreenUI::Uninit(void)
 
 void ScreenUI::Update(bool bPower, bool bColor)
 {
+	this->bPower = bPower;
+	this->bColor = bColor;
 	if (!bActive) return;
-
 	do
 	{
 
@@ -68,8 +75,11 @@ void ScreenUI::Update(bool bPower, bool bColor)
 
 	if (Input::GetKeyTrigger(DIK_Q) || Input::GetKeyTrigger(DIK_ESCAPE))
 	{
+		pText->Init();
 		QuitUI();
 	}
+
+	pText->Update();
 }
 
 void ScreenUI::Draw(void)
@@ -77,12 +87,16 @@ void ScreenUI::Draw(void)
 	if (!bActive) return;
 	pBgOverlay->Draw();
 	pBaseUI->Draw();
+	pText->Draw();
 }
 
 void ScreenUI::OpenUI(void)
 {
 	bActive = true;
 	GameScene::Freeze(true);
+	if (!bPower) return;
+	if (bColor) return;
+	pText->CreateText(SCREEN_WIDTH / 2 - 250, SCREEN_HEIGHT / 2 + 200, 50, "Б~РFВрФFОѓВ≈ВЂВ№ВєВс", -1, 60, D3DCOLOR_RGBA(255, 0, 0, 255));
 }
 
 void ScreenUI::QuitUI(void)

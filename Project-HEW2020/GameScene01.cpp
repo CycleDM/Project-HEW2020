@@ -12,6 +12,8 @@
 #include "game.h"
 #include "d3dutility.h"
 
+#define LIFTING_SPEED_INIT 0.1f
+
 GameScene01::GameScene01()
 {
 	this->Init();
@@ -28,6 +30,10 @@ void GameScene01::Init()
 	// Init Screen
 	SetGlobalScaling(2.0f);
 	isDarkness(true);
+#ifdef _DEBUG
+	isDarkness(false);
+#endif // _DEBUG
+
 
 	fBgScroll = D3DXVECTOR2(0.0f, 0.0f);
 	fBgScrollMax = D3DXVECTOR2(2310.0f, (float)3000 - (720 / 2 + 1));
@@ -44,6 +50,8 @@ void GameScene01::Init()
 	bLifting = false;
 	bSecondFloor = false;
 	bEndScene = false;
+
+	fLiftingSpeed = LIFTING_SPEED_INIT;
 
 	// Init Player
 	pPlayer = new GamePlayer;
@@ -87,10 +95,13 @@ void GameScene01::Init()
 	pOverlays[6]->GetSprite()->SetCutRange(224, 58);
 	// LIFT OVERLAY DOOR
 	pOverlays[7] = new GameOverlay(TEXTURE_LIFT_DOOR);
-	pOverlays[7]->SetScreenPos((float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2);
-	pOverlays[7]->SetSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
-	pOverlays[7]->GetSprite()->SetCutPos(0, 3000 - (720 / 2 + 1));
-	pOverlays[7]->GetSprite()->SetCutRange(1280 / 2, 720 / 2);
+	pOverlays[7]->SetGlobalPos(3330.0f, 335.0f);
+	pOverlays[7]->GetSprite()->SetCutPos(0, 0);
+	pOverlays[7]->GetSprite()->SetCutRange(111, 147);
+	pOverlays[7]->SetSize(111.0f * fGlobalScaling, 147.0f * fGlobalScaling);
+	// Animator
+	pAnimator = new Animator;
+	pAnimator->Init(pOverlays[7]->GetSprite());
 	// LIFT OVERLAY FRAME
 	pOverlays[8] = new GameOverlay(TEXTURE_LIFT_FRAME);
 	pOverlays[8]->SetScreenPos((float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2);
@@ -193,6 +204,8 @@ void GameScene01::Init()
 
 void GameScene01::Uninit()
 {
+	delete pAnimator;
+	pAnimator = NULL;
 	delete pPlayer;
 	pPlayer = NULL;
 	for (GameObject* p : pObjects)
@@ -250,6 +263,9 @@ void GameScene01::Update()
 		UpdateOverlay();
 	} while (0);
 
+	// LIFT DOOR ANIMATION
+	pAnimator->PlayOnce(pOverlays[7]->GetSprite());
+
 	// TEXT
 	for (int i = 0; i < 3; i++)
 	{
@@ -262,6 +278,8 @@ void GameScene01::Update()
 
 void GameScene01::Draw()
 {
+	float fGlobalPosOffsetX = fBgScroll.x * fGlobalScaling;
+	float fGlobalPosOffsetY = fBgScroll.y * fGlobalScaling;
 	pOverlays[0]->Draw();
 
 	for (GameObject* object : pObjects)
@@ -281,14 +299,33 @@ void GameScene01::Draw()
 		if (bLifting && bShowTheDoor)
 		{
 			pPlayer->Draw();
+
+			pOverlays[7]->SetGlobalPos(3330.0f, 335.0f);
+			pOverlays[7]->SetScreenPos(pOverlays[7]->GetGlobalPos().x - fGlobalPosOffsetX, pOverlays[7]->GetGlobalPos().y + fGlobalPosOffsetY);
 			pOverlays[7]->Draw();
+			pOverlays[7]->SetGlobalPos(3330.0f, -1250.0f);
+			pOverlays[7]->SetScreenPos(pOverlays[7]->GetGlobalPos().x - fGlobalPosOffsetX, pOverlays[7]->GetGlobalPos().y + fGlobalPosOffsetY);
+			pOverlays[7]->Draw();
+
 			pOverlays[8]->Draw();
 			break;
 		}
 		if (bShowTheDoor)
 		{
+			pOverlays[7]->SetGlobalPos(3330.0f, 335.0f);
+			pOverlays[7]->SetScreenPos(pOverlays[7]->GetGlobalPos().x - fGlobalPosOffsetX, pOverlays[7]->GetGlobalPos().y + fGlobalPosOffsetY);
+			pOverlays[7]->Draw();
+			pOverlays[7]->SetGlobalPos(3330.0f, -1250.0f);
+			pOverlays[7]->SetScreenPos(pOverlays[7]->GetGlobalPos().x - fGlobalPosOffsetX, pOverlays[7]->GetGlobalPos().y + fGlobalPosOffsetY);
 			pOverlays[7]->Draw();
 		}
+		pOverlays[7]->SetGlobalPos(3330.0f, 335.0f);
+		pOverlays[7]->SetScreenPos(pOverlays[7]->GetGlobalPos().x - fGlobalPosOffsetX, pOverlays[7]->GetGlobalPos().y + fGlobalPosOffsetY);
+		pOverlays[7]->Draw();
+		pOverlays[7]->SetGlobalPos(3330.0f, -1250.0f);
+		pOverlays[7]->SetScreenPos(pOverlays[7]->GetGlobalPos().x - fGlobalPosOffsetX, pOverlays[7]->GetGlobalPos().y + fGlobalPosOffsetY);
+		pOverlays[7]->Draw();
+
 		pOverlays[8]->Draw();
 		pPlayer->Draw();
 	} while (0);
@@ -489,7 +526,7 @@ void GameScene01::UpdateObject()
 				if (bVCTaken) offset += 32;
 				if (bBodyTaken[1]) offset += 32;
 				pText->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 言語認識", -1, 60, D3DCOLOR_RGBA(100, 255, 155, 255));
-				pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
+				pTextNotice->CreateText((int)pPlayer->GetScreenPos().x - 33, (int)pPlayer->GetScreenPos().y - 128,
 					30, "+ 言語認識", 60, 30, D3DCOLOR_RGBA(100, 255, 155, 255));
 				PlaySound(SOUND_LABEL_SE_LANGUAGE);
 				break;
@@ -513,8 +550,8 @@ void GameScene01::UpdateObject()
 				int offset = 32;
 				if (bLCTaken) offset += 32;
 				if (bBodyTaken[1]) offset += 32;
-				(pText + 1)->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 視覚的強化", -1, 60, D3DCOLOR_RGBA(255, 200, 50, 255));
-				pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
+				(pText + 1)->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 視覚的強化（色認識）", -1, 60, D3DCOLOR_RGBA(255, 200, 50, 255));
+				pTextNotice->CreateText((int)pPlayer->GetScreenPos().x - 98, (int)pPlayer->GetScreenPos().y - 128,
 					30, "+ 視覚的強化", 60, 30, D3DCOLOR_RGBA(255, 200, 50, 255));
 				PlaySound(SOUND_LABEL_SE_VISUAL);
 				break;
@@ -572,6 +609,8 @@ void GameScene01::UpdateObject()
 			if (Input::GetKeyTrigger(DIK_E))
 			{
 				bLifting = true;
+				pAnimator->Reset(pOverlays[7]->GetSprite());
+				pAnimator->Preset(4, 2, 5, true);
 				PlaySound(SOUND_LABEL_SE_LIFT_LIFTING);
 				break;
 			}
@@ -583,34 +622,42 @@ void GameScene01::UpdateObject()
 	{
 		if (!bLifting) break;
 
-		float fSpeed = 10.0f;
+		static const float fSpeedMax = 10.0f;
 		if (!bSecondFloor)
 		{
-			obj->SetGlobalPos(obj->GetGlobalPos().x, obj->GetGlobalPos().y - fSpeed);
-			fGroundHeight += fSpeed;
+			obj->SetGlobalPos(obj->GetGlobalPos().x, obj->GetGlobalPos().y - fLiftingSpeed);
+			fGroundHeight += fLiftingSpeed;
 		}
 		else
 		{
-			obj->SetGlobalPos(obj->GetGlobalPos().x, obj->GetGlobalPos().y + fSpeed);
-			fGroundHeight -= fSpeed;
+			obj->SetGlobalPos(obj->GetGlobalPos().x, obj->GetGlobalPos().y + fLiftingSpeed);
+			fGroundHeight -= fLiftingSpeed;
 		}
 
 		// limitation
-		if (obj->GetGlobalPos().y <= -1238.0f)
+		fLiftingSpeed += 0.1f;
+		if (fLiftingSpeed > fSpeedMax) fLiftingSpeed = fSpeedMax;
+		if (obj->GetGlobalPos().y < -1238.0f)
 		{
 			obj->SetGlobalPos(obj->GetGlobalPos().x, -1238.0f);
 			bLifting = false;
 			bSecondFloor = true;
+			pAnimator->Reset(pOverlays[7]->GetSprite());
+			pAnimator->Preset(4, 2, 5);
 			StopSound(SOUND_LABEL_SE_LIFT_LIFTING);
 			PlaySound(SOUND_LABEL_SE_LIFT_OPEN);
+			fLiftingSpeed = LIFTING_SPEED_INIT;
 		}
-		if (obj->GetGlobalPos().y >= 342.0f)
+		if (obj->GetGlobalPos().y > 342.0f)
 		{
 			obj->SetGlobalPos(obj->GetGlobalPos().x, 342.0f);
 			bLifting = false;
 			bSecondFloor = false;
+			pAnimator->Reset(pOverlays[7]->GetSprite());
+			pAnimator->Preset(4, 2, 5);
 			StopSound(SOUND_LABEL_SE_LIFT_LIFTING);
 			PlaySound(SOUND_LABEL_SE_LIFT_OPEN);
+			fLiftingSpeed = LIFTING_SPEED_INIT;
 		}
 	} while (0);
 
@@ -650,9 +697,9 @@ void GameScene01::UpdateObject()
 				int offset = 32;
 				if (bLCTaken) offset += 32;
 				if (bVCTaken) offset += 32;
-				(pText + 2)->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 部品完備", -1, 60, D3DCOLOR_RGBA(0, 200, 255, 255));
-				pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
-					30, "+ 部品完備", 60, 30, D3DCOLOR_RGBA(0, 200, 255, 255));
+				(pText + 2)->CreateText(0, SCREEN_HEIGHT - offset, 30, "+ 紛失した部品", -1, 60, D3DCOLOR_RGBA(0, 200, 255, 255));
+				pTextNotice->CreateText((int)pPlayer->GetScreenPos().x - 113, (int)pPlayer->GetScreenPos().y - 128,
+					30, "+ 紛失した部品", 60, 30, D3DCOLOR_RGBA(0, 200, 255, 255));
 				PlaySound(SOUND_LABEL_SE_PICKUP_LEG);
 				break;
 			}
@@ -665,22 +712,17 @@ void GameScene01::UpdateObject()
 	do
 	{
 		if (!bSecondFloor) break;
+		if (bDoorUnlockded[1]) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{
-			// GO TO NEXT SCENE
-			if (Input::GetKeyTrigger(DIK_W) && bDoorUnlockded[1])
-			{
-				bEndScene = true;
-				return;
-			}
-			if (bDoorUnlockded[1]) break;
 			// FBI Open the door!
 			if (Input::GetKeyTrigger(DIK_E))
 			{
 				if (!bBodyTaken[1])
 				{
-					pTextNotice->CreateText(pPlayer->GetScreenPos().x - pPlayer->GetPolygonWidth() / 2, pPlayer->GetScreenPos().y - 128.0f,
-						30, "×体の部品が失われた", 60, 30, D3DCOLOR_RGBA(255, 0, 0, 255));
+					pTextNotice->CreateText((int)pPlayer->GetScreenPos().x - 225, (int)pPlayer->GetScreenPos().y - 128,
+						30, "×体の部品が一部紛失されました", 60, 30, D3DCOLOR_RGBA(255, 0, 0, 255));
+					PlaySound(SOUND_LABEL_SE_WRONG);
 					break;
 				}
 				bDoorUnlockded[1] = true;
@@ -688,6 +730,23 @@ void GameScene01::UpdateObject()
 				break;
 			}
 			bIdeaHand = true;
+		}
+	} while (0);
+	// ANYWHERE DOOR
+	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_DIGITAL_DOOR);
+	do
+	{
+		if (!bSecondFloor) break;
+		if (!bDoorUnlockded[1]) break;
+		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
+		{
+			// GO TO NEXT SCENE
+			if ((Input::GetKeyTrigger(DIK_E) || Input::GetKeyTrigger(DIK_W)) && bDoorUnlockded[1])
+			{
+				bEndScene = true;
+				return;
+			}
+			if (bDoorUnlockded[1]) break;
 		}
 	} while (0);
 }
@@ -698,7 +757,6 @@ void GameScene01::UpdateOverlay()
 	float fGlobalPosOffsetY = fBgScroll.y * fGlobalScaling;
 	pOverlays[0]->GetSprite()->SetCutPos((int)fBgScroll.x, 3000 - (720 / 2 + 1) - (int)fBgScroll.y);
 	pOverlays[1]->GetSprite()->SetCutPos((int)fBgScroll.x, 3000 - (720 / 2 + 1) - (int)fBgScroll.y);
-	pOverlays[7]->GetSprite()->SetCutPos((int)fBgScroll.x, 3000 - (720 / 2 + 1) - (int)fBgScroll.y);
 	pOverlays[8]->GetSprite()->SetCutPos((int)fBgScroll.x, 3000 - (720 / 2 + 1) - (int)fBgScroll.y);
 	pOverlays[6]->SetScreenPos(pObjects[3]->GetScreenPos().x + 200.0f, pObjects[3]->GetScreenPos().y - 80.0f);
 	pOverlays[63]->SetScreenPos(pPlayer->GetScreenPos().x, pPlayer->GetScreenPos().y + pPlayer->GetCollision()->GetHalfHeight() + 32.0f);

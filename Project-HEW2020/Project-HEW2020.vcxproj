@@ -26,6 +26,7 @@
     <ClCompile Include="d3dfont.cpp" />
     <ClCompile Include="d3dutility.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="FinalScene.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="generator_ui.cpp" />
     <ClCompile Include="input.cpp" />
@@ -54,6 +55,7 @@
     <ClInclude Include="d3dutility.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="d3dfont.h" />
+    <ClInclude Include="FinalScene.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="generator_ui.h" />
     <ClInclude Include="input.h" />

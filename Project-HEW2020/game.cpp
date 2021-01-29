@@ -19,6 +19,7 @@
 #include "TitleScene.h"
 #include "TestScene.h"
 #include "GameScene01.h"
+#include "FinalScene.h"
 #include "sound.h"
 
 using namespace std;
@@ -52,10 +53,9 @@ void Game::Init(void)
 	bLoadingFlag = false;
 
 	LoadNextScene(eNowScene);
-	PlaySound(SOUND_LABEL_BGM000);
-	SetVolume(SOUND_LABEL_BGM000, 0.1f);
 
 	// VOLUMES
+	SetVolume(SOUND_LABEL_BGM000, 0.1f);
 	SetVolume(SOUND_LABEL_SE_GENERATOR_POWER, 0.5f);
 	SetVolume(SOUND_LABEL_SE_GENERATOR_UI, 0.5f);
 	SetVolume(SOUND_LABEL_SE_PICKUP_LEG, 0.5f);
@@ -71,7 +71,6 @@ void Game::Init(void)
 	SetVolume(SOUND_LABEL_SE_WRONG, 1.0f);
 	SetVolume(SOUND_LABEL_SE_ITEM_DROP, 0.8f);
 	SetVolume(SOUND_LABEL_SE_KEYBOARD, 1.0f);
-
 }
 
 // ÉQÅ[ÉÄÇÃèIóπèàóù
@@ -105,6 +104,7 @@ void Game::InitSceneThread(GameScene** pTarget, bool* flag)
 		pScene = new TestScene;
 		break;
 	case Game::SCENE_FINAL:
+		pScene = new FinalScene;
 		break;
 	default:
 		break;
@@ -180,6 +180,21 @@ void Game::LoadNextScene(Game::SceneType type)
 	//lt = thread(&Game::InitSceneThread, &pActScene, &bLoadingFlag);
 	//lt.detach();
 	InitSceneThread(&pActScene);
+
+	// BGM
+	switch (type)
+	{
+	case Game::SCENE_TITLE:
+		StopSound();
+		PlaySound(SOUND_LABEL_BGM000);
+		break;
+	case Game::SCENE_FINAL:
+		StopSound();
+		PlaySound(SOUND_LABEL_BGM001);
+		break;
+	default:
+		break;
+	}
 }
 
 void Game::BindWindow(HWND hWnd, int window_width, int window_height)
