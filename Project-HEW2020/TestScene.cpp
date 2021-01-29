@@ -143,7 +143,7 @@ void TestScene::Update(void)
 	// END
 	if (pPlayer->GetGlobalPos().x > 2000.0f)
 	{
-		Game::LoadNextScene(Game::SCENE_TITLE);
+		Game::LoadNextScene(Game::SCENE_FINAL);
 	}
 }
 
@@ -286,6 +286,7 @@ void TestScene::UpdateObject(void)
 	obj = GetNearestObject(pPC->GetPosition(), GameObject::OBJ_CODED_LOCK);
 	do
 	{
+		if (pPlayer->GetGlobalPos().y >= (float)SCREEN_HEIGHT / 2) break;
 		if (pCodedLockUI->isUnlocked()) break;
 		if (abs(obj->GetGlobalPos().x - pPlayer->GetGlobalPos().x) <= 64.0f)
 		{

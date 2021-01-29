@@ -53,7 +53,6 @@ void Game::Init(void)
 	bLoadingFlag = false;
 
 	LoadNextScene(eNowScene);
-	PlaySound(SOUND_LABEL_BGM000);
 
 	// VOLUMES
 	SetVolume(SOUND_LABEL_BGM000, 0.1f);
@@ -181,6 +180,21 @@ void Game::LoadNextScene(Game::SceneType type)
 	//lt = thread(&Game::InitSceneThread, &pActScene, &bLoadingFlag);
 	//lt.detach();
 	InitSceneThread(&pActScene);
+
+	// BGM
+	switch (type)
+	{
+	case Game::SCENE_TITLE:
+		StopSound();
+		PlaySound(SOUND_LABEL_BGM000);
+		break;
+	case Game::SCENE_FINAL:
+		StopSound();
+		PlaySound(SOUND_LABEL_BGM001);
+		break;
+	default:
+		break;
+	}
 }
 
 void Game::BindWindow(HWND hWnd, int window_width, int window_height)
