@@ -30,7 +30,7 @@ public:
 	//	nMaxCntX	... テクスチャの切り取りXの最大数
 	//	nMaxCntY	... テクスチャの切り取りYの最大数
 	//	nInterval	... テクスチャ切り替えの間隔（フレーム）
-	virtual void Preset(int nMaxCntX, int nMaxCntY, int nInterval);
+	virtual void Preset(int nMaxCntX, int nMaxCntY, int nInterval, bool bFlip = false);
 	// テクスチャの状態を元に戻す（元データにより）
 	virtual void Reset(Sprite* pSprite);
 
@@ -45,5 +45,6 @@ private:
 	int originalData[2];	// テクスチャの元データを格納する所(tcx, tcy)
 
 	bool bOncePlayed;		// PlayOnce()で使われるフラグ
+	bool bFlip;
 };
 
